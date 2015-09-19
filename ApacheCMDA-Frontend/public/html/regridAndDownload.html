@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <!-- for Bootstrap -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+  <!-- still needed? -->
+  <script src="js/jquery.flot.min.js"></script>
+  <script src="js/json2.js"></script>
+  <script src="js/xmisc.js"></script>
+
+  <!-- cmac related -->
+  <link rel="stylesheet" href="common.css">
+  <script src='js2/dataList2.js'></script>
+  <script src='js2/varList.js'></script>
+  <script src='js2/common.js'></script>
+
+  <title>regrid and download service</title>
+
+  <script>
+    var Response = null;
+    var variable1 = "";
+    var variable2 = "";
+
+    var naValue = "-999999";
+
+    var idsV = {};
+    
+    idsV['lon0'] = "0";
+    idsV['lon1'] = "360";
+    idsV['lat0'] = "-90";
+    idsV['lat1'] = "90";
+    idsV['dlon'] = "1";
+    idsV['dlat'] = "1";
+    //idsV['t0'] = "2004-01";
+    //idsV['t1'] = "2004-12";
+
+    function setDlOriginal() {
+      var check1 = document.getElementById('dlOriginal').checked;
+      var ids = [
+                   'lon0', 
+                   'lon1',
+                   'dlon',
+                   'lat0', 
+                   'lat1',
+                   'dlat',
+                   //'t0',
+                   //'t1',
+                  ];
+      var temp1;
+      var temp2;
+      if (check1) {
+        //for (var i in ids) {
+        for (var i=0; i<ids.length; i++) {
+          temp2 = ids[i]; 
+          temp1 = document.getElementById(temp2);
+          idsV[temp2] = temp1.value; 
+          temp1.disabled = true;
+          temp1.value = "N/A" ;
+        }
+      } else {
+        for (var i=0; i<ids.length; i++) {
+            temp2 = ids[i]; 
+//  alert(temp2);
+            temp1 = document.getElementById(temp2);
+            temp1.disabled = false;
+            temp1.value = idsV[temp2];
+        }
+      } 
+    }
+
+     // called on load or reload
+    window.onload = function() {
+      var str1 = data_block_str(1, 1, "Specify the Variable", 
+          "", "500");
+      document.getElementById("dataBlock1").innerHTML = str1;
+
+      put_data(1);
+      put_var(1);
+      select_var(1);
+      time_range1();
+
+      disable_download_button();
+    }
+
+    $(document).ready(function(){
+
+      $("a").click(function(event){
+        alert("As you can see, the link no longer took you to jquery.com");
+        event.preventDefault();
+      });
+
+
+      $("#download_data").click(function(event) {
+        var durl = $("#data_url").val();
+        // alert(durl);
+        window.location.assign(durl);
+      });
+
+
+      $("#action1").click(function(event) {
+        // alert('****** inside regridAndDownload()!');
+        Response = null;
+
+        // no data to download yet
+        disable_download_button();
+
+        $("#Response").html("Calculating ...");
+        $("#data_url").html("Calculating ...");
+
+        var url = "http://einstein.sv.cmu.edu:9002/svc/regridAndDownload?";
+        // alert("url: " + url);
+
+        var d1 = $("#data1").val();
+        var model1 = d1.replace("/", "_");
+        model1 = model1.toLowerCase();
+
+        var arglist = "";
+        arglist = arglist.concat("model=");
+        arglist = arglist.concat(model1);
+
+        // alert("arglist: " + arglist);
+
+        var variable1 = $("#var1").val();
+        arglist = arglist.concat("&var=");
+        arglist = arglist.concat(variable1);
+
+        // alert("arglist: " + arglist);
+
+        if (document.getElementById("dlOriginal").checked) {
+          pres1 = "-999999";
+        } else {
+          var pres10 = $("#pres1").val();
+          var pres1 = parse_pres(pres10);
+        }
+
+        // alert("pres1: " + pres1);
+
+        arglist = arglist.concat("&plev=");
+        arglist = arglist.concat(pres1);
+
+        var t0 = $("#t0").val();
+        var t1 = $("#t1").val();
+
+        t0 = t0.replace("-", "");
+        t1 = t1.replace("-", "");
+
+        arglist = arglist.concat("&start_time=");
+        arglist = arglist.concat(t0);
+
+        arglist = arglist.concat("&end_time=");
+        arglist = arglist.concat(t1);
+
+        // alert("arglist: " + arglist);
+
+        if (document.getElementById("dlOriginal").checked) {
+          var lon0 = "-999999";
+          var lon1 = "-999999";
+          var dlon = "-999999";
+          var lat0 = "-999999";
+          var lat1 = "-999999";
+          var dlat = "-999999";
+        } else {
+          var lon0 = $("#lon0").val();
+          var lon1 = $("#lon1").val();
+          var dlon = $("#dlon").val();
+          var lat0 = $("#lat0").val();
+          var lat1 = $("#lat1").val();
+          var dlat = $("#dlat").val();
+        }
+        arglist = arglist.concat("&lon1=");
+        arglist = arglist.concat(lon0);
+
+        arglist = arglist.concat("&lon2=");
+        arglist = arglist.concat(lon1);
+
+        arglist = arglist.concat("&dlon=");
+        arglist = arglist.concat(dlon);
+
+        arglist = arglist.concat("&lat1=");
+        arglist = arglist.concat(lat0);
+
+        arglist = arglist.concat("&lat2=");
+        arglist = arglist.concat(lat1);
+
+        arglist = arglist.concat("&dlat=");
+        arglist = arglist.concat(dlat);
+
+        var purpose = $("#purpose").val();
+        arglist = arglist.concat("&purpose=");
+        arglist = arglist.concat(purpose);
+
+        // alert("arglist: " + arglist);
+
+        // url = url + encodeURIComponent(arglist);
+        url = url + encodeURI(arglist);
+        // url = url + arglist;
+        // alert("url: " + url);
+
+        var urlTimeBounds = "http://einstein.sv.cmu.edu:9002/svc/time_bounds?";
+        var arglistTB = "";
+        arglistTB = arglistTB.concat("serviceType=");
+        arglistTB = arglistTB.concat("1");
+        arglistTB = arglistTB.concat("&source=");
+        arglistTB = arglistTB.concat(d1);
+        arglistTB = arglistTB.concat("&var=");
+        arglistTB = arglistTB.concat(variable1);
+        urlTimeBounds = urlTimeBounds + encodeURI(arglistTB);
+        // alert("urlTimeBounds: " + urlTimeBounds);
+
+        $.ajax({
+            type: "GET",
+            url: urlTimeBounds,
+            dataType: "json",
+            data: null,
+            success: function(data, textStatus, xhr) {
+                Response = data;
+                // alert("data: " + data);
+                if (data.success == false) {
+                    // alert(data.error);
+                    Response = null;
+                    var text = JSON.stringify(data, null, 4);
+                    text = "Error in backend: <br>" + text; 
+                    $("#Response").html(text);
+                    $("#data_url").html(text);
+                    return;
+                }
+                var text = JSON.stringify(data, null, 4);
+                // alert("text: " + text);
+                // $("#Response").html("<pre>"+text+"</pre>");
+                // $("#Response").html(text);
+
+                var tb = data.time_bounds;
+                var bds = String(tb).split(",");
+                // alert("tb: " + tb);
+                // alert("bds: " + bds);
+                var lowerT = parseInt(bds[0]);
+                var upperT = parseInt(bds[1]);
+                // alert("lowerT: " + lowerT);
+                // alert("upperT: " + upperT);
+                var t0I = parseInt(t0);
+                var t1I = parseInt(t1);
+                // alert("t0: " + t0I);
+                // alert("t1: " + t1I);
+
+                if ( lowerT == 0 && upperT ==0 ) {
+                  alert("We do not have data for this source and variable configuration.");
+                  //  alert(urlTimeBounds);
+                  return;
+                }
+
+                if (t0I < lowerT && t1I < lowerT ||
+                    t0I > upperT && t1I > upperT) {
+                  alert("We do not have data that span your time range. Try the range inside ["+lowerT+", "+upperT+"].");
+                  return;
+                }
+
+                if (t0I < lowerT && t1I <= upperT) {
+                  alert("Your start year-month is out of bound. It has to be in or later than " + lowerT +
+                        ". We will use the range ["+lowerT+", "+t1I+"] for you.");
+                }
+
+                if (t1I > upperT && t0I >= lowerT) {
+                  alert("Your end year-month is out of bound. It has to be in or earlier than " + upperT +
+                        ". We will use the range ["+t0I+", "+upperT+"] for you.");
+                }
+
+                if (t0I < lowerT && t1I > upperT ) {
+                  alert("Both of your start and end year-months are out of bounds. They have to be in or earlier than " + upperT +
+                        ", and in or later than " + lowerT + ". We will use the range ["+lowerT+", "+upperT+"] for you.");
+                }
+            },
+            error: function(xhr, textStatus, errorThrown) {
+		$("#Response").html("error!");
+		$("#data_url").html("error!");
+                // alert("xhr.status: "+xhr.status);
+                // alert("error status: "+textStatus);
+            },
+            complete: function(xhr, textStatus) {
+                //alert("complete status: "+textStatus);
+            }
+        });
+
+        $.ajax({
+            type: "GET",
+            url: url,
+            dataType: "json",
+            data: null,
+            success: function(data, textStatus, xhr) {
+                Response = data;
+                // alert("data: " + data);
+                if (data.success == false) {
+                    // alert(data.error);
+                    Response = null;
+                    var text = JSON.stringify(data, null, 4);
+
+                    if (text.indexOf("No Data") != -1) {
+                      $("#Response").html("No Data");
+                      $("#data_url").html("No Data");
+                      return;
+                    }
+
+                    text = "Error in backend: <br>" + text; 
+                    // $("#Response").html("<span style='color:red'>" + text + "</span>");
+                    $("#Response").html(text);
+                    $("#data_url").html(text);
+
+                    return;
+                }
+                var text = JSON.stringify(data, null, 4);
+                // alert(text);
+                // $("#Response").html("<pre>"+text+"</pre>");
+                $("#Response").html(text);
+
+                // post dataUrl to textarea and enable download button
+                $("#data_url").html(data.dataUrl);
+                enable_download_button();
+            },
+            error: function(xhr, textStatus, errorThrown) {
+                $("#Response").html("error!");
+                $("#data_url").html("error!");
+                // alert("xhr.status: "+xhr.status);
+                // alert("error status: "+textStatus);
+            },
+            complete: function(xhr, textStatus) {
+                //alert("complete status: "+textStatus);
+            }
+        });
+
+      });
+
+    });
+    
+  </script>
+</head>
+
+<body>
+<div class="container-fluid">
+<div class="row center1">
+<div class="col-sm-8 col-sm-offset-2 col-xs-12 color-head">
+<h3>Service: Regrid and Download</h3>
+This service regrids a variable from a dataset according to the lat/lon/plev specified by the user, and mades the regridded data downloadable by the user. 
+</div> <!-- col-sm -->
+<div class="col-sm-offset-2">
+</div> <!-- col-sm -->
+</div> <!-- row center1 -->
+
+<div class="row level0">
+<div class="col-sm-12 col-lg-12 level0 color0">
+  <div id="dataBlock1">
+  </div>
+</div> <!-- col level0 -->
+</div> <!-- row level0 -->
+
+<div class="color3">
+<div class="row center1 subtitle1" >
+Data Subsetting
+</div> <!-- row -->
+
+<div class="row">
+  <div class="col-sm-4 right1">
+    <div id=startYear>start year-month:</div>
+  </div>
+  <div class="col-sm-2 left1">
+    <input id="t0" value="2004-01" alt="start"/>
+  </div>
+
+  <div class="col-sm-4 right1">
+    <div id=endYear>end year-month:</div>
+  </div>
+  <div class="col-sm-2 left1">
+    <input id="t1" value="2004-12" alt="start"/>
+  </div>
+</div> <!-- row -->
+
+<div class="row">
+  <div class="col-sm-4 right1">
+    start lon (deg):
+    <input id="lon0" value="0"/>
+  </div>
+  <div class="col-sm-4 right1">
+    end lon (deg):
+    <input id="lon1" value="360"/>
+  </div>
+  <div class="col-sm-4 right1">
+     grid size (deg):
+    <input id="dlon" value="1"/>
+  </div>
+</div> <!-- row -->
+
+<div class="row">
+  <div class="col-sm-4 right1">
+    start lat (deg):
+    <input id="lat0" value="-90"/>
+  </div>
+  <div class="col-sm-4 right1">
+    end lat (deg):
+    <input id="lat1" value="90"/>
+  </div>
+  <div class="col-sm-4 right1">
+     grid size (deg):
+    <input id="dlat" value="1"/>
+  </div>
+</div> <!-- row -->
+
+<div class="row">
+  <div class="col-sm-4 right1">
+    download the original:
+  </div>
+  <div class="col-sm-8 left1">
+    <input onclick="setDlOriginal()" type="checkbox" id="dlOriginal">
+  </div>
+</div> <!-- row -->
+
+</div> <!-- color3 -->
+
+<div class="color2">
+<div class="row">
+  <div class="col-sm-4 right1">
+    Execution purpose:
+  </div> <!-- col -->
+  <div class="col-sm-8 left1">
+    <form>
+    <textarea name="purpose" id="purpose" rows="4" cols="50"> </textarea>
+    </form>
+  </div> <!-- col -->
+</div> <!-- row -->
+</div> <!-- color2 -->
+
+<div class="color4">
+<div class="row">
+  <div class="col-sm-6 center1">
+    <input id="action1" type="submit" value="            Get  Data            " style="height:28px"/>
+  </div>
+  <div class="col-sm-6 center1">
+    <form>
+      <input id="download_data" type="button" value="Download Data" style="height:28px"/>
+    </form>
+  </div>
+</div> <!-- row -->
+</div> <!-- color4 -->
+ 			
+<div class="row" center1>
+  <div class="col-sm-12 center1">
+    <div id="Image">Image Here</div>
+  </div>
+</div> <!-- row -->
+
+<div class="row" >
+  <div class="col-sm-12 center1">
+    <textarea readonly id="data_url" cols="150" rows="2">Data URL Here</textarea>
+  </div>
+</div> <!-- row -->
+
+<div class="row" center1>
+  <div class="col-sm-12 center1">
+    <textarea id="Response" cols="150" rows="6">Service Response Text Here</textarea>
+  </div>
+</div> <!-- row -->
+
+</div> <!-- container -->
+</body>
+</html>

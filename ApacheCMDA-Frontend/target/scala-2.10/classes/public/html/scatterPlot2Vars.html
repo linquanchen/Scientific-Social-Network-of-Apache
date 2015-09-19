@@ -1,0 +1,1371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <!-- <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js" type="text/javascript"></script> -->
+  <script type="text/javascript" src="js/jquery-1.6.4.min.js"></script>
+  <script type="text/javascript" src="js/jquery.flot.min.js"></script>
+  <script type="text/javascript" src="js/json2.js"></script>
+  <script type="text/javascript" src="js/xmisc.js"></script>
+  <script type="text/javascript">
+
+    var Response = null;
+    var variable1 = "";
+    var variable2 = "";
+
+
+    // called on load or reload
+    window.onload = function() {
+      select_data1(1);
+      select_var1(1);
+      select_data1(2);
+      select_var1(2);
+      // no data to download yet
+      disable_download_button();
+    }
+
+    // disable download data button
+    function disable_download_button()
+    {
+      var x=document.getElementById("download_data");
+      x.disabled=true;
+    }
+
+    // enable download data button
+    function enable_download_button()
+    {
+      var x=document.getElementById("download_data");
+      x.disabled=false;
+    }
+
+
+    // disable all vars1 in dropdown menu
+    function unset_vars1(ID)
+    {
+      var x;
+
+      if (ID == 1) {
+        x=document.getElementById("var1");
+      }
+      else if (ID == 2) {
+        x=document.getElementById("var2");
+      }
+
+      x.options[0].disabled=true;
+      x.options[1].disabled=true;
+      x.options[2].disabled=true;
+      x.options[3].disabled=true;
+      x.options[4].disabled=true;
+      x.options[5].disabled=true;
+      x.options[6].disabled=true;
+      x.options[7].disabled=true;
+      x.options[8].disabled=true;
+      x.options[9].disabled=true;
+      x.options[10].disabled=true;
+      x.options[11].disabled=true;
+      x.options[12].disabled=true;
+      x.options[13].disabled=true;
+      x.options[14].disabled=true;
+      x.options[15].disabled=true;
+      x.options[16].disabled=true;
+      x.options[17].disabled=true;
+      x.options[18].disabled=true;
+      x.options[19].disabled=true;
+      x.options[20].disabled=true;
+      x.options[21].disabled=true;
+      x.options[22].disabled=true;
+      x.options[23].disabled=true;
+      x.options[24].disabled=true;
+      x.options[25].disabled=true;
+      x.options[26].disabled=true;
+      x.options[27].disabled=true;
+      x.options[28].disabled=true;
+      x.options[29].disabled=true;
+      x.options[30].disabled=true;
+      x.options[31].disabled=true;
+      x.options[32].disabled=true;
+    }
+
+
+    // disable pressure level box for 2D var
+    function disable_pres1(ID)
+    {
+      var x;
+      if (ID == 1) {
+        x=document.getElementById("pres1");
+      }
+      else if (ID == 2) {
+        x=document.getElementById("pres2");
+      }
+
+      x.value = "N/A";
+      x.disabled=true;
+    }
+
+    // enable pressure level box for 3D var
+    function enable_pres1(ID)
+    {
+      var x;
+      if (ID == 1) {
+        x=document.getElementById("pres1");
+      }
+      else if (ID == 2) {
+        x=document.getElementById("pres2");
+      }
+
+      x.value = "500";
+      x.disabled=false;
+    }
+
+    // form variable1 or variable2 string based on "var" dropdown selection
+    function select_var1(ID)
+    {
+      var var_string;
+
+      if (ID == 1) {
+        var_string = $("#var1").val();
+      }
+      else if (ID == 2) {
+        var_string = $("#var2").val();
+      }
+
+      // alert("var_string: " + var_string)
+
+      // disable the download button because of this change  
+      disable_download_button();  
+  
+      if (var_string == "Total Cloud Fraction") { 
+        if (ID == 1) {
+          variable1 = "clt";  // a 2D var
+        }
+        else if (ID == 2) {
+          variable2 = "clt";  // a 2D var
+        }
+        // disable pressure level box for 2D var
+        disable_pres1(ID);
+        // alert("variable1: " + variable1)
+      }
+      else if (var_string == "Surface Temperature") {
+        if (ID == 1) {
+          variable1 = "ts";  
+        }
+        else if (ID == 2) {
+          variable2 = "ts";  
+        }
+        // disable pressure level box for 2D var
+        disable_pres1(ID);
+      }
+      else if (var_string == "Sea Surface Temperature") { 
+        if (ID == 1) {
+          variable1 = "tos";  
+        }
+        else if (ID == 2) {
+          variable2 = "tos";  
+        }
+        // disable pressure level box for 2D var
+        disable_pres1(ID);
+      }
+      else if (var_string == "Precipitation Flux") { 
+        if (ID == 1) {
+          variable1 = "pr";  
+        }
+        else if (ID == 2) {
+          variable2 = "pr";  
+        }
+        // disable pressure level box for 2D var
+        disable_pres1(ID);
+      }
+      else if (var_string == "Eastward Near-Surface Wind") { 
+        if (ID == 1) {
+          variable1 = "uas";  
+        }
+        else if (ID == 2) {
+          variable2 = "uas";  
+        }
+        // disable pressure level box for 2D var
+        disable_pres1(ID);
+      }
+      else if (var_string == "Northward Near-Surface Wind") {  
+        if (ID == 1) {
+          variable1 = "vas";  
+        }
+        else if (ID == 2) {
+          variable2 = "vas";  
+        }
+        // disable pressure level box for 2D var
+        disable_pres1(ID);
+      }
+      else if (var_string == "Near-Surface Wind Speed") { 
+        if (ID == 1) {
+          variable1 = "sfcWind";  
+        }
+        else if (ID == 2) {
+          variable2 = "sfcWind";  
+        }
+        // disable pressure level box for 2D var
+        disable_pres1(ID);
+      }
+      else if (var_string == "Sea Surface Height") { 
+        if (ID == 1) {
+          variable1 = "zos";  
+        }
+        else if (ID == 2) {
+          variable2 = "zos";  
+        }
+        // disable pressure level box for 2D var
+        disable_pres1(ID);
+      }
+      else if (var_string == "Leaf Area Index") { 
+        if (ID == 1) {
+          variable1 = "lai";  
+        }
+        else if (ID == 2) {
+          variable2 = "lai";  
+        }
+        // disable pressure level box for 2D var
+        disable_pres1(ID);
+      }
+      else if (var_string == "Equivalent Water Height Over Land") {
+        if (ID == 1) {
+          variable1 = "zl";  
+        }
+        else if (ID == 2) {
+          variable2 = "zl";  
+        }
+        // disable pressure level box for 2D var
+        disable_pres1(ID);
+      }
+      else if (var_string == "Equivalent Water Height Over Ocean") {
+        if (ID == 1) {
+          variable1 = "zo";
+        }
+        else if (ID == 2) {
+          variable2 = "zo";
+        }
+        // disable pressure level box for 2D var
+        disable_pres1(ID);
+      }
+      else if (var_string == "Ocean Heat Content Anomaly within 700 m Depth") {
+        if (ID == 1) {
+          variable1 = "ohc700";
+        }
+        else if (ID == 2) {
+          variable2 = "ohc700";
+        }
+        // disable pressure level box for 2D var
+        disable_pres1(ID);
+      }
+      else if (var_string == "Ocean Heat Content Anomaly within 2000 m Depth") {
+        if (ID == 1) {
+          variable1 = "ohc2000";
+        }
+        else if (ID == 2) {
+          variable2 = "ohc2000";
+        }
+        // disable pressure level box for 2D var
+        disable_pres1(ID);
+      }
+      else if (var_string == "Surface Downwelling Longwave Radiation") {
+        if (ID == 1) {
+          variable1 = "rlds";
+        }
+        else if (ID == 2) {
+          variable2 = "rlds";
+        }
+        // disable pressure level box for 2D var
+        disable_pres1(ID);
+      }
+      else if (var_string == "Surface Downwelling Shortwave Radiation") {
+        if (ID == 1) {
+          variable1 = "rsds";
+        }
+        else if (ID == 2) {
+          variable2 = "rsds";
+        }
+        // disable pressure level box for 2D var
+        disable_pres1(ID);
+      }
+      else if (var_string == "Surface Upwelling Longwave Radiation") {
+        if (ID == 1) {
+          variable1 = "rlus";
+        }
+        else if (ID == 2) {
+          variable2 = "rlus";
+        }
+        // disable pressure level box for 2D var
+        disable_pres1(ID);
+      }
+      else if (var_string == "Surface Upwelling Shortwave Radiation") {
+        if (ID == 1) {
+          variable1 = "rsus";
+        }
+        else if (ID == 2) {
+          variable2 = "rsus";
+        }
+        // disable pressure level box for 2D var
+        disable_pres1(ID);
+      }
+      else if (var_string == "Surface Downwelling Clear-Sky Longwave Radiation") {
+        if (ID == 1) {
+          variable1 = "rldscs";
+        }
+        else if (ID == 2) {
+          variable2 = "rldscs";
+        }
+        // disable pressure level box for 2D var
+        disable_pres1(ID);
+      }
+      else if (var_string == "Surface Downwelling Clear-Sky Shortwave Radiation") {
+        if (ID == 1) {
+          variable1 = "rsdscs";
+        }
+        else if (ID == 2) {
+          variable2 = "rsdscs";
+        }
+        // disable pressure level box for 2D var
+        disable_pres1(ID);
+      }
+      else if (var_string == "Surface Upwelling Clear-Sky Shortwave Radiation") {
+        if (ID == 1) {
+          variable1 = "rsuscs";
+        }
+        else if (ID == 2) {
+          variable2 = "rsuscs";
+        }
+        // disable pressure level box for 2D var
+        disable_pres1(ID);
+      }
+      else if (var_string == "TOA Incident Shortwave Radiation") {
+        if (ID == 1) {
+          variable1 = "rsdt";
+        }
+        else if (ID == 2) {
+          variable2 = "rsdt";
+        }
+        // disable pressure level box for 2D var
+        disable_pres1(ID);
+      }
+      else if (var_string == "TOA Outgoing Clear-Sky Longwave Radiation") {
+        if (ID == 1) {
+          variable1 = "rlutcs";
+        }
+        else if (ID == 2) {
+          variable2 = "rlutcs";
+        }
+        // disable pressure level box for 2D var
+        disable_pres1(ID);
+      }
+      else if (var_string == "TOA Outgoing Longwave Radiation") {
+        if (ID == 1) {
+          variable1 = "rlut";
+        }
+        else if (ID == 2) {
+          variable2 = "rlut";
+        }
+        // disable pressure level box for 2D var
+        disable_pres1(ID);
+      }
+      else if (var_string == "TOA Outgoing Clear-Sky Shortwave Radiation") {
+        if (ID == 1) {
+          variable1 = "rsutcs";
+        }
+        else if (ID == 2) {
+          variable2 = "rsutcs";
+        }
+        // disable pressure level box for 2D var
+        disable_pres1(ID);
+      }
+      else if (var_string == "TOA Outgoing Shortwave Radiation") {
+        if (ID == 1) {
+          variable1 = "rsut";
+        }
+        else if (ID == 2) {
+          variable2 = "rsut";
+        }
+        // disable pressure level box for 2D var
+        disable_pres1(ID);
+      }
+      else if (var_string == "Air Temperature") {
+        if (ID == 1) {
+          variable1 = "ta";
+        }
+        else if (ID == 2) {
+          variable2 = "ta";
+        }
+        // enable pressure level box for 3D var
+        enable_pres1(ID);
+      }
+      else if (var_string == "Specific Humidity") {
+        if (ID == 1) {
+          variable1 = "hus";
+        }
+        else if (ID == 2) {
+          variable2 = "hus";
+        }
+        // enable pressure level box for 3D var
+        enable_pres1(ID);
+      }
+      else if (var_string == "Cloud Ice Water Content") {
+        if (ID == 1) {
+          variable1 = "cli";
+        }
+        else if (ID == 2) {
+          variable2 = "cli";
+        }
+        // enable pressure level box for 3D var
+        enable_pres1(ID);
+      }
+      else if (var_string == "Cloud Liquid Water Content") {
+        if (ID == 1) {
+          variable1 = "clw";
+        }
+        else if (ID == 2) {
+          variable2 = "clw";
+        }
+        // enable pressure level box for 3D var
+        enable_pres1(ID);
+      }
+      else if (var_string == "Ocean Temperature") {
+        if (ID == 1) {
+          variable1 = "ot";
+        }
+        else if (ID == 2) {
+          variable2 = "ot";
+        }
+        // enable pressure level box for 3D var
+        enable_pres1(ID);
+      }
+      else if (var_string == "Ocean Salinity") {
+        if (ID == 1) {
+          variable1 = "os";
+        }
+        else if (ID == 2) {
+          variable2 = "os";
+        }
+        // enable pressure level box for 3D var
+        enable_pres1(ID);
+      }
+      else if (var_string == "Vertical Wind Velocity") {
+        if (ID == 1) {
+          variable1 = "wap";
+        }
+        else if (ID == 2) {
+          variable2 = "wap";
+        }
+        // enable pressure level box for 3D var
+        enable_pres1(ID);
+      }
+      else if (var_string == "Relative Humidity") {
+        if (ID == 1) {
+          variable1 = "hur";
+        }
+        else if (ID == 2) {
+          variable2 = "hur";
+        }
+        // enable pressure level box for 3D var
+        enable_pres1(ID);
+      }
+
+      // alert("variable1: " + variable1)
+    }
+
+
+    // set up "var1" dropdown based status of "data1" dropdown
+    function select_data1(ID)
+    {
+      var data_string;
+      var x;
+
+      if (ID == 1) {
+        data_string = $("#data1").val();
+        x = document.getElementById("var1");
+      }
+      else if (ID == 2) {
+        data_string = $("#data2").val();
+        x = document.getElementById("var2");
+      }
+
+      // alert(ID);
+      // alert(data_string);
+
+      // disable the download button because of this change
+      disable_download_button();
+
+      // disable corresponding "var" options
+      if (data_string == "NASA/AMSRE") {
+
+        unset_vars1(ID); // disable all options in "var" dropdown first
+
+        x.options[3].selected=true;
+        disable_pres1(ID); // the selected one is 2D
+
+        x.options[3].disabled=false;
+
+      }
+      else if (data_string == "NASA/MODIS") {
+
+        unset_vars1(ID);
+
+        x.options[1].selected=true;
+        disable_pres1(ID); // the selected one is 2D
+
+        x.options[1].disabled=false;
+        x.options[8].disabled=false;
+
+      }
+      else if (data_string == "NASA/TRMM") {
+
+        unset_vars1(ID);
+
+        x.options[0].selected=true;
+        disable_pres1(ID); // the selected one is 2D
+
+        x.options[0].disabled=false;
+
+      }
+      else if (data_string == "NASA/GPCP") {
+
+        unset_vars1(ID);
+
+        x.options[0].selected=true;
+        disable_pres1(ID); // the selected one is 2D
+
+        x.options[0].disabled=false;
+
+      }
+      else if (data_string == "NASA/QuikSCAT") {
+
+        unset_vars1(ID);
+
+        x.options[4].selected=true;
+        disable_pres1(ID); // the selected one is 2D
+
+        x.options[4].disabled=false;
+        x.options[5].disabled=false;
+        x.options[6].disabled=false;
+
+      }
+      else if (data_string == "NASA/AVISO") {
+
+        unset_vars1(ID);
+
+        x.options[7].selected=true;
+        disable_pres1(ID); // the selected one is 2D
+
+        x.options[7].disabled=false;
+
+      }
+      else if (data_string == "NASA/GRACE") {
+
+        unset_vars1(ID);
+
+        x.options[9].selected=true;
+        disable_pres1(ID); // the selected one is 2D
+
+        x.options[9].disabled=false;
+        x.options[10].disabled=false;
+
+      }
+      else if (data_string == "NOAA/NODC") {
+
+        unset_vars1(ID);
+
+        x.options[11].selected=true;
+        disable_pres1(ID); // the selected one is 2D
+
+        x.options[11].disabled=false;
+        x.options[12].disabled=false;
+
+      }
+      else if (data_string == "NASA/CERES") {
+
+        unset_vars1(ID);
+
+        x.options[13].selected=true;
+        disable_pres1(ID); // the selected one is 2D
+
+        x.options[13].disabled=false;
+        x.options[14].disabled=false;
+        x.options[15].disabled=false;
+        x.options[16].disabled=false;
+        x.options[17].disabled=false;
+        x.options[18].disabled=false;
+        x.options[19].disabled=false;
+        x.options[20].disabled=false;
+        x.options[21].disabled=false;
+        x.options[22].disabled=false;
+        x.options[23].disabled=false;
+        x.options[24].disabled=false;
+        // The following 6 commented out
+        // per request by Benyang
+        // x.options[25].disabled=false;
+        // x.options[26].disabled=false;
+        // x.options[27].disabled=false;
+        // x.options[28].disabled=false;
+        // x.options[29].disabled=false;
+        // x.options[30].disabled=false;
+
+      }
+      else if (data_string == "NASA/AIRS") {
+
+        unset_vars1(ID);
+
+        x.options[25].selected=true;
+        enable_pres1(ID); // the selected one is 3D
+
+        x.options[25].disabled=false;
+        x.options[26].disabled=false;
+
+      }
+      else if (data_string == "NASA/MLS") {
+
+        unset_vars1(ID);
+
+        x.options[25].selected=true;
+        enable_pres1(ID); // the selected one is 3D
+
+        x.options[25].disabled=false;
+        x.options[26].disabled=false;
+
+      }
+      else if (data_string == "ARGO/ARGO") {
+
+        unset_vars1(ID);
+
+        x.options[29].selected=true;
+        enable_pres1(ID); // the selected one is 3D
+
+        x.options[29].disabled=false;
+        x.options[30].disabled=false;
+
+        // alert("in ARGO ...");
+        // alert(data_string);
+      }
+      else if (data_string == "CCCMA/CANAM4") {
+
+        unset_vars1(ID);
+
+        x.options[0].selected=true;
+        disable_pres1(ID); // the selected one is 2D
+
+        x.options[0].disabled=false;
+        x.options[1].disabled=false;
+        x.options[2].disabled=false;
+        x.options[4].disabled=false;
+        x.options[5].disabled=false;
+        x.options[6].disabled=false;
+
+        x.options[13].disabled=false;
+        x.options[14].disabled=false;
+        x.options[15].disabled=false;
+        x.options[16].disabled=false;
+        x.options[17].disabled=false;
+        x.options[18].disabled=false;
+        x.options[19].disabled=false;
+        x.options[20].disabled=false;
+        x.options[21].disabled=false;
+        x.options[22].disabled=false;
+        x.options[23].disabled=false;
+        x.options[24].disabled=false;
+        x.options[25].disabled=false;
+        x.options[26].disabled=false;
+        x.options[27].disabled=false;
+        x.options[28].disabled=false;
+
+      }
+      else if (data_string == "CSIRO/MK3.6") {
+
+        unset_vars1(ID);
+
+        x.options[0].selected=true;
+        disable_pres1(ID); // the selected one is 2D
+
+        x.options[0].disabled=false;
+        x.options[1].disabled=false;
+        x.options[2].disabled=false;
+        x.options[4].disabled=false;
+        x.options[5].disabled=false;
+        x.options[6].disabled=false;
+
+        x.options[13].disabled=false;
+        x.options[14].disabled=false;
+        x.options[15].disabled=false;
+        x.options[16].disabled=false;
+        x.options[17].disabled=false;
+        x.options[18].disabled=false;
+        x.options[19].disabled=false;
+        x.options[20].disabled=false;
+        x.options[21].disabled=false;
+        x.options[22].disabled=false;
+        x.options[23].disabled=false;
+        x.options[24].disabled=false;
+        x.options[25].disabled=false;
+        x.options[26].disabled=false;
+        x.options[27].disabled=false;
+        x.options[28].disabled=false;
+        x.options[31].disabled=false;
+        x.options[32].disabled=false;
+
+      }
+      else if (data_string == "NCAR/CAM5") {
+
+        unset_vars1(ID);
+
+        x.options[0].selected=true;
+        disable_pres1(ID); // the selected one is 2D
+
+        x.options[0].disabled=false;
+        x.options[1].disabled=false;
+        x.options[2].disabled=false;
+        x.options[3].disabled=false;
+        x.options[4].disabled=false;
+        x.options[5].disabled=false;
+        x.options[6].disabled=false;
+        x.options[7].disabled=false;
+        x.options[8].disabled=false;
+
+        x.options[14].disabled=false;
+        x.options[15].disabled=false;
+        x.options[16].disabled=false;
+        x.options[17].disabled=false;
+        x.options[18].disabled=false;
+        x.options[19].disabled=false;
+        x.options[20].disabled=false;
+        x.options[21].disabled=false;
+        x.options[22].disabled=false;
+        x.options[23].disabled=false;
+        x.options[24].disabled=false;
+        x.options[25].disabled=false;
+        x.options[26].disabled=false;
+        x.options[27].disabled=false;
+        x.options[28].disabled=false;
+        x.options[31].disabled=false;
+        x.options[32].disabled=false;
+
+      }
+
+      else if (data_string == "CCCMA/CANESM2" || data_string == "GFDL/ESM2G" ||
+               data_string == "GISS/E2-H" || data_string == "GISS/E2-R" ||
+               data_string == "NCC/NORESM" ||
+               data_string == "UKMO/HadGEM2-ES" ||
+               data_string == "GFDL/CM3" || data_string == "IPSL/CM5A-LR" ||
+               data_string == "MIROC/MIROC5" || data_string == "UKMO/HadGEM2-A"
+              ) {
+
+        unset_vars1(ID);
+
+        x.options[0].selected=true;
+        disable_pres1(ID); // the selected one is 2D
+
+        x.options[0].disabled=false;
+        x.options[1].disabled=false;
+        x.options[2].disabled=false;
+        x.options[3].disabled=false;
+        x.options[4].disabled=false;
+        x.options[5].disabled=false;
+        x.options[6].disabled=false;
+        x.options[7].disabled=false;
+        x.options[8].disabled=false;
+
+        x.options[13].disabled=false;
+        x.options[14].disabled=false;
+        x.options[15].disabled=false;
+        x.options[16].disabled=false;
+        x.options[17].disabled=false;
+        x.options[18].disabled=false;
+        x.options[19].disabled=false;
+        x.options[20].disabled=false;
+        x.options[21].disabled=false;
+        x.options[22].disabled=false;
+        x.options[23].disabled=false;
+        x.options[24].disabled=false;
+        x.options[25].disabled=false;
+        x.options[26].disabled=false;
+        x.options[27].disabled=false;
+        x.options[28].disabled=false;
+        x.options[31].disabled=false;
+        x.options[32].disabled=false;
+
+      }
+      else if (data_string == "ECMWF/interim") {
+        unset_vars1(ID);
+
+        x.options[3].selected=true;
+        disable_pres1(ID); // the selected one is 2D
+
+        x.options[3].disabled=false;
+        x.options[31].disabled=false;
+        x.options[32].disabled=false;
+      }
+
+      // form variable string
+      select_var1(ID);
+    }
+
+
+    $(document).ready(function(){
+
+      $("a").click(function(event){
+        alert("As you can see, the link no longer took you to jquery.com");
+        event.preventDefault();
+      });
+
+
+      $("#download_data").click(function(event) {
+        var durl = $("#data_url").val();
+        // alert(durl);
+        window.location.assign(durl);
+      });
+
+
+      $("#scatterPlot2V").click(function(event) {
+        // alert('****** inside scatterPlot2V()!');
+        Response = null;
+
+        // no data to download yet
+        disable_download_button();
+
+        $("#Response").html("Calculating ...");
+        $("#data_url").html("Calculating ...");
+        $("#Image").html("");
+
+        var url = "http://einstein.sv.cmu.edu:9002/svc/scatterPlot2V?";
+        // alert("url: " + url);
+
+        var d1 = $("#data1").val();
+        var model1 = d1.replace("/", "_");
+        model1 = model1.toLowerCase();
+
+        var arglist = "";
+        arglist = arglist.concat("model1=");
+        arglist = arglist.concat(model1);
+
+        // alert("arglist: " + arglist);
+
+        var v1 = $("#var1").val();
+        arglist = arglist.concat("&var1=");
+        arglist = arglist.concat(variable1);
+
+        // alert("arglist: " + arglist);
+
+        var pres1 = $("#pres1").val();
+        arglist = arglist.concat("&pres1=");
+        arglist = arglist.concat(pres1);
+
+        var d2 = $("#data2").val();
+        var model2 = d2.replace("/", "_");
+        model2 = model2.toLowerCase();
+
+        arglist = arglist.concat("&model2=");
+        arglist = arglist.concat(model2);
+
+        // alert("arglist: " + arglist);
+
+        var v2 = $("#var2").val();
+        arglist = arglist.concat("&var2=");
+        arglist = arglist.concat(variable2);
+
+        // alert("arglist: " + arglist);
+
+        var pres2 = $("#pres2").val();
+        arglist = arglist.concat("&pres2=");
+        arglist = arglist.concat(pres2);
+
+        var t0 = $("#t0").val();
+        var t1 = $("#t1").val();
+
+        t0 = t0.replace("-", "");
+        t1 = t1.replace("-", "");
+
+        arglist = arglist.concat("&start_time=");
+        arglist = arglist.concat(t0);
+
+        arglist = arglist.concat("&end_time=");
+        arglist = arglist.concat(t1);
+
+        // alert("arglist: " + arglist);
+
+        var lon0 = $("#lon0").val();
+        var lon1 = $("#lon1").val();
+        var lat0 = $("#lat0").val();
+        var lat1 = $("#lat1").val();
+
+        arglist = arglist.concat("&lon1=");
+        arglist = arglist.concat(lon0);
+
+        arglist = arglist.concat("&lon2=");
+        arglist = arglist.concat(lon1);
+
+        arglist = arglist.concat("&lat1=");
+        arglist = arglist.concat(lat0);
+
+        arglist = arglist.concat("&lat2=");
+        arglist = arglist.concat(lat1);
+
+        var nSample = $("#nSample").val();
+        arglist = arglist.concat("&nSample=");
+        arglist = arglist.concat(nSample);
+
+        // alert("arglist: " + arglist);
+
+        var purpose = $("#purpose").val();
+        arglist = arglist.concat("&purpose=");
+        arglist = arglist.concat(purpose);
+
+        // url = url + encodeURIComponent(arglist);
+        url = url + encodeURI(arglist);
+        // url = url + arglist;
+        // alert("url: " + url);
+
+        var urlTimeBounds = "http://einstein.sv.cmu.edu:9002/svc/two_time_bounds?";
+        var arglistTB = "";
+        arglistTB = arglistTB.concat("serviceType=");
+        arglistTB = arglistTB.concat("2");
+        arglistTB = arglistTB.concat("&source1=");
+        arglistTB = arglistTB.concat(d1);
+        arglistTB = arglistTB.concat("&var1=");
+        arglistTB = arglistTB.concat(variable1);
+        arglistTB = arglistTB.concat("&source2=");
+        arglistTB = arglistTB.concat(d2);
+        arglistTB = arglistTB.concat("&var2=");
+        arglistTB = arglistTB.concat(variable2);
+        urlTimeBounds = urlTimeBounds + encodeURI(arglistTB);
+        // alert("urlTimeBounds: " + urlTimeBounds);
+
+        $.ajax({
+            type: "GET",
+            url: urlTimeBounds,
+            dataType: "json",
+            data: null,
+            success: function(data, textStatus, xhr) {
+                Response = data;
+                // alert("data: " + data);
+                if (data.success == false) {
+                    // alert(data.error);
+                    Response = null;
+                    var text = JSON.stringify(data, null, 4);
+                    text = "Error in backend: <br>" + text; 
+                    $("#Response").html(text);
+                    $("#data_url").html(text);
+                    return;
+                }
+                var text = JSON.stringify(data, null, 4);
+                // alert("text: " + text);
+                // $("#Response").html("<pre>"+text+"</pre>");
+                // $("#Response").html(text);
+
+                var tb1 = data.time_bounds1;
+                var bds1 = String(tb1).split(",");
+                // alert("tb1: " + tb1);
+                // alert("bds1: " + bds1);
+                var lowerT1 = parseInt(bds1[0]);
+                // alert("inside ajax, lowerT1: " + lowerT1);
+                var upperT1 = parseInt(bds1[1]);
+                // alert("upperT1: " + upperT1);
+
+                var tb2 = data.time_bounds2;
+                var bds2 = String(tb2).split(",");
+                // alert("tb2: " + tb2);
+                // alert("bds2: " + bds2);
+                var lowerT2 = parseInt(bds2[0]);
+                // alert("inside ajax, lowerT2: " + lowerT2);
+                var upperT2 = parseInt(bds2[1]);
+                // alert("upperT2: " + upperT2);
+
+                var t0I = parseInt(t0);
+                var t1I = parseInt(t1);
+                // alert("t0: " + t0I);
+                // alert("t1: " + t1I);
+
+                var lowerT, upperT;
+                // compute the intersection of the two data bounds
+                if (lowerT1 == 0  || upperT1 == 0){ // no data-1
+                  alert("We do not have data for the data-1 source and variable configuration.");
+                  return;
+                }
+                else if (lowerT2 == 0  || upperT2 == 0){ // no data-2
+                  alert("We do not have data for the data-2 source and variable configuration.");
+                  return;
+                }
+                else if (lowerT2 > upperT1 || lowerT1 > upperT2) { // no intersection
+                  alert("The two data sets/vars do not have a common time range.");
+                  return;
+                }
+                else { // compute intersection
+                  if (lowerT1 > lowerT2) { // pick bigger lower time bound
+                    lowerT = lowerT1;
+                  }
+                  else {
+                    lowerT = lowerT2;
+                  }
+
+                  if (upperT1 > upperT2) { // pick smaller upper time bound
+                    upperT = upperT2;
+                  }
+                  else {
+                    upperT = upperT1;
+                  }
+                }
+                // alert("lowerT: " + lowerT);
+                // alert("upperT: " + upperT);
+
+                if (t0I < lowerT && t1I < lowerT ||
+                    t0I > upperT && t1I > upperT) {
+                  alert("We do not have data that span your time range. Try the range inside ["+lowerT+", "+upperT+"].");
+                  return;
+                }
+
+                if (t0I < lowerT && t1I <= upperT) {
+                  alert("Your start year-month is out of bound. It has to be in or later than " + lowerT +
+                        ". We will use the range ["+lowerT+", "+t1I+"] for you.");
+                }
+
+                if (t1I > upperT && t0I >= lowerT) {
+                  alert("Your end year-month is out of bound. It has to be in or earlier than " + upperT +
+                        ". We will use the range ["+t0I+", "+upperT+"] for you.");
+                }
+
+                if (t0I < lowerT && t1I > upperT ) {
+                  alert("Both of your start and end year-months are out of bounds. They have to be in or earlier than " + upperT +
+                        ", and in or later than " + lowerT + ". We will use the range ["+lowerT+", "+upperT+"] for you.");
+                }
+            },
+            error: function(xhr, textStatus, errorThrown) {
+		$("#Response").html("error!");
+		$("#data_url").html("error!");
+                // alert("xhr.status: "+xhr.status);
+                // alert("error status: "+textStatus);
+            },
+            complete: function(xhr, textStatus) {
+                //alert("complete status: "+textStatus);
+            }
+        });
+
+
+        $.ajax({
+            type: "GET",
+            url: url,
+            dataType: "json",
+            data: null,
+            success: function(data, textStatus, xhr) {
+                Response = data;
+                // alert("data: " + data);
+                if (data.success == false) {
+                    // alert(data.error);
+                    Response = null;
+                    var text = JSON.stringify(data, null, 4);
+
+                    if (text.indexOf("No Data") != -1) {
+                      $("#Image").html("No Data");
+                      $("#Response").html("No Data");
+                      $("#data_url").html("No Data");
+                      return;
+                    }
+
+                    text = "Error in backend: <br>" + text; 
+                    // $("#Response").html("<span style='color:red'>" + text + "</span>");
+                    $("#Response").html(text);
+                    $("#data_url").html(text);
+
+                    return;
+                }
+                var text = JSON.stringify(data, null, 4);
+                // alert(text);
+                // $("#Response").html("<pre>"+text+"</pre>");
+                $("#Response").html(text);
+
+                var html = "<img src='"+data.url+"' width='820'/>";
+                // alert(html);
+                $("#Image").html(html);
+
+                // post dataUrl to textarea and enable download button
+                $("#data_url").html(data.dataUrl);
+                enable_download_button();
+            },
+            error: function(xhr, textStatus, errorThrown) {
+                $("#Response").html("error!");
+                $("#data_url").html("error!");
+                // alert("xhr.status: "+xhr.status);
+                // alert("error status: "+textStatus);
+            },
+            complete: function(xhr, textStatus) {
+                //alert("complete status: "+textStatus);
+            }
+        });
+
+      });
+
+    });
+    
+  </script>
+</head>
+<body>
+
+<p>
+
+<table border="1">
+
+<tr>
+<td colspan="4">
+<center>
+<b>Service: Scatter and Histogram Plot of Two Variables</b><br><br>
+This service generates a scatter plot between two specified variables and the histograms of the two variables, and calculates the correlation of the two variables. The two variables can be either a two-dimensional variable or a slice of a three-dimensional variable at a specific pressure level. The number of samples used for this analysis should be specified. <br><br>
+</center>
+</td>
+</tr>
+
+<tr>
+<td colspan="2">
+<center>
+data 1
+</center>
+</td>
+
+<td colspan="2">
+<center>
+data 2
+</center>
+</td>
+</tr>
+
+<tr>
+<td>source:</td><td><select name="data1", id="data1" onchange="select_data1(1)">
+<optgroup label="Model: Historical">
+<option selected="CCCMA/CANESM2">CCCMA/CANESM2</option>
+<option>GFDL/ESM2G</option>
+<option>GISS/E2-H</option>
+<option>GISS/E2-R</option>
+<option>NCAR/CAM5</option>
+<option>NCC/NORESM</option>
+<option>UKMO/HadGEM2-ES</option>
+</optgroup>
+<optgroup label="Model: AMIP">
+<option>CCCMA/CANAM4</option>
+<option>CSIRO/MK3.6</option>
+<option>GFDL/CM3</option>
+<option>IPSL/CM5A-LR</option>
+<option>MIROC/MIROC5</option>
+<option>UKMO/HadGEM2-A</option>
+</optgroup>
+<!-- <option>NASA/obs4MIPs</option>  -->
+<optgroup label="Observation">
+<option>NASA/MODIS</option>
+<option>NASA/AMSRE</option>
+<option>NASA/TRMM</option>
+<option>NASA/GPCP</option>
+<option>NASA/QuikSCAT</option>
+<option>NASA/AVISO</option>
+<option>NASA/GRACE</option>
+<option>NOAA/NODC</option>
+<option>NASA/CERES</option>
+<option>NASA/AIRS</option>
+<option>NASA/MLS</option>
+<option>ARGO/ARGO</option>
+</optgroup>
+<optgroup label="Reanalysis">
+<option>ECMWF/interim</option>
+</optgroup>
+</select></td>
+
+<td>source:</td><td><select name="data2", id="data2" onchange="select_data1(2)">
+<optgroup label="Model: Historical">
+<option selected="CCCMA/CANESM2">CCCMA/CANESM2</option>
+<option>GFDL/ESM2G</option>
+<option>GISS/E2-H</option>
+<option>GISS/E2-R</option>
+<option>NCAR/CAM5</option>
+<option>NCC/NORESM</option>
+<option>UKMO/HadGEM2-ES</option>
+</optgroup>
+<optgroup label="Model: AMIP">
+<option>CCCMA/CANAM4</option>
+<option>CSIRO/MK3.6</option>
+<option>GFDL/CM3</option>
+<option>IPSL/CM5A-LR</option>
+<option>MIROC/MIROC5</option>
+<option>UKMO/HadGEM2-A</option>
+</optgroup>
+<!-- <option>NASA/obs4MIPs</option>  -->
+<optgroup label="Observation">
+<option>NASA/MODIS</option>
+<option>NASA/AMSRE</option>
+<option>NASA/TRMM</option>
+<option>NASA/GPCP</option>
+<option>NASA/QuikSCAT</option>
+<option>NASA/AVISO</option>
+<option>NASA/GRACE</option>
+<option>NOAA/NODC</option>
+<option>NASA/CERES</option>
+<option>NASA/AIRS</option>
+<option>NASA/MLS</option>
+<option>ARGO/ARGO</option>
+</optgroup>
+<optgroup label="Reanalysis">
+<option>ECMWF/interim</option>
+</optgroup>
+</select></td>
+
+</tr>
+
+<tr>
+
+<td>variable name:</td><td><select name="var1", id="var1" onchange="select_var1(1)">
+<option>Precipitation Flux</option>
+<option>Total Cloud Fraction</option>
+<option>Surface Temperature</option>
+<option>Sea Surface Temperature</option>
+<option>Eastward Near-Surface Wind</option>
+<option>Northward Near-Surface Wind</option>
+<option>Near-Surface Wind Speed</option>
+<option>Sea Surface Height</option>
+<option>Leaf Area Index</option>
+<option>Equivalent Water Height Over Land</option>
+<option>Equivalent Water Height Over Ocean</option>
+<option>Ocean Heat Content Anomaly within 700 m Depth</option>
+<option>Ocean Heat Content Anomaly within 2000 m Depth</option>
+<option>Surface Downwelling Longwave Radiation</option>
+<option>Surface Downwelling Shortwave Radiation</option>
+<option>Surface Upwelling Longwave Radiation</option>
+<option>Surface Upwelling Shortwave Radiation</option>
+<option>Surface Downwelling Clear-Sky Longwave Radiation</option>
+<option>Surface Downwelling Clear-Sky Shortwave Radiation</option>
+<option>Surface Upwelling Clear-Sky Shortwave Radiation</option>
+<option>TOA Incident Shortwave Radiation</option>
+<option>TOA Outgoing Longwave Radiation</option>
+<option>TOA Outgoing Shortwave Radiation</option>
+<option>TOA Outgoing Clear-Sky Longwave Radiation</option>
+<option>TOA Outgoing Clear-Sky Shortwave Radiation</option>
+<option>Air Temperature</option>
+<option>Specific Humidity</option>
+<option>Cloud Ice Water Content</option>
+<option>Cloud Liquid Water Content</option>
+<option>Ocean Temperature</option>
+<option>Ocean Salinity</option>
+<option>Vertical Wind Velocity</option>  
+<option>Relative Humidity</option>
+</select>
+</td>
+
+
+<td>variable name:</td><td><select name="var2", id="var2" onchange="select_var1(2)">
+<option>Precipitation Flux</option>
+<option>Total Cloud Fraction</option>
+<option>Surface Temperature</option>
+<option>Sea Surface Temperature</option>
+<option>Eastward Near-Surface Wind</option>
+<option>Northward Near-Surface Wind</option>
+<option>Near-Surface Wind Speed</option>
+<option>Sea Surface Height</option>
+<option>Leaf Area Index</option>
+<option>Equivalent Water Height Over Land</option>
+<option>Equivalent Water Height Over Ocean</option>
+<option>Ocean Heat Content Anomaly within 700 m Depth</option>
+<option>Ocean Heat Content Anomaly within 2000 m Depth</option>
+<option>Surface Downwelling Longwave Radiation</option>
+<option>Surface Downwelling Shortwave Radiation</option>
+<option>Surface Upwelling Longwave Radiation</option>
+<option>Surface Upwelling Shortwave Radiation</option>
+<option>Surface Downwelling Clear-Sky Longwave Radiation</option>
+<option>Surface Downwelling Clear-Sky Shortwave Radiation</option>
+<option>Surface Upwelling Clear-Sky Shortwave Radiation</option>
+<option>TOA Incident Shortwave Radiation</option>
+<option>TOA Outgoing Longwave Radiation</option>
+<option>TOA Outgoing Shortwave Radiation</option>
+<option>TOA Outgoing Clear-Sky Longwave Radiation</option>
+<option>TOA Outgoing Clear-Sky Shortwave Radiation</option>
+<option>Air Temperature</option>
+<option>Specific Humidity</option>
+<option>Cloud Ice Water Content</option>
+<option>Cloud Liquid Water Content</option>
+<option>Ocean Temperature</option>
+<option>Ocean Salinity</option>
+<option>Vertical Wind Velocity</option>  
+<option>Relative Humidity</option>
+</select>
+</td>
+
+</tr>
+
+<tr>
+
+<td>
+atmosphere pressure level (hPa) <br> or ocean pressure level (dbar)
+</td>
+<td>
+<input id="pres1" value="500" alt="pressure"/>
+</td>
+
+<td>
+atmosphere pressure level (hPa) <br> or ocean pressure level (dbar)
+</td>
+<td>
+<input id="pres2" value="500" alt="pressure"/>
+</td>
+
+</tr>
+
+<tr>
+</tr>
+
+<tr>
+<td>start year-month:</td><td><input id="t0" value="2004-01" alt="start"/></td>
+<td>end year-month:</td><td><input id="t1" value="2004-12" alt="end"/></td>
+</tr>
+
+
+<tr>
+<td>start lat (deg):</td><td><input id="lat0" value="-90"/></td>
+<td>end lat (deg):</td><td><input id="lat1" value="90"/></td>
+</tr>
+
+<tr>
+<td>start lon (deg):</td><td><input id="lon0" value="0"/></td>
+<td>end lon (deg):</td><td><input id="lon1" value="360"/></td>
+</tr>
+
+<tr>  
+<td>number of samples:</td><td><input id="nSample" value="500"/></td></tr>
+</tr>
+
+<tr>
+<td colspan="1">
+Execution purpose
+</td>
+<td colspan="3">
+<form>
+<textarea name="purpose" id="purpose" rows="4" cols="50"> </textarea>
+</form>
+</td>
+</tr>
+
+<tr>
+<td colspan="2" align="center"><input id="scatterPlot2V" type="submit" value="            Get  Plot            " style="height:28px"/></td>
+<form>
+<td colspan="2" align="center"><input id="download_data" type="button" value="Download Data" style="height:28px"/>
+</td>
+</form>
+
+</tr>
+
+<tr>
+<td colspan="4">
+<div id="Image">Image Here</div>
+</td>
+</tr>
+
+<tr>
+<td colspan="4" align="center">
+<textarea readonly id="data_url" cols="130" rows="2">Data URL Here</textarea>
+</td>
+</tr>
+
+<tr>
+<td colspan="4" align="center">
+<textarea id="Response" cols="130" rows="6">Service Response Text Here</textarea>
+</td>
+</tr>
+
+</table>
+
+</body>
+</html>

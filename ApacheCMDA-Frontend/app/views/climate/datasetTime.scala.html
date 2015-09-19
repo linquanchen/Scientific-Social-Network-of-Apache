@@ -1,0 +1,66 @@
+@*******************************************************************************
+ * Licensed to the Apache Software Foundation (ASF) under one or more		   *
+ * contributor license agreements.  See the NOTICE file distributed with	   *
+ * this work for additional information regarding copyright ownership.         *
+ * The ASF licenses this file to You under the Apache License, Version 2.0     *
+ * (the "License"); you may not use this file except in compliance with        *
+ * the License.  You may obtain a copy of the License at                       *
+ *                                                                             *
+ *    http://www.apache.org/licenses/LICENSE-2.0                               *
+ *																			   *
+ * Unless required by applicable law or agreed to in writing, software         *
+ * distributed under the License is distributed on an "AS IS" BASIS,           *
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.    *
+ * See the License for the specific language governing permissions and         *
+ * limitations under the License.											   *
+ *******************************************************************************@ 
+
+@(message: String) 
+
+@scripts = {
+
+<script type="text/javascript" src='@routes.Assets.at("javascripts/dataList1.js")'></script>
+<script type="text/javascript">
+	window.onload = function() {
+		var table = document.getElementById("myTable");	
+		var obj = new Object();
+		for (var group in dataList) {
+			for (var dataset in dataList[group][2]) {
+				var row = table.insertRow(1);
+			    var groupName = row.insertCell(0);
+			    var name = row.insertCell(1);
+			    var startTime = row.insertCell(2);
+			    var endTime = row.insertCell(3);
+			    
+			    groupName.innerHTML = group;
+			    name.innerHTML = dataset;
+			    startTime.innerHTML = dataList[group][2][dataset][0];
+			    endTime.innerHTML = dataList[group][2][dataset][1];
+			    
+				obj[group + "_" + dataset] = [dataList[group][2][dataset][0],dataList[group][2][dataset][1]];
+			}
+		}
+		document.getElementById("demo").innerHTML = Object.keys(obj).length + " Datasets";
+	}
+</script>
+}
+
+@main("Dataset Time", scripts) {
+
+<h1>Dataset Time</h1>
+
+<h4 id="demo"></h4>
+
+<table class="table table-striped table-bordered table-condensed" id="myTable">
+	<tbody>
+		<tr>
+			<th class="col-md-3">Dataset Name</th>
+			<th class="col-md-3">Variable Name</th>
+			<th class="col-md-3">Start Time</th>
+			<th class="col-md-3">End Time</th>
+		</tr>
+	</tbody>
+</table>
+
+
+}

@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="SBT: org.springframework.data:spring-data-jpa:1.7.1.RELEASE">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.ivy2/cache/org.springframework.data/spring-data-jpa/jars/spring-data-jpa-1.7.1.RELEASE.jar!/"/>
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.ivy2/cache/org.springframework.data/spring-data-jpa/docs/spring-data-jpa-1.7.1.RELEASE-javadoc.jar!/"/>
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.ivy2/cache/org.springframework.data/spring-data-jpa/srcs/spring-data-jpa-1.7.1.RELEASE-sources.jar!/"/>
+    </SOURCES>
+  </library>
+</component>

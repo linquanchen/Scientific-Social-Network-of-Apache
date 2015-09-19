@@ -1,0 +1,58 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Home page - we use the @controllers syntax here so that the router knows we are referring to a class. In turn it
+# will call on the GlobalSettings.getController method to resolve the actual controller instance.
+# GET     /                           @controllers.Application.index
+
+# Climate Service
+GET           /climateService/getClimateService/:name/json                                              @controllers.ClimateServiceController.getClimateService(name: String, format: String="json")
+GET           /climateService/getClimateService/id/:id                                                  @controllers.ClimateServiceController.getClimateServiceById(id: Long)
+GET           /climateService/getAllClimateServices/json                                                @controllers.ClimateServiceController.getAllClimateServices(format: String="json")
+GET           /climateService/getAllMostRecentClimateServicesByCreateTime/json                          @controllers.ClimateServiceController.getAllClimateServicesOrderByCreateTime(format: String="json")
+GET           /climateService/getAllMostRecentClimateServicesByLatestAccessTime/json                    @controllers.ClimateServiceController.getAllClimateServicesOrderByLatestAccessTime(format: String="json")
+GET           /climateService/getAllMostUsedClimateServices/json                                        @controllers.ClimateServiceController.getAllClimateServicesOrderByCount(format: String="json")
+POST          /climateService/addClimateService                                                         @controllers.ClimateServiceController.addClimateService
+GET           /climateService/getAllServiceEntries/json                                                 @controllers.ClimateServiceController.getAllServiceEntries(format: String="json")
+POST          /climateService/addServiceEntry                                                           @controllers.ClimateServiceController.addServiceEntry
+PUT           /climateService/updateClimateService/id/:id                                               @controllers.ClimateServiceController.updateClimateServiceById(id: Long)
+PUT           /climateService/updateClimateService/name/:oldName                                        @controllers.ClimateServiceController.updateClimateServiceByName(oldName: String)
+DELETE        /climateService/deleteClimateService/id/:id                                               @controllers.ClimateServiceController.deleteClimateServiceById(id: Long)
+DELETE        /climateService/deleteClimateService/name/:name                                           @controllers.ClimateServiceController.deleteClimateServiceByName(name: String)
+
+# Instrument
+GET           /instrument/getAllInstruments/json                                                        @controllers.InstrumentController.getAllInstruments(format: String="json")
+GET           /instrument/getInstrument/id/:id/json                                                     @controllers.InstrumentController.getInstrument(id: Long, format: String="json")
+POST          /instrument/addInstrument                                                                 @controllers.InstrumentController.addInstrument
+PUT           /instrument/updateInstrument/id/:id                                                       @controllers.InstrumentController.updateInstrumentById(id: Long)
+DELETE        /instrument/deleteInstrument/id/:id                                                       @controllers.InstrumentController.deleteInstrument(id: Long)
+
+# Dataset
+GET           /dataset/getAllDatasets/json                                                              @controllers.DatasetController.getAllDatasets(format: String="json")
+GET           /dataset/getDataset/id/:id/json                                                           @controllers.DatasetController.getDataset(id: Long, format: String="json")
+POST          /dataset/addDataset                                                                       @controllers.DatasetController.addDataset
+PUT           /dataset/updateDataset/id/:id                                                             @controllers.DatasetController.updateDatasetById(id: Long)
+DELETE        /dataset/deleteDataset/id/:id                                                             @controllers.DatasetController.deleteDataset(id: Long)
+POST		  /dataset/queryDataset																		@controllers.DatasetController.queryDatasets
+
+# Parameter
+GET           /parameter/getAllParameters/json                                                          @controllers.ParameterController.getAllParameters(format: String="json")
+GET           /parameter/getParameter/service/:id/name/:name/json                                       @controllers.ParameterController.getParameterByName(id:Long, name: String, format: String="json")
+GET           /parameter/getParameter/id/:id/json                                                       @controllers.ParameterController.getParameterById(id: Long, format: String="json")
+POST          /parameter/addParameter                                                                   @controllers.ParameterController.addParameter
+PUT           /parameter/updateParameter/id/:id                                                         @controllers.ParameterController.updateParameterById(id: Long)
+PUT           /parameter/updateParameter/name/:oldName                                                  @controllers.ParameterController.updateParameterByName(oldName: String)
+DELETE        /parameter/deleteParameter/service/:id/name/:name                                         @controllers.ParameterController.deleteParameterByName(id:Long, name: String)
+
+# Users
+GET           /users/:id                                                                                @controllers.UserController.getUser(id: Long, format: String="json")
+POST          /users/add                                                                                @controllers.UserController.addUser
+PUT           /users/update/:id                                                                         @controllers.UserController.updateUser(id: Long)
+DELETE        /users/delete/:id                                                                         @controllers.UserController.deleteUser(id: Long)
+GET			  /users/getAllUsers/json																	@controllers.UserController.getAllUsers(format: String="json")
+POST		  /users/isUserValid																		@controllers.UserController.isUserValid
+DELETE		  /users/delete/userName/:userName/password/:password										@controllers.UserController.deleteUserByUserNameandPassword(userName: String, password: String)
+
+# Map static resources from the /public folder to the /assets URL path
+GET           /assets/*file                                                                             controllers.Assets.at(path="/public", file)
