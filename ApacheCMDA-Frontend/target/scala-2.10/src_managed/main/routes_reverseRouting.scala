@@ -1,6 +1,6 @@
-// @SOURCE:/Users/xingwei/Project/apache/ApacheCMDA/ApacheCMDA-Frontend/conf/routes
+// @SOURCE:/home/xingwei/SOC-Fall-2015/ApacheCMDA-Frontend/conf/routes
 // @HASH:a567abac742231815a5a9271612732827c1dd425
-// @DATE:Fri Sep 18 16:24:59 PDT 2015
+// @DATE:Fri Sep 18 18:40:49 PDT 2015
 
 import Routes.{prefix => _prefix, defaultPrefix => _defaultPrefix}
 import play.core._
