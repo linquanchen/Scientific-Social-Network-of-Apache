@@ -13,3 +13,6 @@ PS.
 
 The docker with tmux and bashrc configuration set is uploaded to kstain/apachecmda, you can fetch the docker using
 docker pull kstain/apachecmda:latest
+
+========
+Trash
