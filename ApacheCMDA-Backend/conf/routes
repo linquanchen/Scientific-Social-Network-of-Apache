@@ -55,7 +55,7 @@ POST		  /users/isUserValid																		@controllers.UserController.isUserVa
 DELETE		  /users/delete/userName/:userName/password/:password										@controllers.UserController.deleteUserByUserNameandPassword(userName: String, password: String)
 POST          /user/register                                                                            @controllers.UserController.userRegister
 POST          /user/login                                                                               @controllers.UserController.userLogin
-GET           /users/search                                                                             @controllers.UserController.userSearch(display_name: String)
+GET           /users/search/:display_name                                                               @controllers.UserController.userSearch(display_name: String)
 POST          /users/setprofile                                                                         @controllers.UserController.setProfile
 GET           /users/getprofile                                                                         @controllers.UserController.getProfile(id: Long)
 GET           /users/follow                                                                             @controllers.UserController.userFollow(follower_id: Long, followee_id: Long)

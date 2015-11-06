@@ -221,4 +221,22 @@ public class UserController extends Controller {
 		
 	}
 
+	public Result userSearch(String display_name) {
+		if (display_name == null) {
+			System.out.println("Display name is null or empty!");
+			return badRequest("Display name is null or empty!");
+		}
+
+		List<User> users = userRepository.getUserByDisplayName(display_name);
+
+		if (users == null) {
+			System.out.println("User not found with with display name: " + display_name);
+			return notFound("User not found with with display name: " + display_name);
+		}
+		String result = new String();
+		result = new Gson().toJson(users);
+
+		return ok(result);
+	}
+
 }
