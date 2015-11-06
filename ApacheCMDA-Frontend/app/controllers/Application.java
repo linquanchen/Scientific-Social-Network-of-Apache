@@ -20,9 +20,15 @@ package controllers;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import play.mvc.*;
 import views.html.*;
 import play.data.*;
+import util.APICall;
+import util.Constants;
+import util.APICall.ResponseType;
+import play.Logger;
 
 public class Application extends Controller {
 
@@ -67,10 +73,22 @@ public class Application extends Controller {
     }
 
     public static Result authenticate() {
+        String USER_LOGIN = Constants.NEW_BACKEND + "user/login";
         Form<Login> loginForm = Form.form(Login.class).bindFromRequest();
         if (loginForm.hasErrors()) {
             return badRequest(login.render(loginForm));
         } else {
+            String username = loginForm.data().get("username");
+            String password = loginForm.data().get("password");
+            ObjectMapper mapper = new ObjectMapper();
+            ObjectNode queryJson = mapper.createObjectNode();
+            queryJson.put("username", username);
+            queryJson.put("password", password);
+            JsonNode response = APICall.postAPI(USER_LOGIN, queryJson);
+            if (response == null || response.has("error") || !response.get("err").equals("0")) {
+                Logger.debug("Auth failed!");
+                return redirect(routes.Application.login());
+            }
             session().clear();
             session("username", loginForm.data().get("username"));
             return redirect(
