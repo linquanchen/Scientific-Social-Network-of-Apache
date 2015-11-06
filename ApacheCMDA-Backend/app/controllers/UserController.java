@@ -55,22 +55,23 @@ public class UserController extends Controller {
 		}
 
 		// Parse JSON file
-		String userName = json.path("userName").asText();
+		String name = json.path("userName").asText();
+		String email = json.path("email").asText();
 		String password = json.path("password").asText();
 
 		try {
-			if (userRepository.findByUserName(userName).size()>0) {
-				System.out.println("UserName has been used: " + userName);
-				return badRequest("UserName has been used");
+			if (userRepository.findByEmail(email) != null) {
+				System.out.println("Email has been used: " + email);
+				return badRequest("Email has been used");
 			}
-			User user = new User(userName, password);
+			User user = new User(name, email, password);
 			userRepository.save(user);
 			System.out.println("User saved: " + user.getId());
 			return created(new Gson().toJson(user.getId()));
 		} catch (PersistenceException pe) {
 			pe.printStackTrace();
-			System.out.println("User not saved: " + userName);
-			return badRequest("User not saved: " + userName);
+			System.out.println("User not saved: " + name);
+			return badRequest("User not saved: " + name);
 		}
 	}
 
@@ -94,25 +95,21 @@ public class UserController extends Controller {
 		}
 
 		// Parse JSON file
-		String displayName = json.path("displayName").asText();
-		String userName = json.path("userName").asText();
 	    String email = json.path("email").asText();
 	    String phoneNumber = json.path("phoneNumber").asText();
 		try {
 			User updateUser = userRepository.findOne(id);
 
-			updateUser.setDisplayName(displayName);
-			updateUser.setUserName(userName);
 			updateUser.setEmail(email);
 			updateUser.setPhoneNumber(phoneNumber);
 			
 			User savedUser = userRepository.save(updateUser);
-			System.out.println("User updated: " + savedUser.getUserName());
-			return created("User updated: " + savedUser.getUserName());
+			System.out.println("User updated: " + savedUser.getEmail());
+			return created("User updated: " + savedUser.getEmail());
 		} catch (PersistenceException pe) {
 			pe.printStackTrace();
-			System.out.println("User not updated: " + userName);
-			return badRequest("User not updated: " + userName);
+			System.out.println("User not updated: " + email);
+			return badRequest("User not updated: " + email);
 		}
 	}
 
@@ -160,7 +157,7 @@ public class UserController extends Controller {
 		User user = userRepository.findByEmail(email);
 		if (user.getPassword().equals(password)) {
 			System.out.println("User is valid");
-			return ok("User is valid");
+			return ok("id: " + user.getId() +", userName: " + user.getUserName());
 		} else {
 			System.out.println("User is not valid");
 			return badRequest("User is not valid");
