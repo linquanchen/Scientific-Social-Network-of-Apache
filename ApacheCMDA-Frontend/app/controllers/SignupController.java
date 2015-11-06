@@ -34,6 +34,7 @@ public class SignupController  extends Controller {
         ObjectNode jnode = mapper.createObjectNode();
         jnode.put("email", form.field("email").value());
         jnode.put("password", form.field("password").value());
+        jnode.put("username", form.field("username").value());
         JsonNode usernode = User.register(jnode);
         if (usernode == null || usernode.has("error")) {
             Logger.debug("Register Failed!");

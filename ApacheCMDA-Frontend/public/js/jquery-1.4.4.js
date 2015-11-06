@@ -603,9 +603,9 @@ jQuery.extend({
 				script.text = data;
 			}
 
-			// Use insertBefore instead of appendChild to circumvent an IE6 bug.
+			// Use msgBefore instead of appendChild to circumvent an IE6 bug.
 			// This arises when a base node is used (#2709).
-			head.insertBefore( script, head.firstChild );
+			head.msgBefore( script, head.firstChild );
 			head.removeChild( script );
 		}
 	},
@@ -936,8 +936,8 @@ return (window.jQuery = window.$ = jQuery);
 		// IE strips leading whitespace when .innerHTML is used
 		leadingWhitespace: div.firstChild.nodeType === 3,
 
-		// Make sure that tbody elements aren't automatically inserted
-		// IE will insert them into empty tables
+		// Make sure that tbody elements aren't automatically msged
+		// IE will msg them into empty tables
 		tbody: !div.getElementsByTagName("tbody").length,
 
 		// Make sure that link elements get serialized correctly by innerHTML
@@ -992,7 +992,7 @@ return (window.jQuery = window.$ = jQuery);
 		script.appendChild( document.createTextNode( "window." + id + "=1;" ) );
 	} catch(e) {}
 
-	root.insertBefore( script, root.firstChild );
+	root.msgBefore( script, root.firstChild );
 
 	// Make sure that the execution of code works by injecting a script
 	// tag with appendChild/createTextNode
@@ -3989,7 +3989,7 @@ Sizzle.getText = function( elems ) {
 	form.innerHTML = "<a name='" + id + "'/>";
 
 	// Inject it into the root element, check its status, and remove it quickly
-	root.insertBefore( form, root.firstChild );
+	root.msgBefore( form, root.firstChild );
 
 	// The workaround has to do additional checks after a getElementById
 	// Which slows things down for other browsers (hence the branching)
@@ -4680,7 +4680,7 @@ jQuery.fn.extend({
 			var wrap = jQuery( html, this[0].ownerDocument ).eq(0).clone(true);
 
 			if ( this[0].parentNode ) {
-				wrap.insertBefore( this[0] );
+				wrap.msgBefore( this[0] );
 			}
 
 			wrap.map(function() {
@@ -4742,7 +4742,7 @@ jQuery.fn.extend({
 	prepend: function() {
 		return this.domManip(arguments, true, function( elem ) {
 			if ( this.nodeType === 1 ) {
-				this.insertBefore( elem, this.firstChild );
+				this.msgBefore( elem, this.firstChild );
 			}
 		});
 	},
@@ -4750,7 +4750,7 @@ jQuery.fn.extend({
 	before: function() {
 		if ( this[0] && this[0].parentNode ) {
 			return this.domManip(arguments, false, function( elem ) {
-				this.parentNode.insertBefore( elem, this );
+				this.parentNode.msgBefore( elem, this );
 			});
 		} else if ( arguments.length ) {
 			var set = jQuery(arguments[0]);
@@ -4762,7 +4762,7 @@ jQuery.fn.extend({
 	after: function() {
 		if ( this[0] && this[0].parentNode ) {
 			return this.domManip(arguments, false, function( elem ) {
-				this.parentNode.insertBefore( elem, this.nextSibling );
+				this.parentNode.msgBefore( elem, this.nextSibling );
 			});
 		} else if ( arguments.length ) {
 			var set = this.pushStack( this, "after", arguments );
@@ -4888,7 +4888,7 @@ jQuery.fn.extend({
 
 	replaceWith: function( value ) {
 		if ( this[0] && this[0].parentNode ) {
-			// Make sure that the elements are removed from the DOM before they are inserted
+			// Make sure that the elements are removed from the DOM before they are msged
 			// this can help fix replacing a parent with child elements
 			if ( jQuery.isFunction( value ) ) {
 				return this.each(function(i) {
@@ -5054,27 +5054,27 @@ jQuery.fragments = {};
 jQuery.each({
 	appendTo: "append",
 	prependTo: "prepend",
-	insertBefore: "before",
-	insertAfter: "after",
+	msgBefore: "before",
+	msgAfter: "after",
 	replaceAll: "replaceWith"
 }, function( name, original ) {
 	jQuery.fn[ name ] = function( selector ) {
 		var ret = [],
-			insert = jQuery( selector ),
+			msg = jQuery( selector ),
 			parent = this.length === 1 && this[0].parentNode;
 		
-		if ( parent && parent.nodeType === 11 && parent.childNodes.length === 1 && insert.length === 1 ) {
-			insert[ original ]( this[0] );
+		if ( parent && parent.nodeType === 11 && parent.childNodes.length === 1 && msg.length === 1 ) {
+			msg[ original ]( this[0] );
 			return this;
 			
 		} else {
-			for ( var i = 0, l = insert.length; i < l; i++ ) {
+			for ( var i = 0, l = msg.length; i < l; i++ ) {
 				var elems = (i > 0 ? this.clone(true) : this).get();
-				jQuery( insert[i] )[ original ]( elems );
+				jQuery( msg[i] )[ original ]( elems );
 				ret = ret.concat( elems );
 			}
 		
-			return this.pushStack( ret, name, insert.selector );
+			return this.pushStack( ret, name, msg.selector );
 		}
 	};
 });
@@ -5121,7 +5121,7 @@ jQuery.extend({
 					div = div.lastChild;
 				}
 
-				// Remove IE's autoinserted <tbody> from table fragments
+				// Remove IE's automsged <tbody> from table fragments
 				if ( !jQuery.support.tbody ) {
 
 					// String was a <table>, *may* have spurious <tbody>
@@ -5144,7 +5144,7 @@ jQuery.extend({
 
 				// IE completely kills leading whitespace when innerHTML is used
 				if ( !jQuery.support.leadingWhitespace && rleadingWhitespace.test( elem ) ) {
-					div.insertBefore( context.createTextNode( rleadingWhitespace.exec(elem)[0] ), div.firstChild );
+					div.msgBefore( context.createTextNode( rleadingWhitespace.exec(elem)[0] ), div.firstChild );
 				}
 
 				elem = div.childNodes;
@@ -5364,7 +5364,7 @@ jQuery.extend({
 	swap: function( elem, options, callback ) {
 		var old = {};
 
-		// Remember the old values, and insert the new ones
+		// Remember the old values, and msg the new ones
 		for ( var name in options ) {
 			old[ name ] = elem.style[ name ];
 			elem.style[ name ] = options[ name ];
@@ -5885,9 +5885,9 @@ jQuery.extend({
 				};
 			}
 
-			// Use insertBefore instead of appendChild  to circumvent an IE6 bug.
+			// Use msgBefore instead of appendChild  to circumvent an IE6 bug.
 			// This arises when a base node is used (#2709 and #4378).
-			head.insertBefore( script, head.firstChild );
+			head.msgBefore( script, head.firstChild );
 
 			// We handle everything using the script element injection
 			return undefined;
@@ -6936,7 +6936,7 @@ jQuery.offset = {
 		jQuery.extend( container.style, { position: "absolute", top: 0, left: 0, margin: 0, border: 0, width: "1px", height: "1px", visibility: "hidden" } );
 
 		container.innerHTML = html;
-		body.insertBefore( container, body.firstChild );
+		body.msgBefore( container, body.firstChild );
 		innerDiv = container.firstChild;
 		checkDiv = innerDiv.firstChild;
 		td = innerDiv.nextSibling.firstChild.firstChild;
