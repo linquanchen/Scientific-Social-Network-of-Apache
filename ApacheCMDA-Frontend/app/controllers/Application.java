@@ -44,7 +44,7 @@ public class Application extends Controller {
 
     public static Result index() {
         if (notpass()) return redirect(routes.Application.login());
-        return ok(index.render(""));
+        return ok(home.render(session("username"), session("id")));
     }
 
     public static class Login {
