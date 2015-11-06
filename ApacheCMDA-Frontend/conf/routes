@@ -47,3 +47,4 @@ GET         /login                                              controllers.Appl
 POST        /login                                              controllers.Application.authenticate()
 GET         /index                                              controllers.Application.index()
 GET         /logout                                             controllers.Application.logout()
+GET         /profile/:id                                        controllers.Application.profile(id: Long)
