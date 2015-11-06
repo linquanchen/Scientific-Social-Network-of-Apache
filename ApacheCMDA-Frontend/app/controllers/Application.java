@@ -26,7 +26,15 @@ import play.data.*;
 
 public class Application extends Controller {
 
+    public static boolean notpass() {
+        if (session("username") == null) {
+            return true;
+        }
+        return false;
+    }
+
     public static Result index() {
+        if (notpass()) return redirect(routes.Application.login());
         return ok(index.render(""));
     }
 
@@ -35,14 +43,27 @@ public class Application extends Controller {
         public String username;
         public String password;
 
-        public String validate() {
-            return null;
-        }
+        // public String validate(){return null;}
     }
 
     public static Result login()
     {
         return ok(login.render(Form.form(Login.class)));
+    }
+
+    public static Result logout() {
+        String curruser = session("username");
+        if (curruser != null) {
+            session().clear();
+            return redirect(routes.Application.login());
+        }
+        return badRequest();
+    }
+
+    public static Result home() {
+        if (notpass()) return redirect(routes.Application.login());
+
+        return ok(home.render(session("username"), "I am Id"));
     }
 
     public static Result authenticate() {

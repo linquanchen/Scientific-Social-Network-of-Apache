@@ -3,8 +3,8 @@
 # ~~~~
 
 # Home page
-GET         /home                                                controllers.ClimateServiceController.home(email ?= null, vfile ?= null, dataset ?= null)
-GET 		/													 controllers.ClimateServiceController.home(email ?= null, vfile ?= null, dataset ?= null)
+GET         /climatehome                                                controllers.ClimateServiceController.home(email ?= null, vfile ?= null, dataset ?= null)
+# GET 		/													 controllers.ClimateServiceController.home(email ?= null, vfile ?= null, dataset ?= null)
 
 
 # BugReporting
@@ -41,6 +41,9 @@ GET     	/assets/*file               						controllers.Assets.at(path="/public",
 
 #Workflow project start here
 
+GET         /                                                   controllers.Application.home()
+GET         /home                                               controllers.Application.home()
 GET         /login                                              controllers.Application.login()
 POST        /login                                              controllers.Application.authenticate()
 GET         /index                                              controllers.Application.index()
+GET         /logout                                             controllers.Application.logout()
