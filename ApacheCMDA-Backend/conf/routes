@@ -46,18 +46,21 @@ PUT           /parameter/updateParameter/name/:oldName                          
 DELETE        /parameter/deleteParameter/service/:id/name/:name                                         @controllers.ParameterController.deleteParameterByName(id:Long, name: String)
 
 # Users
-GET           /users/:id                                                                                @controllers.UserController.getUser(id: Long, format: String="json")
-POST          /users/add                                                                                @controllers.UserController.addUser
-PUT           /users/update/:id                                                                         @controllers.UserController.updateUser(id: Long)
+#GET           /users/:id                                                                                @controllers.UserController.getUser(id: Long, format: String="json")
+#PUT           /users/update/:id                                                                         @controllers.UserController.updateUser(id: Long)
 DELETE        /users/delete/:id                                                                         @controllers.UserController.deleteUser(id: Long)
 GET			  /users/getAllUsers/json																	@controllers.UserController.getAllUsers(format: String="json")
-POST		  /users/isUserValid																		@controllers.UserController.isUserValid
+#POST		  /users/isUserValid																		@controllers.UserController.isUserValid
 DELETE		  /users/delete/userName/:userName/password/:password										@controllers.UserController.deleteUserByUserNameandPassword(userName: String, password: String)
+
 POST          /user/register                                                                            @controllers.UserController.userRegister
 POST          /user/login                                                                               @controllers.UserController.userLogin
+
 GET           /users/search                                                                             @controllers.UserController.userSearch(display_name: String)
-POST          /users/setprofile                                                                         @controllers.UserController.setProfile
-GET           /users/getprofile                                                                         @controllers.UserController.getProfile(id: Long)
+
+PUT          /users/setprofile/:id                                                                        @controllers.UserController.setProfile(id: Long)
+GET           /users/getprofile                                                                         @controllers.UserController.getProfile(id: Long, format: String="json")
+
 GET           /users/follow                                                                             @controllers.UserController.userFollow(follower_id: Long, followee_id: Long)
 GET           /users/unfollow                                                                           @controllers.UserController.userUnfollow(follower_id: Long, followee_id: Long)
 GET           /users/getFollowers                                                                       @controllers.UserController.getFollowers(id: Long)
