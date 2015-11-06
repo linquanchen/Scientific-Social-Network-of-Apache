@@ -33,7 +33,7 @@ import util.APICall;
 @Entity
 public class User {
 
-	private final static String REGISTER = Constants.NEW_BACKEND + "users/signup";
+	private final static String REGISTER = Constants.NEW_BACKEND + "users/register";
 
 
 

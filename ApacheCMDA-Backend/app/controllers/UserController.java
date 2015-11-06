@@ -19,6 +19,8 @@ package controllers;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import models.User;
 import models.UserRepository;
 import play.mvc.*;
@@ -55,7 +57,7 @@ public class UserController extends Controller {
 		}
 
 		// Parse JSON file
-		String name = json.path("userName").asText();
+		String name = json.path("username").asText();
 		String email = json.path("email").asText();
 		String password = json.path("password").asText();
 
@@ -157,7 +159,12 @@ public class UserController extends Controller {
 		User user = userRepository.findByEmail(email);
 		if (user.getPassword().equals(password)) {
 			System.out.println("User is valid");
-			return ok("id: " + user.getId() +", userName: " + user.getUserName());
+			ObjectMapper mapper = new ObjectMapper();
+			ObjectNode node = mapper.createObjectNode();
+			node.put("id", user.getId());
+			node.put("username", user.getUserName());
+
+			return ok(node);
 		} else {
 			System.out.println("User is not valid");
 			return badRequest("User is not valid");
