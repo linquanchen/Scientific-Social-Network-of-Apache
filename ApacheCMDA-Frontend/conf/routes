@@ -48,3 +48,5 @@ POST        /login                                              controllers.Appl
 GET         /index                                              controllers.Application.index()
 GET         /logout                                             controllers.Application.logout()
 GET         /profile/:id                                        controllers.Application.profile(id: Long)
+GET         /signup                                             controllers.SignupController.signUp()
+POST        /signup/register                                    controllers.SignupController.register()
