@@ -22,28 +22,47 @@ import java.util.Map.Entry;
 import com.fasterxml.jackson.databind.JsonNode;
 import play.mvc.*;
 import views.html.*;
+import play.data.*;
 
 public class Application extends Controller {
-	
+
     public static Result index() {
         return ok(index.render(""));
     }
 
     public static class Login {
-        
-        public String email;
+
+        public String username;
         public String password;
-        
+
         public String validate() {
             return null;
-        } 
+        }
     }
-    
+
+    public static Result login()
+    {
+        return ok(login.render(Form.form(Login.class)));
+    }
+
+    public static Result authenticate() {
+        Form<Login> loginForm = Form.form(Login.class).bindFromRequest();
+        if (loginForm.hasErrors()) {
+            return badRequest(login.render(loginForm));
+        } else {
+            session().clear();
+            session("username", loginForm.data().get("username"));
+            return redirect(
+                    routes.Application.index()
+            );
+        }
+    }
+
     public static void flashMsg(JsonNode jsonNode){
-		Iterator<Entry<String, JsonNode>> it = jsonNode.fields();
-		while (it.hasNext()) {
-			Entry<String, JsonNode> field = it.next();
-			flash(field.getKey(),field.getValue().asText());	
-		}
+        Iterator<Entry<String, JsonNode>> it = jsonNode.fields();
+        while (it.hasNext()) {
+            Entry<String, JsonNode> field = it.next();
+            flash(field.getKey(),field.getValue().asText());
+        }
     }
 }
