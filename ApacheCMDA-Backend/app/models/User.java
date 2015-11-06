@@ -29,17 +29,16 @@ public class User {
 	private long id;
 	private String userName;
 	private String password;
-	private String firstName;
-	private String lastName;
-	private String middleInitial;
-	private String affiliation;
-	private String title;
 	private String email;
-	private String mailingAddress;
 	private String phoneNumber;
-	private String faxNumber;
-	private String researchFields;
-	private String highestDegree;
+
+//	private String middleInitial;
+//	private String affiliation;
+//	private String title;
+//	private String mailingAddress;
+//	private String faxNumber;
+//	private String researchFields;
+//	private String highestDegree;
 
 	// @OneToMany(mappedBy = "user", cascade={CascadeType.ALL})
 	// private Set<ClimateService> climateServices = new
@@ -48,25 +47,19 @@ public class User {
 	public User() {
 	}
 
-	public User(String userName, String password, String firstName,
-			String lastName, String middleInitial, String affiliation,
-			String title, String email, String mailingAddress,
-			String phoneNumber, String faxNumber, String researchFields,
-			String highestDegree) {
+	public User(String userName, String email, String password) {
+		this.userName = userName;
+		this.email = email;
+		this.password = password;
+	}
+
+	public User(String userName, String password,
+			String email, String phoneNumber) {
 		super();
 		this.userName = userName;
 		this.password = password;
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.middleInitial = middleInitial;
-		this.affiliation = affiliation;
-		this.title = title;
 		this.email = email;
-		this.mailingAddress = mailingAddress;
 		this.phoneNumber = phoneNumber;
-		this.faxNumber = faxNumber;
-		this.researchFields = researchFields;
-		this.highestDegree = highestDegree;
 	}
 
 	public long getId() {
@@ -81,15 +74,38 @@ public class User {
 		return password;
 	}
 
-	public String getFirstName() {
-		return firstName;
+	public String getEmail() {
+		return email;
 	}
 
-	public String getLastName() {
-		return lastName;
+	public String getPhoneNumber() {
+		return phoneNumber;
 	}
 
-	public String getMiddleInitial() {
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
+
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", userName=" + userName
+				+ ", password=" + password + ", email=" + email
+				+ ", phoneNumber=" + phoneNumber + "]";
+	}
+
+/*	public String getMiddleInitial() {
 		return middleInitial;
 	}
 
@@ -101,16 +117,8 @@ public class User {
 		return title;
 	}
 
-	public String getEmail() {
-		return email;
-	}
-
 	public String getMailingAddress() {
 		return mailingAddress;
-	}
-
-	public String getPhoneNumber() {
-		return phoneNumber;
 	}
 
 	public String getFaxNumber() {
@@ -125,22 +133,6 @@ public class User {
 		return highestDegree;
 	}
 
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
-
 	public void setMiddleInitial(String middleInitial) {
 		this.middleInitial = middleInitial;
 	}
@@ -153,16 +145,8 @@ public class User {
 		this.title = title;
 	}
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
 	public void setMailingAddress(String mailingAddress) {
 		this.mailingAddress = mailingAddress;
-	}
-
-	public void setPhoneNumber(String phoneNumber) {
-		this.phoneNumber = phoneNumber;
 	}
 
 	public void setFaxNumber(String faxNumber) {
@@ -175,19 +159,6 @@ public class User {
 
 	public void setHighestDegree(String highestDegree) {
 		this.highestDegree = highestDegree;
-	}
-
-	@Override
-	public String toString() {
-		return "User [id=" + id + ", userName=" + userName + ", password="
-				+ password + ", firstName=" + firstName + ", lastName="
-				+ lastName + ", middleInitial=" + middleInitial
-				+ ", affiliation=" + affiliation + ", title=" + title
-				+ ", email=" + email + ", mailingAddress=" + mailingAddress
-				+ ", phoneNumber=" + phoneNumber + ", faxNumber=" + faxNumber
-				+ ", researchFields=" + researchFields + ", highestDegree="
-				+ highestDegree + "]";
-	}
-
+	}*/
 }
 
