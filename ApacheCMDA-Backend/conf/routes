@@ -53,6 +53,15 @@ DELETE        /users/delete/:id                                                 
 GET			  /users/getAllUsers/json																	@controllers.UserController.getAllUsers(format: String="json")
 POST		  /users/isUserValid																		@controllers.UserController.isUserValid
 DELETE		  /users/delete/userName/:userName/password/:password										@controllers.UserController.deleteUserByUserNameandPassword(userName: String, password: String)
+POST          /user/register                                                                            @controllers.UserController.userRegister
+POST          /user/login                                                                               @controllers.UserController.userLogin
+GET           /users/search                                                                             @controllers.UserController.userSearch(display_name: String)
+POST          /users/setprofile                                                                         @controllers.UserController.setProfile
+GET           /users/getprofile                                                                         @controllers.UserController.getProfile(id: Long)
+GET           /users/follow                                                                             @controllers.UserController.userFollow(follower_id: Long, followee_id: Long)
+GET           /users/unfollow                                                                           @controllers.UserController.userUnfollow(follower_id: Long, followee_id: Long)
+GET           /users/getFollowers                                                                       @controllers.UserController.getFollowers(id: Long)
+GET           /users/getFollowees                                                                       @controllers.UserController.getFollowees(id: Long)
 
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file                                                                             controllers.Assets.at(path="/public", file)
