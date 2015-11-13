@@ -21,10 +21,21 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import controllers.routes;
+import play.Logger;
 import play.data.validation.Constraints;
+
+import util.Constants;
+import util.APICall;
 
 @Entity
 public class User {
+
+	private final static String REGISTER = Constants.NEW_BACKEND + "users/register";
+
+
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -74,6 +85,11 @@ public class User {
 		this.faxNumber = faxNumber;
 		this.researchFields = researchFields;
 		this.highestDegree = highestDegree;
+	}
+
+	public static JsonNode register(ObjectNode node) {
+		JsonNode response = APICall.postAPI(REGISTER, node);
+		return response;
 	}
 
 	public long getId() {

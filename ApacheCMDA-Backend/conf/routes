@@ -46,13 +46,22 @@ PUT           /parameter/updateParameter/name/:oldName                          
 DELETE        /parameter/deleteParameter/service/:id/name/:name                                         @controllers.ParameterController.deleteParameterByName(id:Long, name: String)
 
 # Users
-GET           /users/:id                                                                                @controllers.UserController.getUser(id: Long, format: String="json")
-POST          /users/add                                                                                @controllers.UserController.addUser
-PUT           /users/update/:id                                                                         @controllers.UserController.updateUser(id: Long)
-DELETE        /users/delete/:id                                                                         @controllers.UserController.deleteUser(id: Long)
-GET			  /users/getAllUsers/json																	@controllers.UserController.getAllUsers(format: String="json")
-POST		  /users/isUserValid																		@controllers.UserController.isUserValid
-DELETE		  /users/delete/userName/:userName/password/:password										@controllers.UserController.deleteUserByUserNameandPassword(userName: String, password: String)
+DELETE        /users/delete/:id                                                                          @controllers.UserController.deleteUser(id: Long)
+GET			  /users/getAllUsers/json																	 @controllers.UserController.getAllUsers(format: String="json")
+DELETE		  /users/delete/userName/:userName/password/:password										 @controllers.UserController.deleteUserByUserNameandPassword(userName: String, password: String)
+
+POST          /users/register                                                                            @controllers.UserController.userRegister
+POST          /users/login                                                                               @controllers.UserController.userLogin
+
+#GET           /users/search                                                                             @controllers.UserController.userSearch(display_name: String)
+
+PUT           /users/setprofile/:id                                                                      @controllers.UserController.setProfile(id: Long)
+GET           /users/getprofile/:id/json                                                                 @controllers.UserController.getProfile(id: Long, format: String="json")
+
+#GET           /users/follow                                                                             @controllers.UserController.userFollow(follower_id: Long, followee_id: Long)
+#GET           /users/unfollow                                                                           @controllers.UserController.userUnfollow(follower_id: Long, followee_id: Long)
+#GET           /users/getFollowers                                                                       @controllers.UserController.getFollowers(id: Long)
+#GET           /users/getFollowees                                                                       @controllers.UserController.getFollowees(id: Long)
 
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file                                                                             controllers.Assets.at(path="/public", file)
