@@ -53,7 +53,7 @@ DELETE		  /users/delete/userName/:userName/password/:password										 @control
 POST          /users/register                                                                            @controllers.UserController.userRegister
 POST          /users/login                                                                               @controllers.UserController.userLogin
 
-GET           /users/search/:display_name                                                                             @controllers.UserController.userSearch(display_name: String)
+GET           /users/search/:display_name                                                                @controllers.UserController.userSearch(display_name: String)
 
 PUT           /users/setprofile/:id                                                                      @controllers.UserController.setProfile(id: Long)
 GET           /users/getprofile/:id/json                                                                 @controllers.UserController.getProfile(id: Long, format: String="json")

@@ -204,6 +204,7 @@ public class UserController extends Controller {
 
 		List<User> users = userRepository.getUserByDisplayName(display_name);
 
+
 		if (users == null) {
 			System.out.println("User not found with with display name: " + display_name);
 			return notFound("User not found with with display name: " + display_name);

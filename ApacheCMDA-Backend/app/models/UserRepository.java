@@ -34,6 +34,6 @@ public interface UserRepository extends CrudRepository<User, Long> {
 	List<User> findByUserName(String userName);
 	User findByEmail(String email);
 
-	@Query(value = "select u.* from User u where ((u.display like ?1)", nativeQuery = true)
+	@Query(value = "select u.* from User u where (u.userName like %?1%)", nativeQuery = true)
 	List<User> getUserByDisplayName(String displayName);
 }
