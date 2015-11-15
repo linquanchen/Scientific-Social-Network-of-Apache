@@ -27,7 +27,6 @@ public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
-	private String displayName;
 	private String userName;
 	private String password;
 	private String email;
@@ -48,10 +47,15 @@ public class User {
 	public User() {
 	}
 
-	public User(String displayName, String userName, String password,
+	public User(String userName, String email, String password) {
+		this.userName = userName;
+		this.email = email;
+		this.password = password;
+	}
+
+	public User(String userName, String password,
 			String email, String phoneNumber) {
 		super();
-		this.displayName = displayName;
 		this.userName = userName;
 		this.password = password;
 		this.email = email;
@@ -60,10 +64,6 @@ public class User {
 
 	public long getId() {
 		return id;
-	}
-
-	public String getDisplayName() {
-		return displayName;
 	}
 
 	public String getUserName() {
@@ -80,10 +80,6 @@ public class User {
 
 	public String getPhoneNumber() {
 		return phoneNumber;
-	}
-
-	public void setDisplayName(String displayName) {
-		this.displayName = displayName;
 	}
 
 	public void setUserName(String userName) {
@@ -104,7 +100,7 @@ public class User {
 
 	@Override
 	public String toString() {
-		return "User [id=" + id + ", display=" + displayName + ", userName=" + userName
+		return "User [id=" + id + ", userName=" + userName
 				+ ", password=" + password + ", email=" + email
 				+ ", phoneNumber=" + phoneNumber + "]";
 	}

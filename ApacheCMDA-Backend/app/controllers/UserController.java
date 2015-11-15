@@ -19,6 +19,8 @@ package controllers;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import models.User;
 import models.UserRepository;
 import play.mvc.*;
@@ -47,7 +49,7 @@ public class UserController extends Controller {
 		this.userRepository = userRepository;
 	}
 
-	public Result addUser() {
+	public Result userRegister() {
 		JsonNode json = request().body().asJson();
 		if (json == null) {
 			System.out.println("User not created, expecting Json data");
@@ -55,33 +57,23 @@ public class UserController extends Controller {
 		}
 
 		// Parse JSON file
-		String userName = json.path("userName").asText();
+		String name = json.path("username").asText();
+		String email = json.path("email").asText();
 		String password = json.path("password").asText();
-		String firstName = json.path("firstName").asText();
-		String lastName = json.path("lastName").asText();
-		String middleInitial = json.path("middleInitial").asText();
-	    String affiliation = json.path("affiliation").asText();
-	    String title = json.path("title").asText();
-	    String email = json.path("email").asText();
-	    String mailingAddress = json.path("mailingAddress").asText();
-	    String phoneNumber = json.path("phoneNumber").asText();
-	    String faxNumber = json.path("faxNumber").asText();
-	    String researchFields = json.path("researchFields").asText();
-	    String highestDegree = json.path("highestDegree").asText();
 
 		try {
-			if (userRepository.findByUserName(userName).size()>0) {
-				System.out.println("UserName has been used: " + userName);
-				return badRequest("UserName has been used");
+			if (userRepository.findByEmail(email) != null) {
+				System.out.println("Email has been used: " + email);
+				return badRequest("Email has been used");
 			}
-			User user = new User(userName, password, firstName, lastName, middleInitial, affiliation, title, email, mailingAddress, phoneNumber, faxNumber, researchFields, highestDegree);	
+			User user = new User(name, email, password);
 			userRepository.save(user);
 			System.out.println("User saved: " + user.getId());
 			return created(new Gson().toJson(user.getId()));
 		} catch (PersistenceException pe) {
 			pe.printStackTrace();
-			System.out.println("User not saved: " + firstName + " " + lastName);
-			return badRequest("User not saved: " + firstName + " " + lastName);
+			System.out.println("User not saved: " + name);
+			return badRequest("User not saved: " + name);
 		}
 	}
 
@@ -97,7 +89,7 @@ public class UserController extends Controller {
 		return ok("User is deleted: " + id);
 	}
 
-	public Result updateUser(long id) {
+	public Result setProfile(long id) {
 		JsonNode json = request().body().asJson();
 		if (json == null) {
 			System.out.println("User not saved, expecting Json data");
@@ -105,46 +97,25 @@ public class UserController extends Controller {
 		}
 
 		// Parse JSON file
-		String firstName = json.path("firstName").asText();
-		String lastName = json.path("lastName").asText();
-		String middleInitial = json.path("middleInitial").asText();
-	    String affiliation = json.path("affiliation").asText();
-	    String title = json.path("title").asText();
 	    String email = json.path("email").asText();
-	    String mailingAddress = json.path("mailingAddress").asText();
 	    String phoneNumber = json.path("phoneNumber").asText();
-	    String faxNumber = json.path("faxNumber").asText();
-	    String researchFields = json.path("researchFields").asText();
-	    String highestDegree = json.path("highestDegree").asText();
 		try {
 			User updateUser = userRepository.findOne(id);
 
-			updateUser.setFirstName(firstName);
-			updateUser.setLastName(lastName);
-			updateUser.setAffiliation(affiliation);
 			updateUser.setEmail(email);
-			updateUser.setFaxNumber(faxNumber);
-			updateUser.setHighestDegree(highestDegree);
-			updateUser.setMailingAddress(mailingAddress);
-			updateUser.setMiddleInitial(middleInitial);
 			updateUser.setPhoneNumber(phoneNumber);
-			updateUser.setResearchFields(researchFields);
-			updateUser.setTitle(title);
 			
 			User savedUser = userRepository.save(updateUser);
-			System.out.println("User updated: " + savedUser.getFirstName()
-					+ " " + savedUser.getLastName());
-			return created("User updated: " + savedUser.getFirstName() + " "
-					+ savedUser.getLastName());
+			System.out.println("User updated: " + savedUser.getEmail());
+			return created("User updated: " + savedUser.getEmail());
 		} catch (PersistenceException pe) {
 			pe.printStackTrace();
-			System.out.println("User not updated: " + firstName + " "
-					+ lastName);
-			return badRequest("User not updated: " + firstName + " " + lastName);
+			System.out.println("User not updated: " + email);
+			return badRequest("User not updated: " + email);
 		}
 	}
 
-	public Result getUser(Long id, String format) {
+	public Result getProfile(Long id, String format) {
 		if (id == null) {
 			System.out.println("User id is null or empty!");
 			return badRequest("User id is null or empty!");
@@ -177,7 +148,7 @@ public class UserController extends Controller {
 		return ok(result);
 	}
 	
-	public Result isUserValid() {
+	public Result userLogin() {
 		JsonNode json = request().body().asJson();
 		if (json == null) {
 			System.out.println("Cannot check user, expecting Json data");
@@ -188,7 +159,12 @@ public class UserController extends Controller {
 		User user = userRepository.findByEmail(email);
 		if (user.getPassword().equals(password)) {
 			System.out.println("User is valid");
-			return ok("User is valid");
+			ObjectMapper mapper = new ObjectMapper();
+			ObjectNode node = mapper.createObjectNode();
+			node.put("id", user.getId());
+			node.put("username", user.getUserName());
+
+			return ok(node);
 		} else {
 			System.out.println("User is not valid");
 			return badRequest("User is not valid");
@@ -218,7 +194,6 @@ public class UserController extends Controller {
 			System.out.println("User is not deleted");
 			return badRequest("User is not deleted");
 		}
-		
 	}
 
 	public Result userSearch(String display_name) {

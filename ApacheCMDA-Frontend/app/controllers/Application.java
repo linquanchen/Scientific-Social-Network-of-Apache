@@ -20,30 +20,110 @@ package controllers;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import play.api.mvc.Request;
 import play.mvc.*;
 import views.html.*;
+import play.data.*;
+import util.APICall;
+import util.Constants;
+import util.APICall.ResponseType;
+import play.Logger;
+import models.User;
+
 
 public class Application extends Controller {
-	
+
+    public static boolean notpass() {
+        if (session("id") == null) {
+            return true;
+        }
+        return false;
+    }
+
     public static Result index() {
-        return ok(index.render(""));
+        if (notpass()) return redirect(routes.Application.login());
+        return ok(home.render(session("username"), session("id")));
     }
 
     public static class Login {
-        
-        public String email;
+
+        public String username;
         public String password;
-        
-        public String validate() {
-            return null;
-        } 
+
+        // public String validate(){return null;}
     }
-    
+
+    public static Result login()
+    {
+        return ok(login.render(Form.form(Login.class)));
+    }
+
+    public static Result logout() {
+        String curruser = session("id");
+        if (curruser != null) {
+            session().clear();
+            return redirect(routes.Application.login());
+        }
+        return badRequest();
+    }
+
+    public static Result home() {
+        if (notpass()) return redirect(routes.Application.login());
+
+        return ok(home.render(session("id"), "I am Id"));
+    }
+
+    public static Result authenticate() {
+        String USER_LOGIN = Constants.NEW_BACKEND + "users/login";
+        Form<Login> loginForm = Form.form(Login.class).bindFromRequest();
+        if (loginForm.hasErrors()) {
+            return badRequest(login.render(loginForm));
+        } else {
+            String email = loginForm.data().get("email");
+            String password = loginForm.data().get("password");
+            ObjectMapper mapper = new ObjectMapper();
+            ObjectNode queryJson = mapper.createObjectNode();
+            queryJson.put("email", email);
+            queryJson.put("password", password);
+            JsonNode response = APICall.postAPI(USER_LOGIN, queryJson);
+            if (response == null || response.has("error")) {
+                Logger.debug("Auth failed!");
+                return redirect(routes.Application.login());
+            }
+            session().clear();
+            session("id", response.get("id").toString());
+            session("username", response.get("username").toString());
+            session("email", loginForm.data().get("email"));
+            return redirect(
+                    routes.Application.index()
+            );
+        }
+    }
+
+    public static Result profile(Long id) {
+        if (notpass()) return redirect(routes.Application.login());
+        JsonNode response = APICall.callAPI(Constants.NEW_BACKEND + "users/" + id.toString());
+        if (response == null || response.has("error")) {
+            return redirect(routes.Application.login());
+        }
+
+        String res_user = response.get("username").toString();
+        String res_email = response.get("email").toString();
+
+        User user = new User();
+        user.setUserName(res_user);
+        user.setEmail(res_email);
+
+        return ok(profile.render(user));
+    }
+
     public static void flashMsg(JsonNode jsonNode){
-		Iterator<Entry<String, JsonNode>> it = jsonNode.fields();
-		while (it.hasNext()) {
-			Entry<String, JsonNode> field = it.next();
-			flash(field.getKey(),field.getValue().asText());	
-		}
+        Iterator<Entry<String, JsonNode>> it = jsonNode.fields();
+        while (it.hasNext()) {
+            Entry<String, JsonNode> field = it.next();
+            flash(field.getKey(),field.getValue().asText());
+        }
     }
 }

@@ -3,8 +3,8 @@
 # ~~~~
 
 # Home page
-GET         /home                                                controllers.ClimateServiceController.home(email ?= null, vfile ?= null, dataset ?= null)
-GET 		/													 controllers.ClimateServiceController.home(email ?= null, vfile ?= null, dataset ?= null)
+GET         /climatehome                                                controllers.ClimateServiceController.home(email ?= null, vfile ?= null, dataset ?= null)
+# GET 		/													 controllers.ClimateServiceController.home(email ?= null, vfile ?= null, dataset ?= null)
 
 
 # BugReporting
@@ -38,3 +38,15 @@ GET 		/climate/getSearchResult				 			controllers.DatasetController.getSearchRes
 
 #Map static resources from the /public folder to the /assets URL path
 GET     	/assets/*file               						controllers.Assets.at(path="/public", file)
+
+#Workflow project start here
+
+GET         /                                                   controllers.Application.home()
+GET         /home                                               controllers.Application.home()
+GET         /login                                              controllers.Application.login()
+POST        /login                                              controllers.Application.authenticate()
+GET         /index                                              controllers.Application.index()
+GET         /logout                                             controllers.Application.logout()
+GET         /profile/:id                                        controllers.Application.profile(id: Long)
+GET         /signup                                             controllers.SignupController.signUp()
+POST        /signup/register                                    controllers.SignupController.register()
