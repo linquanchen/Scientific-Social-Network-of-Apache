@@ -1,12 +1,6 @@
 package models;
 
 public class SearchResult {
-    private String content;
-    private String title;
-
-    public SearchResult() {
-    }
-
     public String getTitle() {
         return title;
     }
@@ -15,16 +9,16 @@ public class SearchResult {
         this.title = title;
     }
 
-    public String getContent() {
-        return content;
+    private String title;
+
+    public String getDesc() {
+        return desc;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setDesc(String desc) {
+        this.desc = desc;
     }
 
-    @Override
-    public String toString() {
-        return "Title:" + this.title + " Cont:" +  this.content;
-    }
+    private String desc;
+
 }
