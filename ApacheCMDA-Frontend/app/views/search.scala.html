@@ -1,0 +1,25 @@
+@(results: List[SearchResult])
+
+@main("Search") {
+  <form action="/searchResult">
+    <select name="category" id="">
+      <option value="user">User</option>
+      <option value="workflow">Workflow</option>
+    </select>
+    <input type="text" name="keywd">
+    <input type="submit">
+  </form>
+@if(results != null) {
+  <p>Results Here</p>
+  <table>
+    <tr><td>Title</td><td>Content</td></tr>
+    @for(result <- results){
+      <tr>@result.getTitle</tr>
+    }
+  </table>
+
+} else {
+  <p>No Results!</p>
+}
+
+}

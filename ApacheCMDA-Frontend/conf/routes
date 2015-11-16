@@ -50,3 +50,5 @@ GET         /logout                                             controllers.Appl
 GET         /profile/:id                                        controllers.Application.profile(id: Long)
 GET         /signup                                             controllers.SignupController.signUp()
 POST        /signup/register                                    controllers.SignupController.register()
+GET         /search                                             controllers.SearchController.index()
+GET         /searchResult                                       controllers.SearchController.search(category: String ?= "", keywd: String ?= "")
