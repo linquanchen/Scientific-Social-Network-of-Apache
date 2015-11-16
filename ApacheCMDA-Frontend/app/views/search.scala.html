@@ -14,7 +14,10 @@
   <table>
     <tr><td>Title</td><td>Content</td></tr>
     @for(result <- results){
-      <tr>@result.getTitle</tr>
+      <tr>
+        <td>@result.getTitle</td>
+        <td>@result.getDesc</td>
+      </tr>
     }
   </table>
 
