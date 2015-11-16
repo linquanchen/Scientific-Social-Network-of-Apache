@@ -203,6 +203,9 @@ public class UserController extends Controller {
 		}
 
 		List<User> users = userRepository.getUserByDisplayName(display_name);
+		for (User user: users) {
+			user.setPassword("****");
+		}
 
 
 		if (users == null) {

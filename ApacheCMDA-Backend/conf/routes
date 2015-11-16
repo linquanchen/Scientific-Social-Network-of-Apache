@@ -67,4 +67,4 @@ GET           /users/getprofile/:id/json                                        
 GET           /assets/*file                                                                             controllers.Assets.at(path="/public", file)
 
 #Workflow
-GET           /workflow/getTimeline/:id/offset/:offset/json                                              @controllers.UserController.userSearch(id: Long, offset: Long, format: String="json")
+#GET           /workflow/getTimeline/:id/offset/:offset/json                                              @controllers.UserController.userSearch(id: Long, offset: Long, format: String="json")
