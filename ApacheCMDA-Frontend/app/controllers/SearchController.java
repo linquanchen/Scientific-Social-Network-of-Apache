@@ -31,7 +31,7 @@ public class SearchController extends Controller{
 
         switch (category) {
             case "user":
-                
+                JsonNode response = APICall.callAPI(Constants.NEW_BACKEND + "users/search/" + keywd + "/json");
                 break;
             case "group":
                 break;
