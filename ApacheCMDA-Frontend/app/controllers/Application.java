@@ -102,23 +102,6 @@ public class Application extends Controller {
         }
     }
 
-    public static Result profile(Long id) {
-        if (notpass()) return redirect(routes.Application.login());
-        JsonNode response = APICall.callAPI(Constants.NEW_BACKEND + "users/getprofile/" + id.toString() + "/json");
-        if (response == null || response.has("error")) {
-            return redirect(routes.Application.login());
-        }
-
-        String res_user = response.get("userName").toString();
-        String res_email = response.get("email").toString();
-
-        User user = new User();
-        user.setUserName(res_user);
-        user.setEmail(res_email);
-
-        return ok(profile.render(user));
-    }
-
     public static void flashMsg(JsonNode jsonNode){
         Iterator<Entry<String, JsonNode>> it = jsonNode.fields();
         while (it.hasNext()) {
