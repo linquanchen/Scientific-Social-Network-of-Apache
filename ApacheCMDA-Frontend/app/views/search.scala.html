@@ -1,4 +1,4 @@
-@(results: List[SearchResult])
+@(category: String, results: List[User] )
 
 @main("Search") {
   <form action="/searchResult">
@@ -12,13 +12,15 @@
 @if(results != null) {
   <p>Results Here</p>
   <table>
-    <tr><td>Title</td><td>Content</td></tr>
-    @for(result <- results){
+  @if(category.equals("user")) {
+    <tr><td>User</td><td>Email</td></tr>
+    @for( result <- results) {
       <tr>
-        <td>@result.getTitle</td>
-        <td>@result.getDesc</td>
+        <td>@result.getUserName</td>
+        <td>@result.getEmail</td>
       </tr>
     }
+  }
   </table>
 
 } else {

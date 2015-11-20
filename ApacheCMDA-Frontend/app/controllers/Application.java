@@ -72,7 +72,7 @@ public class Application extends Controller {
     public static Result home() {
         if (notpass()) return redirect(routes.Application.login());
 
-        return ok(home.render(session("id"), "I am Id"));
+        return ok(home.render(session("username"), session("id")));
     }
 
     public static Result authenticate() {

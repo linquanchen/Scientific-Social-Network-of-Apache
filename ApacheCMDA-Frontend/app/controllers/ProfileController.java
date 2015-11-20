@@ -17,13 +17,29 @@ import models.User;
  * Created by gavin on 11/19/15.
  */
 public class ProfileController extends Controller {
+    private static enum FollowType {
+        FOLLOWEE, FOLLOWER
+    }
+
     public static boolean notpass() {
         if (session("id") == null) {
             return true;
         }
         return false;
     }
-    
+
+    private static List<User> getFollow(Long id, FollowType f) {
+//        JsonNode response = APICall.callAPI(Constants.NEW_BACKEND
+//                + (f == FollowType.FOLLOWEE ? "users/getFollowees/" : "users/getFollwers/")
+//                + id.toString());
+        List<User> result = new ArrayList<User>();
+        User u = new User();
+        u.setUserName("Beautiful");
+        u.setEmail("a@a.a");
+        result.add(u);
+        return result;
+    }
+
     public static Result profile(Long id) {
         if (notpass()) return redirect(routes.Application.login());
         JsonNode response = APICall.callAPI(Constants.NEW_BACKEND + "users/getprofile/" + id.toString() + "/json");
@@ -38,6 +54,9 @@ public class ProfileController extends Controller {
         user.setUserName(res_user);
         user.setEmail(res_email);
 
-        return ok(profile.render(user));
+        List<User> followers = ProfileController.getFollow(id, FollowType.FOLLOWER);
+        List<User> followees = ProfileController.getFollow(id, FollowType.FOLLOWEE);
+
+        return ok(profile.render(user, followers, followees));
     }
 }
