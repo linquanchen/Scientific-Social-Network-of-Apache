@@ -29,14 +29,22 @@ public class ProfileController extends Controller {
     }
 
     private static List<User> getFollow(Long id, FollowType f) {
-//        JsonNode response = APICall.callAPI(Constants.NEW_BACKEND
-//                + (f == FollowType.FOLLOWEE ? "users/getFollowees/" : "users/getFollwers/")
-//                + id.toString());
+        String queryApi = Constants.NEW_BACKEND
+                + (f == FollowType.FOLLOWEE ? "users/getFollowees/" : "users/getFollowers/")
+                + id.toString();
+        JsonNode response = APICall.callAPI(queryApi);
+        if (response.has("error"))
+            return new ArrayList<User>();
         List<User> result = new ArrayList<User>();
-        User u = new User();
-        u.setUserName("Beautiful");
-        u.setEmail("a@a.a");
-        result.add(u);
+        String key = (f == FollowType.FOLLOWEE ? "followees" : "followers");
+        JsonNode arr = response.get(key);
+        for (JsonNode entity: arr) {
+            User u = new User();
+            JsonNode user = entity.get("User");
+            u.setUserName(user.get("userName").toString());
+            u.setEmail(user.get("email").toString());
+            result.add(u);
+        }
         return result;
     }
 

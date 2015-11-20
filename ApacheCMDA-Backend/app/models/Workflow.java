@@ -16,18 +16,9 @@
  */
 package models;
 
-import java.util.Date;
 import java.util.List;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
+import javax.persistence.*;
 
 
 @Entity
@@ -36,88 +27,136 @@ public class Workflow {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
-	private String name;
-	private String purpose;
-	private Date createTime;
-	private String versionNo;
-	private long rootWorkflowId;
+	private long userID;
+	private String wfTitle;
+	private String wfCategory;
+	private String wfCode;
+	private String wfDesc;
+	private String wfImg;
+	private String wfVisibility;
+	private String status;
+
+
+	@ManyToOne(optional = false)
+	@JoinColumn(name = "creatorId", referencedColumnName = "id")
+	private User user;
+
 	@ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE})
-	@JoinTable(name = "WorkflowAndUser", joinColumns = { @JoinColumn(name ="workflowId", referencedColumnName = "id")}, inverseJoinColumns = { @JoinColumn(name = "userId", referencedColumnName = "id") })
-	private List<User> userSet;
+	@JoinTable(name = "WorkflowAndContributors", joinColumns = { @JoinColumn(name ="workflowId", referencedColumnName = "id")}, inverseJoinColumns = { @JoinColumn(name = "contributorId", referencedColumnName = "id") })
+	private List<User> wfContributors;
+
 	@ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE})
-	@JoinTable(name = "WorkflowAndClimateService", joinColumns = { @JoinColumn(name ="workflowId", referencedColumnName = "id")}, inverseJoinColumns = { @JoinColumn(name = "climateServiceId", referencedColumnName = "id") })
-	private List<ClimateService> climateServiceSet;
+	@JoinTable(name = "WorkflowAndRelated", joinColumns = { @JoinColumn(name ="workflowId", referencedColumnName = "id")}, inverseJoinColumns = { @JoinColumn(name = "relatedId", referencedColumnName = "id") })
+	private List<Workflow> wfRelated;
 
 	public Workflow() {
 	}
 
-	public Workflow(String name, String purpose, Date createTime,
-			String versionNo, long rootWorkflowId, List<User> userSet,
-			List<ClimateService> climateServiceSet) {
+	public Workflow(long userID, String wfTitle, String wfCategory, String wfCode,
+					String wfDesc, String wfImg, String wfVisibility,
+					User user, List<User> wfContributors, List<Workflow> wfRelated,
+					String status) {
 		super();
-		this.name = name;
-		this.purpose = purpose;
-		this.createTime = createTime;
-		this.versionNo = versionNo;
-		this.rootWorkflowId = rootWorkflowId;
-		this.userSet = userSet;
-		this.climateServiceSet = climateServiceSet;
+		this.userID = userID;
+		this.wfTitle = wfTitle;
+		this.wfCategory = wfCategory;
+		this.wfCode = wfCode;
+		this.wfDesc = wfDesc;
+		this.wfImg = wfImg;
+		this.wfVisibility = wfVisibility;
+		this.user = user;
+		this.wfContributors = wfContributors;
+		this.wfRelated = wfRelated;
+		this.status = status;
+
 	}
 
-	public String getName() {
-		return name;
+	public String getWfCategory() {
+		return wfCategory;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setWfCategory(String wfCategory) {
+		this.wfCategory = wfCategory;
 	}
 
-	public String getPurpose() {
-		return purpose;
+	public String getWfCode() {
+		return wfCode;
 	}
 
-	public void setPurpose(String purpose) {
-		this.purpose = purpose;
+	public void setWfCode(String wfCode) {
+		this.wfCode = wfCode;
 	}
 
-	public Date getCreateTime() {
-		return createTime;
+	public String getWfDesc() {
+		return wfDesc;
 	}
 
-	public void setCreateTime(Date createTime) {
-		this.createTime = createTime;
+	public void setWfDesc(String wfDesc) {
+		this.wfDesc = wfDesc;
 	}
 
-	public String getVersionNo() {
-		return versionNo;
+	public String getWfImg() {
+		return wfImg;
 	}
 
-	public void setVersionNo(String versionNo) {
-		this.versionNo = versionNo;
+	public void setWfImg(String wfImg) {
+		this.wfImg = wfImg;
 	}
 
-	public long getRootWorkflowId() {
-		return rootWorkflowId;
+	public String getWfVisibility() {
+		return wfVisibility;
 	}
 
-	public void setRootWorkflowId(long rootWorkflowId) {
-		this.rootWorkflowId = rootWorkflowId;
+	public void setWfVisibility(String wfVisibility) {
+		this.wfVisibility = wfVisibility;
 	}
 
-	public List<User> getUserSet() {
-		return userSet;
+	public List<User> getWfContributors() {
+		return wfContributors;
 	}
 
-	public void setUserSet(List<User> userSet) {
-		this.userSet = userSet;
+	public void setWfContributors(List<User> wfContributors) {
+		this.wfContributors = wfContributors;
 	}
 
-	public List<ClimateService> getClimateServiceSet() {
-		return climateServiceSet;
+	public List<Workflow> getWfRelated() {
+		return wfRelated;
 	}
 
-	public void setClimateServiceSet(List<ClimateService> climateServiceSet) {
-		this.climateServiceSet = climateServiceSet;
+	public void setWfRelated(List<Workflow> wfRelated) {
+		this.wfRelated = wfRelated;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public long getUserID() {
+		return userID;
+	}
+
+	public void setUserID(long userID) {
+		this.userID = userID;
+	}
+
+	public String getWfTitle() {
+		return wfTitle;
+	}
+
+	public void setWfTitle(String wfTitle) {
+		this.wfTitle = wfTitle;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 	public long getId() {
@@ -126,11 +165,9 @@ public class Workflow {
 
 	@Override
 	public String toString() {
-		return "Workflow [id=" + id + ", name=" + name + ", purpose=" + purpose
-				+ ", createTime=" + createTime + ", versionNo=" + versionNo
-				+ ", rootWorkflowId=" + rootWorkflowId + ", userSet=" + userSet
-				+ ", climateServiceSet=" + climateServiceSet + "]";
+		return "Workflow [id=" + id + ", userID=" + userID + ", wfTitle=" + wfTitle
+				+ ", wfCategory=" + wfCategory + ", wfCode=" + wfCode
+				+ ", wfDesc=" + wfDesc + ", wfImg" + wfImg + ", wfVisibility" + wfVisibility
+				+ ", user=" + user + ", wfContributors" + wfContributors + ", wfRelated" + wfRelated + "]";
 	}
-	
-	
 }

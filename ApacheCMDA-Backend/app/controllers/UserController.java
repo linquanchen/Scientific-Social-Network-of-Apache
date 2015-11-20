@@ -18,12 +18,15 @@ package controllers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import models.User;
 import models.UserRepository;
 import play.mvc.*;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -31,7 +34,11 @@ import javax.inject.Singleton;
 import javax.persistence.PersistenceException;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+
 
 /**
  * The main set of web services.
@@ -66,7 +73,7 @@ public class UserController extends Controller {
 				System.out.println("Email has been used: " + email);
 				return badRequest("Email has been used");
 			}
-			User user = new User(name, email, password);
+			User user = new User(name, email, MD5Hashing(password));
 			userRepository.save(user);
 			System.out.println("User saved: " + user.getId());
 			return created(new Gson().toJson(user.getId()));
@@ -75,6 +82,49 @@ public class UserController extends Controller {
 			System.out.println("User not saved: " + name);
 			return badRequest("User not saved: " + name);
 		}
+	}
+
+	public Result userLogin() {
+		JsonNode json = request().body().asJson();
+		if (json == null) {
+			System.out.println("Cannot check user, expecting Json data");
+			return badRequest("Cannot check user, expecting Json data");
+		}
+		String email = json.path("email").asText();
+		String password = json.path("password").asText();
+		User user = userRepository.findByEmail(email);
+		if (user.getPassword().equals(MD5Hashing(password))) {
+			System.out.println("User is valid");
+			JsonObject jsonObject = new JsonObject();
+			jsonObject.addProperty("id", user.getId());
+			jsonObject.addProperty("userName", user.getUserName());
+            return ok(new Gson().toJson(jsonObject));
+		} else {
+			System.out.println("User is not valid");
+			return badRequest("User is not valid");
+		}
+	}
+
+	private static String MD5Hashing(String password) {
+
+		MessageDigest md = null;
+		try {
+			md = MessageDigest.getInstance("MD5");
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+		md.update(password.getBytes());
+		byte byteData[] = md.digest();
+
+		//convert the byte to hex format method
+		StringBuffer hexString = new StringBuffer();
+		for (int i=0;i<byteData.length;i++) {
+			String hex=Integer.toHexString(0xff & byteData[i]);
+			if(hex.length()==1) hexString.append('0');
+			hexString.append(hex);
+		}
+
+		return hexString.toString();
 	}
 
 	public Result deleteUser(Long id) {
@@ -129,7 +179,11 @@ public class UserController extends Controller {
 		}
 		String result = new String();
 		if (format.equals("json")) {
-			result = new Gson().toJson(user);
+			JsonObject jsonObject = new JsonObject();
+			jsonObject.addProperty("id", user.getId());
+			jsonObject.addProperty("userName", user.getUserName());
+			jsonObject.addProperty("email", user.getEmail());
+			result = new Gson().toJson(jsonObject);
 		}
 
 		return ok(result);
@@ -146,29 +200,6 @@ public class UserController extends Controller {
 			result = new Gson().toJson(userList);
 		}
 		return ok(result);
-	}
-	
-	public Result userLogin() {
-		JsonNode json = request().body().asJson();
-		if (json == null) {
-			System.out.println("Cannot check user, expecting Json data");
-			return badRequest("Cannot check user, expecting Json data");
-		}
-		String email = json.path("email").asText();
-		String password = json.path("password").asText();
-		User user = userRepository.findByEmail(email);
-		if (user.getPassword().equals(password)) {
-			System.out.println("User is valid");
-			ObjectMapper mapper = new ObjectMapper();
-			ObjectNode node = mapper.createObjectNode();
-			node.put("id", user.getId());
-			node.put("username", user.getUserName());
-
-			return ok(node);
-		} else {
-			System.out.println("User is not valid");
-			return badRequest("User is not valid");
-		}
 	}
 	
 	public Result deleteUserByUserNameandPassword(String userName, String password) {
@@ -218,6 +249,142 @@ public class UserController extends Controller {
 		}
 
 		return ok(result);
+	}
+
+	public Result userFollow(Long userId, Long followeeId){
+		try{
+			if(userId==null){
+				System.out.println("Follower id is null or empty!");
+				return badRequest("Follower id is null or empty!");
+			}
+			User user = userRepository.findOne(userId);
+            if(user==null){
+                return badRequest("Follower is not existed");
+            }
+
+
+			if(followeeId==null){
+				System.out.println("Followee id is null or empty!");
+				return badRequest("Followee id is null or empty!");
+			}
+			User followee = userRepository.findOne(followeeId);
+            if(followee==null){
+                return badRequest("Followee is not existed");
+            }
+
+            Set<User> followers = followee.getFollowers();
+            followers.add(user);
+            followee.setFollowers(followers);
+
+            userRepository.save(followee);
+			return ok("Followship is established");
+		} catch (Exception e){
+			e.printStackTrace();
+			return badRequest("Followship is not established: Follower:"+userId+"\tFollowee:"+followeeId);
+		}
+	}
+
+    public Result userUnfollow(Long userId, Long followeeId){
+        try{
+            if(userId==null){
+                System.out.println("Follower id is null or empty!");
+                return badRequest("Follower id is null or empty!");
+            }
+            User user = userRepository.findOne(userId);
+            if(user==null){
+                return badRequest("Follower is not existed");
+            }
+            if(followeeId==null){
+                System.out.println("Followee id is null or empty!");
+                return badRequest("Followee id is null or empty!");
+            }
+            User followee = userRepository.findOne(followeeId);
+            if(followee==null){
+                return badRequest("Followee is not existed");
+            }
+
+			Set<User> followers = followee.getFollowers();
+			for(User u : followers) {
+				if(u.getId()==user.getId()) {
+					followers.remove(u);
+				}
+			}
+			followee.setFollowers(followers);
+
+			userRepository.save(followee);
+            return ok("Followship is destroyed");
+        } catch (Exception e){
+            e.printStackTrace();
+            return badRequest("Followship is established: Follower:"+userId+"\tFollowee:"+followeeId);
+        }
+    }
+
+	public Result getFollowers(Long id){
+		try{
+			if(id==null){
+				System.out.println("User id is null or empty!");
+				return badRequest("User id is null or empty");
+			}
+			User user = userRepository.findOne(id);
+			if(user==null){
+				System.out.println("Cannot find user");
+				return badRequest("Cannot find user");
+			}
+			Set<User> followers = user.getFollowers();
+			StringBuilder sb = new StringBuilder();
+			sb.append("{\"followers\":");
+
+			if(!followers.isEmpty()) {
+				sb.append("[");
+				for (User follower : followers) {
+					sb.append(follower.toJson() + ",");
+				}
+				if (sb.lastIndexOf(",") > 0) {
+					sb.deleteCharAt(sb.lastIndexOf(","));
+				}
+				sb.append("]}");
+			} else {
+				sb.append("{}}");
+			}
+			return ok(sb.toString());
+		} catch (Exception e){
+			e.printStackTrace();
+			return badRequest("Cannot get followers");
+		}
+	}
+
+	public Result getFollowees(Long id){
+		try{
+			if(id==null){
+				System.out.println("User id is null or empty!");
+				return badRequest("User id is null or empty");
+			}
+			User user = userRepository.findOne(id);
+			if(user==null){
+				System.out.println("Cannot find user");
+				return badRequest("Cannot find user");
+			}
+			Set<User> followees = userRepository.findByFollowerId(id);
+			StringBuilder sb = new StringBuilder();
+
+			sb.append("{\"followees\":");
+			if(!followees.isEmpty()) {
+				sb.append("[");
+				for (User follower : followees) {
+					sb.append(follower.toJson() + ",");
+				}
+				if (sb.lastIndexOf(",") > 0) {
+					sb.deleteCharAt(sb.lastIndexOf(","));
+				}
+				sb.append("]}");
+			} else {
+				sb.append("{}}");
+			}
+			return ok(sb.toString());
+		} catch (Exception e){
+			e.printStackTrace();
+			return badRequest("Cannot get followers");
+		}
 	}
 
 }

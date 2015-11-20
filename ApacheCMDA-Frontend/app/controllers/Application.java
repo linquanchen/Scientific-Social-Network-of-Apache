@@ -94,7 +94,7 @@ public class Application extends Controller {
             }
             session().clear();
             session("id", response.get("id").toString());
-            session("username", response.get("username").toString());
+            session("username", response.get("userName").toString());
             session("email", loginForm.data().get("email"));
             return redirect(
                     routes.Application.index()

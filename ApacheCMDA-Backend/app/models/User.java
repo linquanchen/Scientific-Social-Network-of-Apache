@@ -16,10 +16,11 @@
  */
 package models;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 public class User {
@@ -27,11 +28,17 @@ public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
+	private boolean status;
 	private String userName;
 	private String password;
 	private String email;
 	private String phoneNumber;
 
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(	name = "Followers",
+				joinColumns = { @JoinColumn(name ="userId", referencedColumnName = "id")},
+				inverseJoinColumns = { @JoinColumn(name = "followerId", referencedColumnName = "id") })
+	private Set<User> followers;
 //	private String middleInitial;
 //	private String affiliation;
 //	private String title;
@@ -98,12 +105,35 @@ public class User {
 		this.phoneNumber = phoneNumber;
 	}
 
+	public Set<User> getFollowers(){ return this.followers; }
+	
+	public void setFollowers(Set<User> followers) {
+		this.followers = followers;
+	}
+
+	public void addFollower(User follower){
+		this.followers.add(follower);
+	}
+
+	public void removeFollower(User follower){
+		this.followers.remove(follower);
+	}
+
+
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", userName=" + userName
 				+ ", password=" + password + ", email=" + email
 				+ ", phoneNumber=" + phoneNumber + "]";
 	}
+
+	public String toJson() {
+		return "{\"User\":{\"id\":\"" + id + "\", \"userName\":\"" + userName
+				+ "\", \"password\":\"" + password + "\", \"email\":\"" + email
+				+ "\", \"phoneNumber\":\"" + phoneNumber + "\"}}";
+	}
+	
+	public void setStatus(boolean status){ this.status = status; }
 
 /*	public String getMiddleInitial() {
 		return middleInitial;
