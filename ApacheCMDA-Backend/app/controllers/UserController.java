@@ -277,7 +277,7 @@ public class UserController extends Controller {
             followee.setFollowers(followers);
 
             userRepository.save(followee);
-			return ok("Followship is established");
+			return ok("{\"success\":\"Success!\"}");
 		} catch (Exception e){
 			e.printStackTrace();
 			return badRequest("Followship is not established: Follower:"+userId+"\tFollowee:"+followeeId);

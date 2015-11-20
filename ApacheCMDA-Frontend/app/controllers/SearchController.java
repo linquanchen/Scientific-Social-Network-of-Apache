@@ -38,8 +38,13 @@ public class SearchController extends Controller{
                 for (JsonNode n: response) {
                     User obj = new User();
                     obj.setUserName(n.get("userName").toString());
-                    obj.setEmail(n.get("email").toString());
+                    try {
+                        obj.setEmail(n.get("email").toString());
+                    } catch (Exception e){
+                        obj.setEmail("");
+                    }
                     obj.setId(Long.parseLong(n.get("id").toString()));
+
                     userArr.add(obj);
                 }
                 break;

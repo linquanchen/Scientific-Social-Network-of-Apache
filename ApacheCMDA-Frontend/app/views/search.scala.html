@@ -13,11 +13,12 @@
   <p>Results Here</p>
   <table>
   @if(category.equals("user")) {
-    <tr><td>User</td><td>Email</td></tr>
+    <tr><th>User</th><th>Email</th><th>View</th></tr>
     @for( result <- results) {
       <tr>
         <td>@result.getUserName</td>
         <td>@result.getEmail</td>
+        <td><a href="/profile/@result.getId">More</a></td>
       </tr>
     }
   }

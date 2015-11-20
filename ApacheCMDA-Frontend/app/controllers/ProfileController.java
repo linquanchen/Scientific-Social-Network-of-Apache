@@ -56,15 +56,39 @@ public class ProfileController extends Controller {
         }
 
         String res_user = response.get("userName").toString();
-        String res_email = response.get("email").toString();
+        String res_email = "";
+        Long res_id = response.get("id").asLong();
+        try {
+            res_email = response.get("email").toString();
+        } catch (Exception e) {
+            res_email = "";
+        }
 
         User user = new User();
         user.setUserName(res_user);
         user.setEmail(res_email);
+        user.setId(res_id);
 
         List<User> followers = ProfileController.getFollow(id, FollowType.FOLLOWER);
         List<User> followees = ProfileController.getFollow(id, FollowType.FOLLOWEE);
 
-        return ok(profile.render(user, followers, followees));
+        boolean isSelf = (Long.parseLong(session("id")) == user.getId());
+
+        return ok(profile.render(user, followers, followees, isSelf));
+    }
+
+    public static Result follow(Long id) {
+        // http://localhost:9034/users/follow/followerId/110/followeeId/12
+        if (notpass()) return redirect(routes.Application.login());
+        String followQuery = Constants.NEW_BACKEND
+                + "users/follow/followerId/"
+                + session("id")
+                + "/followeeId/"
+                + id.toString();
+        JsonNode response = APICall.callAPI(followQuery);
+        if (response == null || response.has("error")) {
+            return redirect(routes.Application.login());
+        }
+        return redirect(routes.ProfileController.profile(id));
     }
 }
