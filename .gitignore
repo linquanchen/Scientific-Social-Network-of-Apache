@@ -11,6 +11,8 @@ ApacheCMDA-Frontend/target/
 ApacheCMDA-Frontend/project/target/
 ApacheCMDA-Frontend/logs/
 
+.idea/
+
 *.class
 *.cache
 *.db
