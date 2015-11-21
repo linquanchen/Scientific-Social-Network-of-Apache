@@ -3,11 +3,13 @@ ApacheCMDA-Backend/.idea_modules/
 ApacheCMDA-Backend/.settings/
 ApacheCMDA-Backend/target/
 ApacheCMDA-Backend/project/target/
+ApacheCMDA-Backend/logs/
 ApacheCMDA-Frontend/.idea/
 ApacheCMDA-Frontend/.idea_modules/
 ApacheCMDA-Frontend/.settings/
 ApacheCMDA-Frontend/target/
 ApacheCMDA-Frontend/project/target/
+ApacheCMDA-Frontend/logs/
 
 *.class
 *.cache
