@@ -20,9 +20,10 @@ import org.springframework.data.repository.CrudRepository;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
+import java.util.List;
 
 @Named
 @Singleton
 public interface WorkflowRepository extends CrudRepository<Workflow, Long> {
-
+    List<Workflow> findByUserID(Long id);
 }

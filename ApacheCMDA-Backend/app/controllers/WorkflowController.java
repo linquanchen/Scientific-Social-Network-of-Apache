@@ -1,10 +1,30 @@
+
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package controllers;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import models.User;
 import models.UserRepository;
+
 import models.Workflow;
 import models.WorkflowRepository;
 import play.mvc.Controller;
@@ -13,14 +33,15 @@ import play.mvc.Result;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
-import java.util.*;
+import javax.persistence.PersistenceException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
-/**
- * Created by chenlinquan on 11/15/15.
- */
 @Named
 @Singleton
 public class WorkflowController extends Controller {
+
 
     private final WorkflowRepository workflowRepository;
     private final UserRepository userRepository;
@@ -99,6 +120,27 @@ public class WorkflowController extends Controller {
         String result = new String();
         if (format.equals("json")) {
             result = new Gson().toJson(workflow);
+        }
+
+        return ok(result);
+    }
+
+    public Result getTimeLine(Long id, Long offset, String format) {
+        if(id == null) {
+            System.out.println("Id not created, please enter valid user");
+            return badRequest("Id not created, please enter valid user");
+        }
+
+        List<Workflow> allWorkflows = new ArrayList<>();
+        Set<User> followees = userRepository.findByFollowerId(id);
+        for (User followee: followees) {
+            List<Workflow> workflows = workflowRepository.findByUserID(followee.getId());
+            allWorkflows.addAll(workflows);
+        }
+
+        String result = new String();
+        if (format.equals("json")) {
+            result = new Gson().toJson(allWorkflows);
         }
 
         return ok(result);
