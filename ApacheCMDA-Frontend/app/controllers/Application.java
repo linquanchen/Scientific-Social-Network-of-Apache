@@ -72,7 +72,7 @@ public class Application extends Controller {
     public static Result home() {
         if (notpass()) return redirect(routes.Application.login());
 
-        return ok(home.render(session("id"), "I am Id"));
+        return ok(home.render(session("username"), session("id")));
     }
 
     public static Result authenticate() {
@@ -94,29 +94,12 @@ public class Application extends Controller {
             }
             session().clear();
             session("id", response.get("id").toString());
-            session("username", response.get("username").toString());
+            session("username", response.get("userName").toString());
             session("email", loginForm.data().get("email"));
             return redirect(
                     routes.Application.index()
             );
         }
-    }
-
-    public static Result profile(Long id) {
-        if (notpass()) return redirect(routes.Application.login());
-        JsonNode response = APICall.callAPI(Constants.NEW_BACKEND + "users/" + id.toString());
-        if (response == null || response.has("error")) {
-            return redirect(routes.Application.login());
-        }
-
-        String res_user = response.get("username").toString();
-        String res_email = response.get("email").toString();
-
-        User user = new User();
-        user.setUserName(res_user);
-        user.setEmail(res_email);
-
-        return ok(profile.render(user));
     }
 
     public static void flashMsg(JsonNode jsonNode){

@@ -1,0 +1,31 @@
+@(category: String, results: List[User] )
+
+@main("Search") {
+  <form action="/searchResult">
+    <select name="category" id="">
+      <option value="user">User</option>
+      <option value="workflow">Workflow</option>
+    </select>
+    <input type="text" name="keywd">
+    <input type="submit">
+  </form>
+@if(results != null) {
+  <p>Results Here</p>
+  <table>
+  @if(category.equals("user")) {
+    <tr><th>User</th><th>Email</th><th>View</th></tr>
+    @for( result <- results) {
+      <tr>
+        <td>@result.getUserName</td>
+        <td>@result.getEmail</td>
+        <td><a href="/profile/@result.getId">More</a></td>
+      </tr>
+    }
+  }
+  </table>
+
+} else {
+  <p>No Results!</p>
+}
+
+}

@@ -1,10 +1,28 @@
 
 
-@(user: User)
+@(user: User, follows: List[User], followees: List[User], isSelf: Boolean)
 
 @main("Welcome") {
   <div>
     <h1>@user.getUserName()</h1>
     <p>@user.getEmail()</p>
+    @if(!isSelf) {
+      <p><a href="/follow/@user.getId">Follow</a></p>
+      <p><a href="/">BackHome</a></p>
+    }
+    <h3>Followers</h3>
+    <table>
+      <tr><th>Follower</th><th>Email</th></tr>
+      @for(follower <- follows){
+        <tr><td>@follower.getUserName</td><td>@follower.getEmail</td></tr>
+      }
+    </table>
+    <h3>Followees</h3>
+    <table>
+      <tr><th>Followee</th><th>Email</th></tr>
+      @for(followee <- followees){
+        <tr><td>@followee.getUserName</td><td>@followee.getEmail</td></tr>
+      }
+    </table>
   </div>
 }
