@@ -52,3 +52,5 @@ GET         /signup                                             controllers.Sign
 POST        /signup/register                                    controllers.SignupController.register()
 GET         /search                                             controllers.SearchController.index()
 GET         /searchResult                                       controllers.SearchController.search(category: String ?= "", keywd: String ?= "")
+GET         /follow/:id                                         controllers.ProfileController.follow(id: Long)
+

@@ -58,10 +58,15 @@ GET           /users/search/:display_name/json                                  
 PUT           /users/setprofile/:id                                                                      @controllers.UserController.setProfile(id: Long)
 GET           /users/getprofile/:id/json                                                                 @controllers.UserController.getProfile(id: Long, format: String="json")
 
-#GET           /users/follow                                                                             @controllers.UserController.userFollow(follower_id: Long, followee_id: Long)
-#GET           /users/unfollow                                                                           @controllers.UserController.userUnfollow(follower_id: Long, followee_id: Long)
-#GET           /users/getFollowers                                                                       @controllers.UserController.getFollowers(id: Long)
-#GET           /users/getFollowees                                                                       @controllers.UserController.getFollowees(id: Long)
+GET           /users/follow/followerId/:followerId/followeeId/:followeeId                               @controllers.UserController.userFollow(followerId: Long, followeeId: Long)
+GET           /users/unfollow/followerId/:followerId/followeeId/:followeeId                             @controllers.UserController.userUnfollow(followerId: Long, followeeId: Long)
+GET           /users/getFollowers/:id                                                                   @controllers.UserController.getFollowers(id: Long)
+GET           /users/getFollowees/:id                                                                   @controllers.UserController.getFollowees(id: Long)
+
+# Workflow
+POST           /workflow/post                                                                            @controllers.WorkflowController.post
+GET            /workflow/get/workflowID/:wfID/userID/:userID/json                                        @controllers.WorkflowController.get(wfID: Long, userID: Long, format: String="json")
+GET           /workflow/getTimeline/:id/offset/:offset/json                                              @controllers.WorkflowController.getTimeLine(id: Long, offset: Long, format: String="json")
 
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file                                                                             controllers.Assets.at(path="/public", file)

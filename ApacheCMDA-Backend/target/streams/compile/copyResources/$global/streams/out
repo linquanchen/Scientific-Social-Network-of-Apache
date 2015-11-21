@@ -1,5 +1,0 @@
-[0m[[0mdebug[0m] [0mCopy resource mappings: [0m
-[0m[[0mdebug[0m] [0m	(/home/xingwei/SOC-Fall-2015/ApacheCMDA-Backend/conf/application.conf,/home/xingwei/SOC-Fall-2015/ApacheCMDA-Backend/target/scala-2.11/classes/application.conf)[0m
-[0m[[0mdebug[0m] [0m	(/home/xingwei/SOC-Fall-2015/ApacheCMDA-Backend/conf/routes,/home/xingwei/SOC-Fall-2015/ApacheCMDA-Backend/target/scala-2.11/classes/routes)[0m
-[0m[[0mdebug[0m] [0m	(/home/xingwei/SOC-Fall-2015/ApacheCMDA-Backend/conf/META-INF,/home/xingwei/SOC-Fall-2015/ApacheCMDA-Backend/target/scala-2.11/classes/META-INF)[0m
-[0m[[0mdebug[0m] [0m	(/home/xingwei/SOC-Fall-2015/ApacheCMDA-Backend/conf/META-INF/persistence.xml,/home/xingwei/SOC-Fall-2015/ApacheCMDA-Backend/target/scala-2.11/classes/META-INF/persistence.xml)[0m
