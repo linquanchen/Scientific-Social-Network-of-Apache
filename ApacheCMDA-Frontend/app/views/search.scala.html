@@ -1,5 +1,12 @@
 @(username: String, userId: String, category: String, results: List[User] )
 
+<link href='@routes.Assets.at("css/bootstrap.min.css")'
+      rel="stylesheet"/>
+<link href='@routes.Assets.at("css/header.css")'
+      rel="stylesheet"/>
+
+<script src='@routes.Assets.at("js/jquery-1.1.js")'></script>
+
 <div id="header">
   @fixed.header(username,Long.parseLong(userId))
 </div>
