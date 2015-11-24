@@ -2,6 +2,10 @@
 
 @(user: User, follows: List[User], followees: List[User], isSelf: Boolean)
 
+<div id="header">
+  @fixed.header(user.getUserName(),user.getId())
+</div>
+
 @main("Welcome") {
   <div>
     <h1>@user.getUserName()</h1>

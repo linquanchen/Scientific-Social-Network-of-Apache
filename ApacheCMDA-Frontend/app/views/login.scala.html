@@ -15,6 +15,9 @@
     <script src='@routes.Assets.at("js/login.js")'></script>
   </head>
   <body>
+  <div id="header">
+    @fixed.header("undefined",-1)
+  </div>
   @helper.form(routes.Application.authenticate) {
 
     <div class="container-fluid row">

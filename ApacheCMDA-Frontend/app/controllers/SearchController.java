@@ -23,7 +23,7 @@ public class SearchController extends Controller{
 
     public static Result index() {
         if (notpass()) return redirect(routes.Application.login());
-        return ok(search.render(null, null));
+        return ok(search.render(session("username"), session("id"), null, null));
     }
 
     public static Result search(String category, String keywd) {
@@ -54,6 +54,6 @@ public class SearchController extends Controller{
                 break;
         }
 
-        return ok(search.render(category, userArr));
+        return ok(search.render(session("username"), session("id"), category, userArr));
     }
 }

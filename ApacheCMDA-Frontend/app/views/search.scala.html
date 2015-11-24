@@ -1,4 +1,8 @@
-@(category: String, results: List[User] )
+@(username: String, userId: String, category: String, results: List[User] )
+
+<div id="header">
+  @fixed.header(username,Long.parseLong(userId))
+</div>
 
 @main("Search") {
   <form action="/searchResult">

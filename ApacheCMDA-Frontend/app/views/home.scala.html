@@ -1,5 +1,9 @@
 @(username: String, userId: String)
 
+<div id="header">
+  @fixed.header(username,Long.parseLong(userId))
+</div>
+
 @main("Welcome") {
   <h1>Welcom @username!</h1>
   <h3>Your id is: <a href="/profile/@userId">@userId</a></h3>
