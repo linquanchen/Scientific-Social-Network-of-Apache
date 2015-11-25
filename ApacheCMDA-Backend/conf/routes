@@ -64,12 +64,14 @@ GET           /users/getFollowers/:id                                           
 GET           /users/getFollowees/:id                                                                   @controllers.UserController.getFollowees(id: Long)
 
 # Workflow
-POST           /workflow/post                                                                            @controllers.WorkflowController.post
-GET            /workflow/get/workflowID/:wfID/userID/:userID/json                                        @controllers.WorkflowController.get(wfID: Long, userID: Long, format: String="json")
+POST          /workflow/post                                                                            @controllers.WorkflowController.post
+GET           /workflow/get/workflowID/:wfID/userID/:userID/json                                        @controllers.WorkflowController.get(wfID: Long, userID: Long, format: String="json")
 GET           /workflow/getTimeline/:id/offset/:offset/json                                              @controllers.WorkflowController.getTimeLine(id: Long, offset: Long, format: String="json")
+PUT           /workflow/uploadImage/:id                                                                    @controllers.WorkflowController.uploadImage(id:Long)
+#GET           /workflow/getImage/:id/json/
 
 # Map static resources from the /public folder to the /assets URL path
-GET           /assets/*file                                                                             controllers.Assets.at(path="/public", file)
+GET           /assets/*file                                                                             controllers.Assets.at(path="/", file)
 
 #Workflow
 #GET           /workflow/getTimeline/:id/offset/:offset/json                                              @controllers.UserController.userSearch(id: Long, offset: Long, format: String="json")
