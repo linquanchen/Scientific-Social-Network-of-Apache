@@ -54,3 +54,6 @@ GET         /search                                             controllers.Sear
 GET         /searchResult                                       controllers.SearchController.search(category: String ?= "", keywd: String ?= "")
 GET         /follow/:id                                         controllers.ProfileController.follow(id: Long)
 
+# display and show work flow
+GET         /workflow                                           controllers.WorkflowController.main()
+POST        /workflow/new                                       controllers.WorkflowController.createFlow()

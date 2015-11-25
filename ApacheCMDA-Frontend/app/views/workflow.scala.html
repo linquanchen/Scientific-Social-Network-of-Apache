@@ -1,0 +1,27 @@
+@(userName: String, userId: Long)
+
+<link href='@routes.Assets.at("css/bootstrap.min.css")'
+rel="stylesheet"/>
+<link href='@routes.Assets.at("css/header.css")'
+rel="stylesheet"/>
+
+<script src='@routes.Assets.at("js/jquery-1.1.js")'></script>
+
+<div id="header">
+@fixed.header(userName, userId)
+</div>
+
+@main("Time line") {
+  <div>
+
+    <h3>Followers</h3>
+    <form action="@routes.WorkflowController.createFlow()" method="POST">
+      <input type="hidden" name="userID" value="@userId">
+      <input type="text" name="wfTitle" placeholder="Title">
+      <input type="text" name="wfCategory" placeholder="Category">
+      <input type="text" name="wfCode" placeholder="Code">
+      <input type="text" name="wfDesc" placeholder="Description">
+      <input type="text" name="wfVisibility" placeholder="Visibility">
+    </form>
+  </div>
+}
