@@ -10,8 +10,10 @@ ApacheCMDA-Frontend/.settings/
 ApacheCMDA-Frontend/target/
 ApacheCMDA-Frontend/project/target/
 ApacheCMDA-Frontend/logs/
-
+*.iml
 .idea/
+ApacheCMDA-Backend/runner.sh
+ApacheCMDA-Backend/public/images/
 
 *.class
 *.cache

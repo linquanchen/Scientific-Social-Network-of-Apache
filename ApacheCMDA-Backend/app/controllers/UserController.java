@@ -387,4 +387,177 @@ public class UserController extends Controller {
 		}
 	}
 
+	public Result sendFriendRequest(Long senderId, Long receiverId) {
+		try {
+			if(receiverId==null){
+				System.out.println("User id is null or empty!");
+				return badRequest("User id is null or empty");
+			}
+			User receiver = userRepository.findOne(receiverId);
+			if(receiverId==null){
+				System.out.println("Cannot find friend request sender");
+				return badRequest("Cannot find friend request sender");
+			}
+
+			if(senderId==null){
+				System.out.println("User id is null or empty!");
+				return badRequest("User id is null or empty");
+			}
+			User sender = userRepository.findOne(senderId);
+			if(receiverId==null){
+				System.out.println("Cannot find friend request sender");
+				return badRequest("Cannot find friend request sender");
+			}
+
+			Set<User> senders = receiver.getFriendRequestSender();
+			senders.add(sender);
+			receiver.setFriendRequestSender(senders);
+
+			userRepository.save(receiver);
+			return ok("Friend Request is sent");
+
+		} catch (Exception e){
+			e.printStackTrace();
+			return badRequest("Cannot send friend request");
+		}
+	}
+
+	public Result getFriendRequests(Long id) {
+		try{
+			if(id==null){
+				System.out.println("User id is null or empty!");
+				return badRequest("User id is null or empty");
+			}
+			User user = userRepository.findOne(id);
+			if(user==null){
+				System.out.println("Cannot find user");
+				return badRequest("Cannot find user");
+			}
+			Set<User> senders = user.getFriendRequestSender();
+			StringBuilder sb = new StringBuilder();
+			sb.append("{\"friendRequestSender\":");
+
+			if(!senders.isEmpty()) {
+				sb.append("[");
+				for (User follower : senders) {
+					sb.append(follower.toJson() + ",");
+				}
+				if (sb.lastIndexOf(",") > 0) {
+					sb.deleteCharAt(sb.lastIndexOf(","));
+				}
+				sb.append("]}");
+			} else {
+				sb.append("{}}");
+			}
+			return ok(sb.toString());
+		} catch (Exception e){
+			e.printStackTrace();
+			return badRequest("Cannot get friend-requests");
+		}
+	}
+
+	public Result acceptFriendRequest(Long receiverId, Long senderId) {
+		try {
+			if(receiverId==null){
+				System.out.println("User id is null or empty!");
+				return badRequest("User id is null or empty");
+			}
+			User receiver = userRepository.findOne(receiverId);
+			if(receiverId==null){
+				System.out.println("Cannot find friend accept receiver");
+				return badRequest("Cannot find friend accept receiver");
+			}
+
+			if(senderId==null){
+				System.out.println("User id is null or empty!");
+				return badRequest("User id is null or empty");
+			}
+			User sender = userRepository.findOne(senderId);
+			if(receiverId==null){
+				System.out.println("Cannot find friend accept sender");
+				return badRequest("Cannot find friend accept sender");
+			}
+
+			Set<User> reqSenders = receiver.getFriendRequestSender();
+			boolean flag = false;
+			for(User s : reqSenders) {
+				if(s.getId() == sender.getId()) {
+					flag = true;
+					reqSenders.remove(s);
+
+				}
+			}
+			if(flag == false) {
+				System.out.println("Friend Request doesn't exist");
+				return badRequest("Friend Request doesn't exist");
+			}
+
+			receiver.setFriendRequestSender(reqSenders);
+
+			Set<User> senderFriends = sender.getFriends();
+			senderFriends.add(receiver);
+			sender.setFriends(senderFriends);
+
+			Set<User> receiverFriends = receiver.getFriends();
+			receiverFriends.add(sender);
+			receiver.setFriends(receiverFriends);
+
+			userRepository.save(receiver);
+			userRepository.save(sender);
+
+			return ok("Friend request is accepted!");
+		} catch (Exception e){
+			e.printStackTrace();
+			return badRequest("Cannot create friendship");
+		}
+
+	}
+
+	public Result rejectFriendRequest(Long receiverId, Long senderId) {
+		try {
+			if(receiverId==null){
+				System.out.println("User id is null or empty!");
+				return badRequest("User id is null or empty");
+			}
+			User receiver = userRepository.findOne(receiverId);
+			if(receiverId==null){
+				System.out.println("Cannot find friend accept receiver");
+				return badRequest("Cannot find friend accept receiver");
+			}
+
+			if(senderId==null){
+				System.out.println("User id is null or empty!");
+				return badRequest("User id is null or empty");
+			}
+			User sender = userRepository.findOne(senderId);
+			if(receiverId==null){
+				System.out.println("Cannot find friend accept sender");
+				return badRequest("Cannot find friend accept sender");
+			}
+
+			Set<User> reqSenders = receiver.getFriendRequestSender();
+			boolean flag = false;
+			for(User s : reqSenders) {
+				if(s.getId() == sender.getId()) {
+					flag = true;
+					reqSenders.remove(s);
+
+				}
+			}
+			if(flag == false) {
+				System.out.println("Friend Request doesn't exist");
+				return badRequest("Friend Request doesn't exist");
+			}
+
+			receiver.setFriendRequestSender(reqSenders);
+
+			userRepository.save(receiver);
+
+			return ok("Friend request is rejected!");
+		} catch (Exception e){
+			e.printStackTrace();
+			return badRequest("Cannot create friendship");
+		}
+	}
+
 }
