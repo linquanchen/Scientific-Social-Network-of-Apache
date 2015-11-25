@@ -63,6 +63,11 @@ GET           /users/unfollow/followerId/:followerId/followeeId/:followeeId     
 GET           /users/getFollowers/:id                                                                   @controllers.UserController.getFollowers(id: Long)
 GET           /users/getFollowees/:id                                                                   @controllers.UserController.getFollowees(id: Long)
 
+GET           /users/sendFriendRequest/sender/:senderId/receiver/:receiverId                             @controllers.UserController.sendFriendRequest(senderId: Long, receiverId: Long)
+GET           /users/getFriendRequests/userId/:userId                                                    @controllers.UserController.getFriendRequests(userId: Long)
+GET           /users/acceptFriendRequest/userId/:userId/sender/:senderId                                 @controllers.UserController.acceptFriendRequest(userId: Long, senderId: Long)
+GET           /users/rejectFriendRequest/userId/:userId/sender/:senderId                                 @controllers.UserController.rejectFriendRequest(userId: Long, senderId: Long)
+
 # Workflow
 POST           /workflow/post                                                                            @controllers.WorkflowController.post
 GET            /workflow/get/workflowID/:wfID/userID/:userID/json                                        @controllers.WorkflowController.get(wfID: Long, userID: Long, format: String="json")
