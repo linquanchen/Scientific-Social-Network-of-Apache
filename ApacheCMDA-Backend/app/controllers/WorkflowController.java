@@ -86,7 +86,9 @@ public class WorkflowController extends Controller {
                 wfVisibility, user, wfContributors, wfRelated, "norm");
         Workflow savedWorkflow = workflowRepository.save(workflow);
 
-        return created(new Gson().toJson(savedWorkflow.getId()));
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("wfID", savedWorkflow.getId());
+        return created(new Gson().toJson(jsonObject));
     }
 
     public Result get(Long wfID, Long userID, String format) {

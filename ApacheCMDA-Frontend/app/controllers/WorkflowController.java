@@ -35,25 +35,32 @@ public class WorkflowController extends Controller {
         return ok(workflow.render(session("username"), Long.parseLong(session("id"))));
     }
 
+    // return json
     public static Result createFlow() {
         Form<Workflow> form = f_wf.bindFromRequest();
 
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode jnode = mapper.createObjectNode();
-        jnode.put("userID", session("id"));
-        jnode.put("wfTitle", form.field("wfTitle").value());
-        jnode.put("wfCategory", form.field("wfCategory").value());
-        jnode.put("wfCode", form.field("wfCode").value());
-        jnode.put("wfDesc", form.field("wfDesc").value());
-        jnode.put("wfVisibility", form.field("wfVisibility").value());
-        //TODO: Check the availability of the API call
-        //JsonNode wfresponse = Workflow.create(jnode);
-        //if (wfresponse == null || wfresponse.has("error")) {
-        //    //Logger.debug("Create Failed!");
-        //    return redirect(routes.SignupController.signUp());
-        //}
-        ////Logger.debug("New workflow created");
-        return redirect(routes.WorkflowController.main());
+        try {
+            jnode.put("userID", session("id"));
+            jnode.put("wfTitle", form.field("wfTitle").value());
+            jnode.put("wfCategory", form.field("wfCategory").value());
+            jnode.put("wfCode", form.field("wfCode").value());
+            jnode.put("wfDesc", form.field("wfDesc").value());
+            jnode.put("wfVisibility", form.field("wfVisibility").value());
+        }catch(Exception e) {
+            flash("error", "Form value invalid");
+        }
+
+        JsonNode wfresponse = Workflow.create(jnode);
+        if (wfresponse == null || wfresponse.has("error")) {
+            // Logger.debug("Create Failed!");
+            return badRequest(wfresponse);
+        } else {
+            return ok(wfresponse);
+        }
+        // Logger.debug("New workflow created");
+        // return redirect(routes.WorkflowController.main());
     }
 
 
