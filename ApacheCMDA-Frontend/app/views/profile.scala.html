@@ -1,4 +1,4 @@
-@(user: User, follows: List[User], followees: List[User], isSelf: Boolean)
+@(user: User, follows: List[User], followees: List[User], self_name: String)
 
 <link href='@routes.Assets.at("css/bootstrap.min.css")'
         rel="stylesheet"/>
@@ -8,14 +8,14 @@
 <script src='@routes.Assets.at("js/jquery-1.1.js")'></script>
 
 <div id="header">
-  @fixed.header(user.getUserName(),user.getId())
+  @fixed.header(self_name ,user.getId())
 </div>
 
 @main("Welcome") {
   <div>
     <h1>@user.getUserName()</h1>
     <p>@user.getEmail()</p>
-    @if(!isSelf) {
+    @if(self_name!=user.getUserName) {
       <p><a href="/follow/@user.getId">Follow</a></p>
       <p><a href="/">BackHome</a></p>
     }

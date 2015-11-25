@@ -41,7 +41,7 @@ public class ProfileController extends Controller {
         for (JsonNode entity: arr) {
             User u = new User();
             JsonNode user = entity.get("User");
-            u.setUserName(user.get("userName").toString());
+            u.setUserName(user.get("userName").textValue());
             u.setEmail(user.get("email").toString());
             result.add(u);
         }
@@ -55,7 +55,7 @@ public class ProfileController extends Controller {
             return redirect(routes.Application.login());
         }
 
-        String res_user = response.get("userName").toString();
+        String res_user = response.get("userName").textValue();
         String res_email = "";
         Long res_id = response.get("id").asLong();
         try {
@@ -74,7 +74,7 @@ public class ProfileController extends Controller {
 
         boolean isSelf = (Long.parseLong(session("id")) == user.getId());
 
-        return ok(profile.render(user, followers, followees, isSelf));
+        return ok(profile.render(user, followers, followees, session("username")));
     }
 
     public static Result follow(Long id) {

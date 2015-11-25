@@ -11,10 +11,9 @@ rel="stylesheet"/>
 @fixed.header(userName, userId)
 </div>
 
-@main("Time line") {
+@main("New Workflow") {
   <div>
-
-    <h3>Followers</h3>
+    <h3>Create new workflow</h3>
     <form action="@routes.WorkflowController.createFlow()" method="POST">
       <input type="hidden" name="userID" value="@userId">
       <input type="text" name="wfTitle" placeholder="Title">
@@ -22,6 +21,7 @@ rel="stylesheet"/>
       <input type="text" name="wfCode" placeholder="Code">
       <input type="text" name="wfDesc" placeholder="Description">
       <input type="text" name="wfVisibility" placeholder="Visibility">
+      <button type="submit">Create</button>
     </form>
   </div>
 }

@@ -1,9 +1,17 @@
 package models;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import util.APICall;
+import util.Constants;
+
 /**
  * Created by gavin on 11/24/15.
  */
 public class Workflow {
+
+    private final static String CREATE = Constants.NEW_BACKEND + "workflow/post";
+
     private long id = (-1);
     private String userName = "NaN";
     private long UserId = (-1);
@@ -18,6 +26,11 @@ public class Workflow {
     private long [] wfRelated = {-1};
 
     public Workflow() {
+    }
+
+    public static JsonNode create(ObjectNode node) {
+        JsonNode response = APICall.postAPI(CREATE, node);
+        return response;
     }
 
     public long getId() {
