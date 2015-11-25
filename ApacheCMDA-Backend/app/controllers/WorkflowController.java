@@ -27,13 +27,21 @@ import models.UserRepository;
 
 import models.Workflow;
 import models.WorkflowRepository;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import play.mvc.Controller;
+import play.mvc.Http;
 import play.mvc.Result;
 
+import javax.imageio.ImageIO;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
-import javax.persistence.PersistenceException;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -82,12 +90,59 @@ public class WorkflowController extends Controller {
             wfRelated.add(workflowRepository.findOne(node.path("workflowID").asLong()));
         }
 
-        Workflow workflow = new Workflow(userID, wfTitle, wfCategory, wfCode, wfDesc, "IMAGE",
+        Workflow workflow = new Workflow(userID, wfTitle, wfCategory, wfCode, wfDesc, "null",
                 wfVisibility, user, wfContributors, wfRelated, "norm");
         Workflow savedWorkflow = workflowRepository.save(workflow);
 
         return created(new Gson().toJson(savedWorkflow.getId()));
     }
+
+    public Result uploadImage(Long id) {
+        Http.MultipartFormData body = request().body().asMultipartFormData();
+        Http.MultipartFormData.FilePart image = body.getFile("image");
+
+        Workflow workflow = workflowRepository.findOne(id);
+        if (image != null) {
+            File imgFile = image.getFile();
+            String imgPathToSave = "public/images/" + "image_" + id + ".jpg";
+
+            //save on disk
+            boolean success = new File("images").mkdirs();
+            try {
+                byte[] bytes = IOUtils.toByteArray(new FileInputStream(imgFile));
+                FileUtils.writeByteArrayToFile(new File(imgPathToSave), bytes);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            workflow.setWfImg(imgPathToSave);
+            workflowRepository.save(workflow);
+            return ok("File uploaded");
+        }
+        else {
+            flash("error", "Missing file");
+            return badRequest("Wrong!!!!!!!!");
+            // return redirect(routes.Application.index());
+        }
+    }
+
+//    public static Result getImage(final String id) {
+//        try {
+//            File img = new File("/home/SOC/public/uploads/_20150829-min.jpg");
+//            BufferedImage bufferedImage = new BufferedImage(240, 240, BufferedImage.TYPE_INT_ARGB);
+//
+//            try {
+//                bufferedImage = ImageIO.read(img);
+//            }
+//            catch (IOException e) { }
+//
+//            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//            ImageIO.write(bufferedImage, "jpg", baos);
+//            return ok(baos.toByteArray()).as("image/jpg");
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//        }
+//        return ok();
+//    }
 
     public Result get(Long wfID, Long userID, String format) {
         if (wfID == null) {
