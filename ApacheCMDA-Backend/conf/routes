@@ -72,7 +72,7 @@ GET           /users/rejectFriendRequest/userId/:userId/sender/:senderId        
 POST          /workflow/post                                                                            @controllers.WorkflowController.post
 GET           /workflow/get/workflowID/:wfID/userID/:userID/json                                        @controllers.WorkflowController.get(wfID: Long, userID: Long, format: String="json")
 GET           /workflow/getTimeline/:id/offset/:offset/json                                              @controllers.WorkflowController.getTimeLine(id: Long, offset: Long, format: String="json")
-PUT           /workflow/uploadImage/:id                                                                    @controllers.WorkflowController.uploadImage(id:Long)
+POST           /workflow/uploadImage/:id                                                                    @controllers.WorkflowController.uploadImage(id:Long)
 #GET           /workflow/getImage/:id/json/
 
 # Map static resources from the /public folder to the /assets URL path
