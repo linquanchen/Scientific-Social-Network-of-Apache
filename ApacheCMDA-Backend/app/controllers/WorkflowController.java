@@ -159,7 +159,7 @@ public class WorkflowController extends Controller {
         System.out.println("size is " + allWorkflows.size());
 
         List<Workflow> workflowWithOffset = new ArrayList<>();
-        for(int i=(offset.intValue()*5); i<allWorkflows.size() && i<(offset.intValue()*5+5); i++) {
+        for(int i=(offset.intValue()*6); i<allWorkflows.size() && i<(offset.intValue()*6+6); i++) {
             workflowWithOffset.add(allWorkflows.get(i));
         }
 
