@@ -63,5 +63,31 @@ public class WorkflowController extends Controller {
         // return redirect(routes.WorkflowController.main());
     }
 
+    public Result uploadImage(Long id) {
+        Http.MultipartFormData body = request().body().asMultipartFormData();
+        Http.MultipartFormData.FilePart image = body.getFile("image");
+
+        if (image != null) {
+            File imgFile = image.getFile();
+            String imgPathToSave = "public/images/" + "image_" + id + ".jpg";
+
+            //save on disk
+            boolean success = new File("images").mkdirs();
+            try {
+                byte[] bytes = IOUtils.toByteArray(new FileInputStream(imgFile));
+                FileUtils.writeByteArrayToFile(new File(imgPathToSave), bytes);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            workflow.setWfImg(imgPathToSave);
+            workflowRepository.save(workflow);
+            return ok("File uploaded");
+        }
+        else {
+            flash("error", "Missing file");
+            return badRequest("Wrong!!!!!!!!");
+            // return redirect(routes.Application.index());
+        }
+    }
 
 }

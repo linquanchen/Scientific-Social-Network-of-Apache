@@ -57,3 +57,4 @@ GET         /follow/:id                                         controllers.Prof
 # display and show work flow
 GET         /workflow                                           controllers.WorkflowController.main()
 POST        /workflow/new                                       controllers.WorkflowController.createFlow()
+POST        /workflow/newImage/:id                              controllers.WorkflowController.uploadImage(id: Long)
