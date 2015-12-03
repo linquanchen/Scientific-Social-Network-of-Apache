@@ -53,6 +53,7 @@ POST        /signup/register                                    controllers.Sign
 GET         /search                                             controllers.SearchController.index()
 GET         /searchResult                                       controllers.SearchController.search(category: String ?= "", keywd: String ?= "")
 GET         /follow/:id                                         controllers.ProfileController.follow(id: Long)
+GET         /unfollow/:id                                       controllers.ProfileController.unfollow(id: Long)
 
 # display and show work flow
 GET         /workflow                                           controllers.WorkflowController.main()

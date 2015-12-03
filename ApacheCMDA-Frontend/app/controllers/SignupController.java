@@ -38,9 +38,11 @@ public class SignupController  extends Controller {
         JsonNode usernode = User.register(jnode);
         if (usernode == null || usernode.has("error")) {
             Logger.debug("Register Failed!");
+            flash("error", "Register Failed! Please check your information");
             return redirect(routes.SignupController.signUp());
         }
         Logger.debug("New user created");
+        flash("success", "New user created! Please log in.");
         return redirect(routes.Application.login());
     }
 

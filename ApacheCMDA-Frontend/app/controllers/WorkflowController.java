@@ -63,7 +63,7 @@ public class WorkflowController extends Controller {
         // return redirect(routes.WorkflowController.main());
     }
 
-    public Result uploadImage(Long id) {
+    public static Result uploadImage(Long id) {
         Http.MultipartFormData body = request().body().asMultipartFormData();
         Http.MultipartFormData.FilePart image = body.getFile("image");
 
