@@ -10,7 +10,7 @@ rel="stylesheet"/>
 <div id="header">
 @fixed.header(userName, userId)
 </div>
-
+@flashmsg()
 @main("New Workflow") {
   <div>
     <h3>Create new workflow</h3>
@@ -20,7 +20,10 @@ rel="stylesheet"/>
       <input type="text" name="wfCategory" placeholder="Category">
       <input type="text" name="wfCode" placeholder="Code">
       <input type="text" name="wfDesc" placeholder="Description">
-      <input type="text" name="wfVisibility" placeholder="Visibility">
+      <select name="wfVisibility">
+        <option>public</option>
+        <option>private</option>
+      </select>
       <button type="submit">Create</button>
     </form>
   </div>

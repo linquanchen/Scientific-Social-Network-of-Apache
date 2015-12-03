@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 import models.User;
 import play.api.Logger;
+import java.io.File;
+import java.io.FileInputStream;
 
 
 
@@ -41,6 +43,7 @@ public class WorkflowController extends Controller {
 
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode jnode = mapper.createObjectNode();
+
         try {
             jnode.put("userID", session("id"));
             jnode.put("wfTitle", form.field("wfTitle").value());
@@ -54,13 +57,14 @@ public class WorkflowController extends Controller {
 
         JsonNode wfresponse = Workflow.create(jnode);
         if (wfresponse == null || wfresponse.has("error")) {
-            // Logger.debug("Create Failed!");
-            return badRequest(wfresponse);
-        } else {
-            return ok(wfresponse);
+            //Logger.debug("Create Failed!");
+            if (wfresponse == null) flash("error", "Create workflow error.");
+            else flash("error", wfresponse.get("error").textValue());
+            return redirect(routes.WorkflowController.main());
         }
-        // Logger.debug("New workflow created");
-        // return redirect(routes.WorkflowController.main());
+        //Logger.debug("New workflow created");
+        flash("success", "Create workflow successfully.");
+        return redirect(routes.WorkflowController.main());
     }
 
     public static Result uploadImage(Long id) {
@@ -69,25 +73,12 @@ public class WorkflowController extends Controller {
 
         if (image != null) {
             File imgFile = image.getFile();
-            String imgPathToSave = "public/images/" + "image_" + id + ".jpg";
 
-            //save on disk
-            boolean success = new File("images").mkdirs();
-            try {
-                byte[] bytes = IOUtils.toByteArray(new FileInputStream(imgFile));
-                FileUtils.writeByteArrayToFile(new File(imgPathToSave), bytes);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            workflow.setWfImg(imgPathToSave);
-            workflowRepository.save(workflow);
-            return ok("File uploaded");
-        }
-        else {
+            return ok("File uploaded but not stored");
+        } else {
             flash("error", "Missing file");
             return badRequest("Wrong!!!!!!!!");
             // return redirect(routes.Application.index());
         }
     }
-
 }
