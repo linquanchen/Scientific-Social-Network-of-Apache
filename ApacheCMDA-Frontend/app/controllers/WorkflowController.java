@@ -47,14 +47,15 @@ public class WorkflowController extends Controller {
         jnode.put("wfDesc", form.field("wfDesc").value());
         jnode.put("wfVisibility", form.field("wfVisibility").value());
         //TODO: Check the availability of the API call
-        //JsonNode wfresponse = Workflow.create(jnode);
-        //if (wfresponse == null || wfresponse.has("error")) {
-        //    //Logger.debug("Create Failed!");
-        //    return redirect(routes.SignupController.signUp());
-        //}
-        ////Logger.debug("New workflow created");
+        JsonNode wfresponse = Workflow.create(jnode);
+        if (wfresponse == null || wfresponse.has("error")) {
+            //Logger.debug("Create Failed!");
+            if (wfresponse == null) flash("error", "Create workflow error.");
+            else flash("error", wfresponse.get("error").textValue());
+            return redirect(routes.WorkflowController.main());
+        }
+        //Logger.debug("New workflow created");
+        flash("success", "Create workflow successfully.");
         return redirect(routes.WorkflowController.main());
     }
-
-
 }
