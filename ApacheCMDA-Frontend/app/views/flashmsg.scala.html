@@ -1,0 +1,8 @@
+<div class="alert-info" role="alert">
+    @if(flash.containsKey("success")) {
+        @flash.get("success")
+    }
+    @if(flash.containsKey("error")) {
+        @flash.get("error")
+    }
+</div>

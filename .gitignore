@@ -10,6 +10,7 @@ ApacheCMDA-Frontend/.settings/
 ApacheCMDA-Frontend/target/
 ApacheCMDA-Frontend/project/target/
 ApacheCMDA-Frontend/logs/
+ApacheCMDA-Backend/conf/META-INF/persistence.xml
 
 .idea/
 
