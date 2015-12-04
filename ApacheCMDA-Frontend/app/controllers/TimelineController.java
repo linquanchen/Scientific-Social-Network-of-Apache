@@ -32,10 +32,8 @@ public class TimelineController extends Controller {
 
     public static Result main(long offset) {
         //show first page of timeline
-        if ((int)offset != 0) {
-            offset++;
-        }
         List<Workflow> timelines = getWorkflows(offset);
+        offset++;
         return ok(timeline.render(session("username"), Long.parseLong(session("id")), timelines, offset));
     }
 
@@ -46,10 +44,13 @@ public class TimelineController extends Controller {
         if (response == null || response.has("error")) {
             return null;
         }
+
+        System.out.println("response is " + response);
         List<Workflow> timelines = new ArrayList<>();
         for (JsonNode n: response) {
+            System.out.println("node is " + n);
             Workflow workflow = new Workflow();
-            workflow.setUserName(n.get("userName").textValue());
+            //workflow.setUserName(n.get("userName").textValue());
             workflow.setId(n.get("id").longValue());
             workflow.setWfTitle(n.get("wfTitle").asText());
             workflow.setWfCategory(n.get("wfCategory").asText());
