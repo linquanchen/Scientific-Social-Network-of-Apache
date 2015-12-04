@@ -89,7 +89,7 @@ public class WorkflowController extends Controller {
 
         try {
             jnode.put("wfID", wid.toString());
-            jnode.put("userID", session("id"));
+            jnode.put("uid", session("id"));
             jnode.put("wfTitle", form.field("wfTitle").value());
             jnode.put("wfCategory", form.field("wfCategory").value());
             jnode.put("wfCode", form.field("wfCode").value());

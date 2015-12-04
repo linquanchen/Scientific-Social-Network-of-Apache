@@ -31,4 +31,7 @@ public interface WorkflowRepository extends CrudRepository<Workflow, Long> {
 
     @Query(value = "select * from Workflow where id in (select workflowId from WorkflowAndTags where (tagId = ?1))", nativeQuery = true)
     List<Workflow> findByTagId(Long tag);
+    
+    @Query(value = "select * from Workflow where wfTitle like ?1", nativeQuery = true)
+    List<Workflow> findByTitle(String title);
 }

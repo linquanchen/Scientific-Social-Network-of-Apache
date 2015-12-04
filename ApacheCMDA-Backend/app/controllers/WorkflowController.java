@@ -480,6 +480,24 @@ public class WorkflowController extends Controller {
             return badRequest("Failed to get workflow by Tag!");
         }
     }
+    
+    public Result getByTitle(String title) {
+        try {
+            if(title==null || title.equals("")) {
+                System.out.println("title is null or empty!");
+                return badRequest("title is null or empty!");
+            }
+            
+            List<Workflow> workflowList = workflowRepository.findByTitle("%" + title + "%");
+
+            String result = new Gson().toJson(workflowList);
+            return  ok(result);
+
+        } catch (Exception e){
+            e.printStackTrace();
+            return badRequest("Failed to get workflow by Title!");
+        }
+    }
 
 
 }

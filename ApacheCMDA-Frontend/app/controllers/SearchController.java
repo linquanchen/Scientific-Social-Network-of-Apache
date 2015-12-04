@@ -58,7 +58,13 @@ public class SearchController extends Controller{
                 }
                 return ok(search.render(session("username"), session("id"), category, null, wfArr));
             case "workflow":
-                break;
+                ArrayList<Workflow> wfArrt = new ArrayList<Workflow>();
+                JsonNode wfresponset = APICall.callAPI(Constants.NEW_BACKEND + "workflow/getByTitle/title/" + keywd);
+                for (JsonNode n: wfresponset) {
+                    Workflow wf = new Workflow(n);
+                    wfArrt.add(wf);
+                }
+                return ok(search.render(session("username"), session("id"), category, null, wfArrt));
         }
 
         return ok(search.render(session("username"), session("id"), category, null, null));

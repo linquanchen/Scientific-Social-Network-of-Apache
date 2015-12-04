@@ -34,7 +34,7 @@
       </tr>
     }
   }
-    @if(category.equals("tag")) {
+    @if(category.equals("tag") || category.equals("workflow")) {
       <tr><th>Title</th><th>Description</th></tr>
       @for( result <- resultswf) {
         <tr>
