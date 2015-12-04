@@ -16,6 +16,7 @@
  */
 package models;
 
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
 import javax.inject.Named;
@@ -24,7 +25,10 @@ import java.util.List;
 
 @Named
 @Singleton
-public interface WorkflowRepository extends CrudRepository<Workflow, Long> {
-    List<Workflow> findByUserID(Long id);
-    Workflow findById(Long id);
+public interface GroupUsersRepository extends CrudRepository<GroupUsers, Long> {
+    GroupUsers findById(Long id);
+    List<GroupUsers> findByCreatorUser(Long id);
+
+    @Query(value = "select g.* from GroupUsers g where id IN (select m.groupId from GoupAndGroupmembers m where member = ?1)", nativeQuery = true)
+    List<GroupUsers> findByUserId(long userId);
 }

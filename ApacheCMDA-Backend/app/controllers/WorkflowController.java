@@ -18,12 +18,9 @@
 package controllers;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import models.User;
-import models.UserRepository;
+import models.*;
 
 import models.Workflow;
 import models.WorkflowRepository;
@@ -53,12 +50,17 @@ public class WorkflowController extends Controller {
 
     private final WorkflowRepository workflowRepository;
     private final UserRepository userRepository;
+    private final GroupUsersRepository groupUsersRepository;
+    private final CommentRepository commentRepository;
 
     @Inject
     public WorkflowController(final WorkflowRepository workflowRepository,
-                              UserRepository userRepository) {
+                              UserRepository userRepository, GroupUsersRepository groupUsersRepository,
+                              CommentRepository commentRepository) {
         this.workflowRepository = workflowRepository;
         this.userRepository = userRepository;
+        this.groupUsersRepository = groupUsersRepository;
+        this.commentRepository = commentRepository;
     }
 
     public Result post() {
@@ -75,6 +77,7 @@ public class WorkflowController extends Controller {
         String wfDesc = json.path("wfDesc").asText();
         //img
         String wfVisibility = json.path("wfVisibility").asText();
+        long wfGroupId = json.path("wfGroupId").asLong();
 
         User user = userRepository.findOne(userID);
 
@@ -90,8 +93,9 @@ public class WorkflowController extends Controller {
             wfRelated.add(workflowRepository.findOne(node.path("workflowID").asLong()));
         }
 
-        Workflow workflow = new Workflow(userID, wfTitle, wfCategory, wfCode, wfDesc, "null",
-                wfVisibility, user, wfContributors, wfRelated, "norm");
+        //groupId would be 0 if it is public
+        Workflow workflow = new Workflow(userID, wfTitle, wfCategory, wfCode, wfDesc, "IMAGE",
+                wfVisibility, user, wfContributors, wfRelated, "norm", wfGroupId);
         Workflow savedWorkflow = workflowRepository.save(workflow);
 
         JsonObject jsonObject = new JsonObject();
@@ -146,6 +150,7 @@ public class WorkflowController extends Controller {
 //        return ok();
 //    }
 
+    //get detailed workflow.
     public Result get(Long wfID, Long userID, String format) {
         if (wfID == null) {
             System.out.println("Workflow id is null or empty!");
@@ -153,6 +158,9 @@ public class WorkflowController extends Controller {
         }
 
         Workflow workflow = workflowRepository.findOne(wfID);
+        workflow.setViewCount();
+        workflowRepository.save(workflow);
+
         if (workflow == null) {
             System.out.println("The workflow does not exist!");
             return badRequest("The workflow does not exist!");
@@ -188,18 +196,76 @@ public class WorkflowController extends Controller {
             return badRequest("Id not created, please enter valid user");
         }
 
+        List<GroupUsers> groups = groupUsersRepository.findByUserId(id);
+        List<Integer> groupsParse = new ArrayList<>();
+        for(int i=0; i<groups.size(); i++) {
+            groupsParse.add((int)groups.get(i).getId());
+        }
         List<Workflow> allWorkflows = new ArrayList<>();
         Set<User> followees = userRepository.findByFollowerId(id);
-        for (User followee: followees) {
-            List<Workflow> workflows = workflowRepository.findByUserID(followee.getId());
-            allWorkflows.addAll(workflows);
+        if(followees.size()>0) {
+            for (User followee: followees) {
+                List<Workflow> workflows = workflowRepository.findByUserID(followee.getId());
+                for(Workflow single: workflows) {
+                    if((groupsParse.contains((int)single.getGroupId()) || single.getGroupId() == 0) && !single.getStatus().equals("deleted")) {
+                        allWorkflows.add(single);
+                    }
+                }
+            }
+        }
+        List<Workflow> workflows = workflowRepository.findByUserID(id);
+        allWorkflows.addAll(workflows);
+
+        System.out.println("size is " + allWorkflows.size());
+
+        List<Workflow> workflowWithOffset = new ArrayList<>();
+        for(int i=(offset.intValue()*6); i<allWorkflows.size() && i<(offset.intValue()*6+6); i++) {
+            workflowWithOffset.add(allWorkflows.get(i));
         }
 
         String result = new String();
         if (format.equals("json")) {
-            result = new Gson().toJson(allWorkflows);
+            result = new Gson().toJson(workflowWithOffset);
         }
 
         return ok(result);
+    }
+}
+
+    public Result addComment(){
+        try{
+            JsonNode json = request().body().asJson();
+            if(json==null){
+                System.out.println("Comment not created, expecting Json data");
+                return badRequest("Comment not created, expecting Json data");
+            }
+
+            long userId = json.path("userID").asLong();
+            long timestamp = json.path("timestamp").asLong();
+            long workflowId = json.path("workflowID").asLong();
+            String content = json.path("Content").asText();
+
+            User user = userRepository.findOne(userId);
+            if(user==null){
+                System.out.println("Cannot find user with given user id");
+                return badRequest("Cannot find user with given user id");
+            }
+            Workflow workflow = workflowRepository.findOne(workflowId);
+            if(workflow==null){
+                System.out.println("Cannot find workflow with given workflow id");
+                return badRequest("Cannot find workflow with given workflow id");
+            }
+            Comment comment = new Comment(user, timestamp, content);
+            commentRepository.save(comment);
+            List<Comment> list = workflow.getComments();
+            list.add(comment);
+            workflow.setComments(list);
+
+            workflowRepository.save(workflow);
+            return ok("Comment add successfully");
+        } catch (Exception e){
+            e.printStackTrace();
+            return badRequest("Failed to add comment!");
+        }
     }
 }
