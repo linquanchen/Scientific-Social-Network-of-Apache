@@ -64,7 +64,51 @@ public class WorkflowController extends Controller {
         return ok(workflowdetail.render(wf, session("username"), Long.parseLong(session("id"))));
     }
 
-    // return json
+    public static Result edit(Long wid)
+    {
+        JsonNode wfres = APICall.callAPI(Constants.NEW_BACKEND + "workflow/get/workflowID/"
+                +wid.toString()+ "/userID/" + session("id") + "/json");
+        if (wfres == null || wfres.has("error")) {
+            flash("error", wfres.get("error").textValue());
+            return redirect(routes.WorkflowController.main());
+        }
+        if (wfres.get("status").asText().contains("protected") || wfres.get("status").asText().contains("deleted") )
+        {
+            flash("error", "The workflow is protected!");
+            return redirect(routes.WorkflowController.main());
+        }
+        Workflow wf = new Workflow(wfres);
+        return ok(workflow_edit.render(wf, session("username"), Long.parseLong(session("id"))));
+    }
+
+
+    public static Result editFlow(Long wid) {
+        Form<Workflow> form = f_wf.bindFromRequest();
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode jnode = mapper.createObjectNode();
+
+        try {
+            jnode.put("wfID", wid.toString());
+            jnode.put("userID", session("id"));
+            jnode.put("wfTitle", form.field("wfTitle").value());
+            jnode.put("wfCategory", form.field("wfCategory").value());
+            jnode.put("wfCode", form.field("wfCode").value());
+            jnode.put("wfDesc", form.field("wfDesc").value());
+        }catch(Exception e) {
+            flash("error", "Form value invalid");
+        }
+        JsonNode wfresponse = Workflow.update(jnode);
+
+        if (wfresponse == null || wfresponse.has("error")) {
+            if (wfresponse == null) flash("error", "Create workflow error.");
+            else flash("error", wfresponse.get("error").textValue());
+            return redirect(routes.WorkflowController.main());
+        }
+        flash("success", "Update workflow successfully.");
+        return redirect(routes.WorkflowController.main());
+    }
+
+
     public static Result createFlow() {
         Form<Workflow> form = f_wf.bindFromRequest();
 

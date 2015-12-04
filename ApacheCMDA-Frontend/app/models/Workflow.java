@@ -11,6 +11,7 @@ import util.Constants;
 public class Workflow {
 
     private final static String CREATE = Constants.NEW_BACKEND + "workflow/post";
+    private final static String EDIT = Constants.NEW_BACKEND + "workflow/updateWorkflow";
 
     private long id = (-1);
     private String userName = "NaN";
@@ -43,6 +44,11 @@ public class Workflow {
 
     public static JsonNode create(ObjectNode node) {
         JsonNode response = APICall.postAPI(CREATE, node);
+        return response;
+    }
+
+    public static JsonNode update(ObjectNode node) {
+        JsonNode response = APICall.postAPI(EDIT, node);
         return response;
     }
 
