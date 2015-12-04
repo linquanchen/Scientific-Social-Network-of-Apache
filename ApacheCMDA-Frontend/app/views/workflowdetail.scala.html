@@ -1,24 +1,46 @@
 @(wf: Workflow, userName: String, userId: Long)
-
-<link href='@routes.Assets.at("css/bootstrap.min.css")'
-rel="stylesheet"/>
-<link href='@routes.Assets.at("css/header.css")'
-rel="stylesheet"/>
-
-<script src='@routes.Assets.at("js/jquery-1.1.js")'></script>
-
-<div id="header">
-@fixed.header(userName ,userId)
-</div>
-
-@main("Welcome") {
-    <div>
-        <h1>Workflow Details</h1>
-        Title: <p>@wf.getWfTitle</p>
-        id: <p>@wf.getId</p>
-        username: <p>@wf.getUserName</p>
-        Category: <p>@wf.getWfCategory</p>
-        wfImg: <p>@wf.getWfImg</p>
-        Desc: <p>@wf.getWfDesc</p>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href='@routes.Assets.at("css/bootstrap.min.css")'
+          rel="stylesheet"/>
+    <link href='@routes.Assets.at("css/header.css")'
+          rel="stylesheet"/>
+    <link rel="stylesheet"
+          href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src='@routes.Assets.at("js/jquery-1.1.js")'></script>
+    <style type="text/css">
+        ul {
+            float: left;
+        }
+        img {
+            float: left;
+        }
+    </style>
+</head>
+<body>
+    <div id="header">
+        @fixed.header(userName ,userId)
     </div>
-}
+    @main("Welcome") {
+        <header>
+            <h1>@wf.getWfTitle</h1>
+        </header>
+        <ul class="pager">
+            <li>
+                <img src=wf.getWfImg class="img-thumbnail" width="27%">
+            </li>
+            <li>
+                <ul class="list-group">
+                    <li class="list-group-item"><span class="badge">ID</span>@wf.getId</li>
+                    <li class="list-group-item"><span class="badge">Name</span>@wf.getUserName</li>
+                    <li class="list-group-item"><span class="badge">Category</span>@wf.getWfCategory</li>
+                    <li class="list-group-item"><span class="badge">Detail</span>@wf.getWfDesc</li>
+                </ul>
+            </li>
+        </ul>
+    }
+</body>
+</html>
