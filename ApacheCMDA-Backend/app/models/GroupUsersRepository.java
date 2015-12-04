@@ -28,6 +28,7 @@ import java.util.List;
 public interface GroupUsersRepository extends CrudRepository<GroupUsers, Long> {
     GroupUsers findById(Long id);
     List<GroupUsers> findByCreatorUser(Long id);
+    List<GroupUsers> findByGroupUrl(String url);
 
     @Query(value = "select g.* from GroupUsers g where id IN (select m.groupId from GoupAndGroupmembers m where member = ?1)", nativeQuery = true)
     List<GroupUsers> findByUserId(long userId);
