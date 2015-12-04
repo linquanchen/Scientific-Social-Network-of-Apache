@@ -75,7 +75,7 @@ public class WorkflowController extends Controller {
         String wfCategory = json.path("wfCategory").asText();
         String wfCode = json.path("wfCode").asText();
         String wfDesc = json.path("wfDesc").asText();
-        //img
+        String wfImg = json.path("wfImg").asText();
         String wfVisibility = json.path("wfVisibility").asText();
         long wfGroupId = json.path("wfGroupId").asLong();
 
@@ -94,41 +94,13 @@ public class WorkflowController extends Controller {
         }
 
         //groupId would be 0 if it is public
-        Workflow workflow = new Workflow(userID, wfTitle, wfCategory, wfCode, wfDesc, "IMAGE",
+        Workflow workflow = new Workflow(userID, wfTitle, wfCategory, wfCode, wfDesc, wfImg,
                 wfVisibility, user, wfContributors, wfRelated, "norm", wfGroupId);
         Workflow savedWorkflow = workflowRepository.save(workflow);
 
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("wfID", savedWorkflow.getId());
         return created(new Gson().toJson(jsonObject));
-    }
-
-    public Result uploadImage(Long id) {
-        Http.MultipartFormData body = request().body().asMultipartFormData();
-        Http.MultipartFormData.FilePart image = body.getFile("image");
-
-        Workflow workflow = workflowRepository.findOne(id);
-        if (image != null) {
-            File imgFile = image.getFile();
-            String imgPathToSave = "public/images/" + "image_" + id + ".jpg";
-
-            //save on disk
-            boolean success = new File("images").mkdirs();
-            try {
-                byte[] bytes = IOUtils.toByteArray(new FileInputStream(imgFile));
-                FileUtils.writeByteArrayToFile(new File(imgPathToSave), bytes);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            workflow.setWfImg(imgPathToSave);
-            workflowRepository.save(workflow);
-            return ok("File uploaded");
-        }
-        else {
-            flash("error", "Missing file");
-            return badRequest("Wrong!!!!!!!!");
-            // return redirect(routes.Application.index());
-        }
     }
 
     //get detailed workflow.
@@ -225,6 +197,7 @@ public class WorkflowController extends Controller {
             long timestamp = json.path("timestamp").asLong();
             long workflowId = json.path("workflowID").asLong();
             String content = json.path("Content").asText();
+            String commentImage = json.path("commentImg").asText();
 
             User user = userRepository.findOne(userId);
             if(user==null){
@@ -236,21 +209,50 @@ public class WorkflowController extends Controller {
                 System.out.println("Cannot find workflow with given workflow id");
                 return badRequest("Cannot find workflow with given workflow id");
             }
-            Comment comment = new Comment(user, timestamp, content);
+            Comment comment = new Comment(user, timestamp, content, commentImage);
             commentRepository.save(comment);
+            Comment comment = new Comment(user, timestamp, content);
+            Comment savedComment = commentRepository.save(comment);
             List<Comment> list = workflow.getComments();
             list.add(comment);
             workflow.setComments(list);
-
             workflowRepository.save(workflow);
-            return ok("Comment add successfully");
+            return ok(new Gson().toJson(savedComment.getId()));
         } catch (Exception e){
             e.printStackTrace();
             return badRequest("Failed to add comment!");
         }
     }
 
-
-
+//    public Result uploadCommentImage(Long id) {
+//        Http.MultipartFormData body = request().body().asMultipartFormData();
+//        Http.MultipartFormData.FilePart image = body.getFile("image");
+//
+//        Comment comment = commentRepository.findOne(id);
+//
+//
+//        if (image != null) {
+//            File imgFile = image.getFile();
+//            String imgPathToSave = "public/images/" + "commentImage_" + id + ".jpg";
+//
+//            //save on disk
+//            boolean success = new File("images").mkdirs();
+//            try {
+//                byte[] bytes = IOUtils.toByteArray(new FileInputStream(imgFile));
+//                FileUtils.writeByteArrayToFile(new File(imgPathToSave), bytes);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//            comment.setCommentImage(imgPathToSave);
+//            commentRepository.save(comment);
+//            return ok("File uploaded");
+//        }
+//        else {
+//            flash("error", "Missing file");
+//            return badRequest("Wrong!!!!!!!!");
+//            // return redirect(routes.Application.index());
+//        }
+//
+//    }
 
 }

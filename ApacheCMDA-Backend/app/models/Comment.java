@@ -1,6 +1,8 @@
 package models;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by baishi on 12/3/15.
@@ -18,16 +20,27 @@ public class Comment {
     private long timestamp;
     private String content;
 
+    private String commentImage;
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name = "ReplyId", referencedColumnName = "id")
+    private List<Reply> replies;
+
     public Comment(){
 
     }
 
-    public Comment(User user, long timestamp, String content){
+    public Comment(User user, long timestamp, String content, String commentImage){
         this.status = true;
         this.user = user;
         this.timestamp = timestamp;
         this.content = content;
+        this.commentImage = commentImage;
+        this.replies = new ArrayList<>();
     }
+
+    public List<Reply> getReplies(){ return this.replies; }
+
+    public void setReplies(List<Reply> replies){ this.replies = replies; }
 
     public long getId() {
         return id;
@@ -63,6 +76,14 @@ public class Comment {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public String getCommentImage() {
+        return commentImage;
+    }
+
+    public void setCommentImage(String commentImage) {
+        this.commentImage = commentImage;
     }
 
     @Override
