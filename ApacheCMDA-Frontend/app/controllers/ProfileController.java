@@ -3,6 +3,7 @@ package controllers;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.JsonNode;
 import models.SearchResult;
+import models.Workflow;
 import play.api.mvc.*;
 import play.mvc.Result;
 import util.APICall;
@@ -87,7 +88,16 @@ public class ProfileController extends Controller {
                 isFollowee = true;
         }
 
+        List<Workflow> wf = getMyWorkflows(id);
+
         return ok(profile.render(user, followers, followees, session("username"), isFollower, isFollowee));
+    }
+
+    public static List<Workflow> getMyWorkflows(Long id)
+    {
+        JsonNode response = APICall.callAPI(Constants.NEW_BACKEND + "workflow/getuser/" + id.toString() + "/json");
+        List<Workflow> wf = new ArrayList<Workflow>();
+        return wf;
     }
 
     public static Result follow(Long id) {

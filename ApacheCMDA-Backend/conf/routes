@@ -69,9 +69,24 @@ GET           /users/acceptFriendRequest/userId/:userId/sender/:senderId        
 GET           /users/rejectFriendRequest/userId/:userId/sender/:senderId                                 @controllers.UserController.rejectFriendRequest(userId: Long, senderId: Long)
 
 # Workflow
-POST          /workflow/post                                                                            @controllers.WorkflowController.post
-GET           /workflow/get/workflowID/:wfID/userID/:userID/json                                        @controllers.WorkflowController.get(wfID: Long, userID: Long, format: String="json")
+POST           /workflow/post                                                                            @controllers.WorkflowController.post
+POST           /workflow/updateWorkflow                                                                  @controllers.WorkflowController.updateWorkflow
+POST           /workflow/deleteWorkflow                                                                  @controllers.WorkflowController.deleteWorkflow
+GET            /workflow/get/workflowID/:wfID/userID/:userID/json                                        @controllers.WorkflowController.get(wfID: Long, userID: Long, format: String="json")
 GET           /workflow/getTimeline/:id/offset/:offset/json                                              @controllers.WorkflowController.getTimeLine(id: Long, offset: Long, format: String="json")
+GET           /workflow/getWorkflowList/:id/json                                                         @controllers.WorkflowController.getWorkflowList(id: Long, format: String="json")
+POST           /workflow/uploadImage/:id                                                                 @controllers.WorkflowController.uploadImage(id:Long)
+
+GET            /workflow/getTags/workflowId/:wfId                                                        @controllers.WorkflowController.getTags(wfId: Long)
+POST           /workflow/setTag                                                                          @controllers.WorkflowController.setTag
+GET            /workflow/deleteTag/workflowId/:wfId/tag/:tag                                             @controllers.WorkflowController.deleteTag(wfId: Long, tag: String)
+GET            /workflow/getByTag/tag/:tag                                                               @controllers.WorkflowController.getByTag(tag: String)
+
+
+# Tag
+#input:String tag
+POST           /tag/createTag                                                                            @controllers.TagController.createTag
+POST           /tag/deleteTag                                                                            @controllers.TagController.deleteTag
 
 
 #Group
@@ -83,6 +98,7 @@ GET            /group/getGroupMember/:groupId/json                              
 
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file                                                                             controllers.Assets.at(path="/", file)
+
 
 #Workflow
 #GET            /workflow/getTimeline/:id/offset/:offset/json                                              @controllers.UserController.userSearch(id: Long, offset: Long, format: String="json")

@@ -16,6 +16,7 @@
  */
 package models;
 
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
 import javax.inject.Named;
@@ -27,4 +28,7 @@ import java.util.List;
 public interface WorkflowRepository extends CrudRepository<Workflow, Long> {
     List<Workflow> findByUserID(Long id);
     Workflow findById(Long id);
+
+    @Query(value = "select * from Workflow where id in (select workflowId from WorkflowAndTags where (tagId = ?1))", nativeQuery = true)
+    List<Workflow> findByTagId(Long tag);
 }
