@@ -50,7 +50,8 @@ public class TimelineController extends Controller {
         for (JsonNode n: response) {
             System.out.println("node is " + n);
             Workflow workflow = new Workflow();
-            //workflow.setUserName(n.get("userName").textValue());
+            JsonNode userNode = n.get("user");
+            workflow.setUserName(userNode.get("userName").textValue());
             workflow.setId(n.get("id").longValue());
             workflow.setWfTitle(n.get("wfTitle").asText());
             workflow.setWfCategory(n.get("wfCategory").asText());
