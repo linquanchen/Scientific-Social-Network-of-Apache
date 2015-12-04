@@ -64,6 +64,7 @@ public class Application extends Controller {
         String curruser = session("id");
         if (curruser != null) {
             session().clear();
+            flash("success","Log out successfully.");
             return redirect(routes.Application.login());
         }
         return badRequest();
@@ -89,12 +90,14 @@ public class Application extends Controller {
             queryJson.put("password", password);
             JsonNode response = APICall.postAPI(USER_LOGIN, queryJson);
             if (response == null || response.has("error")) {
+                flash("error", "Login Failed.");
                 Logger.debug("Auth failed!");
                 return redirect(routes.Application.login());
             }
+            flash("success", "Login successfully.");
             session().clear();
             session("id", response.get("id").toString());
-            session("username", response.get("userName").toString());
+            session("username", response.get("userName").textValue());
             session("email", loginForm.data().get("email"));
             return redirect(
                     routes.Application.index()

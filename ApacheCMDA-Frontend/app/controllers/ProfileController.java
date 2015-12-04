@@ -41,7 +41,8 @@ public class ProfileController extends Controller {
         for (JsonNode entity: arr) {
             User u = new User();
             JsonNode user = entity.get("User");
-            u.setUserName(user.get("userName").toString());
+            u.setId(Long.parseLong(user.get("id").textValue()));
+            u.setUserName(user.get("userName").textValue());
             u.setEmail(user.get("email").toString());
             result.add(u);
         }
@@ -55,7 +56,7 @@ public class ProfileController extends Controller {
             return redirect(routes.Application.login());
         }
 
-        String res_user = response.get("userName").toString();
+        String res_user = response.get("userName").textValue();
         String res_email = "";
         Long res_id = response.get("id").asLong();
         try {
@@ -72,13 +73,24 @@ public class ProfileController extends Controller {
         List<User> followers = ProfileController.getFollow(id, FollowType.FOLLOWER);
         List<User> followees = ProfileController.getFollow(id, FollowType.FOLLOWEE);
 
-        boolean isSelf = (Long.parseLong(session("id")) == user.getId());
+        boolean isFollower = false;
+        boolean isFollowee = false;
+        Long myId = Long.parseLong(session("id"));
+        for (User entry : followers)
+        {
+            if (entry.getId() == myId)
+                isFollower = true;
+        }
+        for (User entry : followees)
+        {
+            if (entry.getId() == myId)
+                isFollowee = true;
+        }
 
-        return ok(profile.render(user, followers, followees, isSelf));
+        return ok(profile.render(user, followers, followees, session("username"), isFollower, isFollowee));
     }
 
     public static Result follow(Long id) {
-        // http://localhost:9034/users/follow/followerId/110/followeeId/12
         if (notpass()) return redirect(routes.Application.login());
         String followQuery = Constants.NEW_BACKEND
                 + "users/follow/followerId/"
@@ -86,6 +98,20 @@ public class ProfileController extends Controller {
                 + "/followeeId/"
                 + id.toString();
         JsonNode response = APICall.callAPI(followQuery);
+        if (response == null || response.has("error")) {
+            return redirect(routes.Application.login());
+        }
+        return redirect(routes.ProfileController.profile(id));
+    }
+
+    public static Result unfollow(Long id) {
+        if (notpass()) return redirect(routes.Application.login());
+        String unfollowQuery = Constants.NEW_BACKEND
+                + "users/unfollow/followerId/"
+                + session("id")
+                + "/followeeId/"
+                + id.toString();
+        JsonNode response = APICall.callAPI(unfollowQuery);
         if (response == null || response.has("error")) {
             return redirect(routes.Application.login());
         }

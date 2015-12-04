@@ -16,9 +16,9 @@
  */
 package models;
 
-import java.util.List;
-
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
@@ -35,7 +35,12 @@ public class Workflow {
 	private String wfImg;
 	private String wfVisibility;
 	private String status;
+	private long   viewCount;
+    private long   groupId;
 
+	@OneToMany(fetch = FetchType.EAGER)
+	@JoinColumn(name = "CommentId", referencedColumnName = "id")
+	private List<Comment> comments;
 
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "creatorId", referencedColumnName = "id")
@@ -55,7 +60,7 @@ public class Workflow {
 	public Workflow(long userID, String wfTitle, String wfCategory, String wfCode,
 					String wfDesc, String wfImg, String wfVisibility,
 					User user, List<User> wfContributors, List<Workflow> wfRelated,
-					String status) {
+					String status, long groupId) {
 		super();
 		this.userID = userID;
 		this.wfTitle = wfTitle;
@@ -68,8 +73,14 @@ public class Workflow {
 		this.wfContributors = wfContributors;
 		this.wfRelated = wfRelated;
 		this.status = status;
-
+		this.viewCount = 0;
+        this.groupId = groupId;
+		this.comments = new ArrayList<>();
 	}
+
+	public List<Comment> getComments(){ return this.comments; }
+
+	public void setComments(List<Comment> comments){ this.comments = comments; }
 
 	public String getWfCategory() {
 		return wfCategory;
@@ -163,11 +174,19 @@ public class Workflow {
 		return id;
 	}
 
+	public void setViewCount() {viewCount++;}
+
+	public long getViewCount() {return viewCount;}
+
+    public void setGroupId(long groupId) {this.groupId = groupId;}
+
+    public long getGroupId() {return groupId;}
+
 	@Override
 	public String toString() {
 		return "Workflow [id=" + id + ", userID=" + userID + ", wfTitle=" + wfTitle
 				+ ", wfCategory=" + wfCategory + ", wfCode=" + wfCode
-				+ ", wfDesc=" + wfDesc + ", wfImg" + wfImg + ", wfVisibility" + wfVisibility
-				+ ", user=" + user + ", wfContributors" + wfContributors + ", wfRelated" + wfRelated + "]";
+				+ ", wfDesc=" + wfDesc + ", wfImg=" + wfImg + ", wfVisibility" + wfVisibility
+				+ ", user=" + user + ", wfContributors=" + wfContributors + ", wfRelated=" + wfRelated + ", viewCount=" + viewCount + ", groupId=" + groupId + "]";
 	}
 }
