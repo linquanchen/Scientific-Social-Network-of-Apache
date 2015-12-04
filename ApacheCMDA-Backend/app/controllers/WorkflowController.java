@@ -98,8 +98,7 @@ public class WorkflowController extends Controller {
 
         //groupId would be 0 if it is public
         Workflow workflow = new Workflow(userID, wfTitle, wfCategory, wfCode, wfDesc, wfImg,
-                wfVisibility, user, wfContributors, wfRelated, "norm", wfGroupId);
-
+                wfVisibility, user, wfContributors, wfRelated, "norm", wfGroupId, user.getUserName());
         Workflow savedWorkflow = workflowRepository.save(workflow);
         Workflow newWorkflow = workflowRepository.findById(savedWorkflow.getId());
 
@@ -339,6 +338,10 @@ public class WorkflowController extends Controller {
                 return badRequest("Cannot find workflow with given workflow id");
             }
             Comment comment = new Comment(user, timestamp, content, commentImage);
+
+            commentRepository.save(comment);
+            //Comment comment = new Comment(user, timestamp, content);
+
             Comment savedComment = commentRepository.save(comment);
             List<Comment> list = workflow.getComments();
             list.add(comment);

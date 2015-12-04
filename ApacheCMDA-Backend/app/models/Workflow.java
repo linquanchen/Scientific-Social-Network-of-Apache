@@ -29,6 +29,7 @@ public class Workflow {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
 	private long userID;
+	private String userName;
 	private String wfTitle;
 	private String wfCategory;
 	private String wfCode;
@@ -66,7 +67,7 @@ public class Workflow {
 	public Workflow(long userID, String wfTitle, String wfCategory, String wfCode,
 					String wfDesc, String wfImg, String wfVisibility,
 					User user, List<User> wfContributors, List<Workflow> wfRelated,
-					String status, long groupId) {
+					String status, long groupId, String userName) {
 		super();
 		this.userID = userID;
 		this.wfTitle = wfTitle;
@@ -83,6 +84,7 @@ public class Workflow {
         this.groupId = groupId;
         this.edit = false;
 		this.comments = new ArrayList<>();
+		this.userName = userName;
 	}
 
 	public Set<Tag> getTags() {return this.tags;}
@@ -193,6 +195,14 @@ public class Workflow {
 
     public long getGroupId() {return groupId;}
 
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
     public void setEdit(boolean edit) {this.edit = edit;}
 
     public boolean getEdit() {return edit;}
@@ -202,7 +212,8 @@ public class Workflow {
 		return "Workflow [id=" + id + ", userID=" + userID + ", wfTitle=" + wfTitle
 				+ ", wfCategory=" + wfCategory + ", wfCode=" + wfCode
 				+ ", wfDesc=" + wfDesc + ", wfImg=" + wfImg + ", wfVisibility" + wfVisibility
-				+ ", user=" + user + ", wfContributors=" + wfContributors + ", wfRelated=" + wfRelated + ", viewCount=" + viewCount + ", groupId=" + groupId + ", edit=" + edit + "]";
+				+ ", user=" + user + ", wfContributors=" + wfContributors + ", wfRelated=" + wfRelated + ", viewCount=" + viewCount + ", groupId=" + groupId + ", userName=" + userName + ", edit=" + edit + "]";
+
 	}
 
 }
