@@ -37,7 +37,7 @@ public class SearchController extends Controller{
                 JsonNode response = APICall.callAPI(Constants.NEW_BACKEND + path + "/search/" + keywd + "/json");
                 for (JsonNode n: response) {
                     User obj = new User();
-                    obj.setUserName(n.get("userName").toString());
+                    obj.setUserName(n.get("userName").textValue());
                     try {
                         obj.setEmail(n.get("email").toString());
                     } catch (Exception e){

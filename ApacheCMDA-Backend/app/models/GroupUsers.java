@@ -18,6 +18,7 @@ package models;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 public class GroupUsers {
@@ -27,7 +28,7 @@ public class GroupUsers {
     private long creatorUser;
 	private String groupName;
 	private String groupDescription;
-	private String groupStatus;
+	private String groupUrl;
 
 	@ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE})
 	@JoinTable(name = "GoupAndGroupmembers", joinColumns = { @JoinColumn(name ="groupId", referencedColumnName = "id")}, inverseJoinColumns = { @JoinColumn(name = "member", referencedColumnName = "id") })
@@ -36,12 +37,12 @@ public class GroupUsers {
 	public GroupUsers() {
 	}
 
-	public GroupUsers(long creatorUser, String groupName, String groupDescription, String groupStatus, List<User> groupMembers) {
+	public GroupUsers(long creatorUser, String groupName, String groupDescription, List<User> groupMembers) {
 		super();
         this.creatorUser = creatorUser;
 		this.groupName = groupName;
 		this.groupDescription = groupDescription;
-		this.groupStatus = groupStatus;
+		this.groupUrl = UUID.randomUUID().toString();
 		this.groupMembers = groupMembers;
 	}
 
@@ -71,12 +72,8 @@ public class GroupUsers {
 		this.groupDescription = groupDescription;
 	}
 
-	public String getGroupStatus() {
-		return groupStatus;
-	}
-
-	public void setGroupStatus(String groupStatus) {
-		this.groupStatus = groupStatus;
+	public String getGroupUrl() {
+		return groupUrl;
 	}
 
 	public List<User> getGroupMembers() {
@@ -89,7 +86,7 @@ public class GroupUsers {
 	@Override
 	public String toString() {
 		return "GroupUsers [id=" + id + ", creatorUser=" + creatorUser + ", groupName=" + groupName + ", groupDescription=" + groupDescription
-				+ ", groupStatus=" + groupStatus + ", groupMembers=" + groupMembers +"]";
+				+ ", groupUrl=" + groupUrl + ", groupMembers=" + groupMembers +"]";
 	}
 }
 

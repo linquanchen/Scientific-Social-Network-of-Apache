@@ -77,7 +77,7 @@ public class WorkflowController extends Controller {
         String wfCategory = json.path("wfCategory").asText();
         String wfCode = json.path("wfCode").asText();
         String wfDesc = json.path("wfDesc").asText();
-        //img
+        String wfImg = json.path("wfImg").asText();
         String wfVisibility = json.path("wfVisibility").asText();
         long wfGroupId = json.path("wfGroupId").asLong();
 
@@ -96,10 +96,9 @@ public class WorkflowController extends Controller {
         }
 
         //groupId would be 0 if it is public
-        Workflow workflow = new Workflow(userID, wfTitle, wfCategory, wfCode, wfDesc, "IMAGE",
+        Workflow workflow = new Workflow(userID, wfTitle, wfCategory, wfCode, wfDesc, wfImg,
                 wfVisibility, user, wfContributors, wfRelated, "norm", wfGroupId);
         Workflow savedWorkflow = workflowRepository.save(workflow);
-
         return created(new Gson().toJson(savedWorkflow.getId()));
     }
 
@@ -301,6 +300,7 @@ public class WorkflowController extends Controller {
             long timestamp = json.path("timestamp").asLong();
             long workflowId = json.path("workflowID").asLong();
             String content = json.path("Content").asText();
+            String commentImage = json.path("commentImg").asText();
 
             User user = userRepository.findOne(userId);
             if(user==null){
@@ -312,20 +312,19 @@ public class WorkflowController extends Controller {
                 System.out.println("Cannot find workflow with given workflow id");
                 return badRequest("Cannot find workflow with given workflow id");
             }
-            Comment comment = new Comment(user, timestamp, content);
-            commentRepository.save(comment);
+            Comment comment = new Comment(user, timestamp, content, commentImage);
+            Comment savedComment = commentRepository.save(comment);
             List<Comment> list = workflow.getComments();
             list.add(comment);
             workflow.setComments(list);
-
             workflowRepository.save(workflow);
-            return ok("Comment add successfully");
+            return ok(new Gson().toJson(savedComment.getId()));
         } catch (Exception e){
             e.printStackTrace();
             return badRequest("Failed to add comment!");
         }
     }
-
+    
     public Result setTag() {
         try{
             JsonNode json = request().body().asJson();

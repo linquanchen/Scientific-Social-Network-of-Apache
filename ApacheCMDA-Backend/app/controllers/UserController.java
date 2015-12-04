@@ -307,7 +307,7 @@ public class UserController extends Controller {
 			followee.setFollowers(followers);
 
 			userRepository.save(followee);
-            return ok("Followship is destroyed");
+            return ok("{\"success\":\"Success!\"}");
         } catch (Exception e){
             e.printStackTrace();
             return badRequest("Followship is established: Follower:"+userId+"\tFollowee:"+followeeId);
