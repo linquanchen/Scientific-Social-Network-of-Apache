@@ -25,21 +25,13 @@
         @fixed.header(userName ,userId)
     </div>
     @main("Welcome") {
-        <header>
-            <h1>@wf.getWfTitle</h1>
-        </header>
-        <ul class="pager">
-            <li>
-                <img src=wf.getWfImg class="img-thumbnail" width="27%">
-            </li>
-            <li>
-                <ul class="list-group">
-                    <li class="list-group-item"><span class="badge">ID</span>@wf.getId</li>
-                    <li class="list-group-item"><span class="badge">Name</span>@wf.getUserName</li>
-                    <li class="list-group-item"><span class="badge">Category</span>@wf.getWfCategory</li>
-                    <li class="list-group-item"><span class="badge">Detail</span>@wf.getWfDesc</li>
-                </ul>
-            </li>
+        <h1>@wf.getWfTitle</h1>
+        <img src="/@wf.getWfImg" class="img-thumbnail" width="27%">
+        <ul class="list-group">
+            <li class="list-group-item"><span class="badge">ID</span>@wf.getId</li>
+            <li class="list-group-item"><span class="badge">Name</span>@wf.getUserName</li>
+            <li class="list-group-item"><span class="badge">Category</span>@wf.getWfCategory</li>
+            <li class="list-group-item"><span class="badge">Detail</span>@wf.getWfDesc</li>
         </ul>
     }
 </body>
