@@ -37,6 +37,7 @@ public class Workflow {
 	private String status;
 	private long   viewCount;
     private long   groupId;
+    private boolean edit;
 
 
 	@ManyToOne(optional = false)
@@ -72,6 +73,7 @@ public class Workflow {
 		this.status = status;
 		this.viewCount = 0;
         this.groupId = groupId;
+        this.edit = false;
 	}
 
 	public String getWfCategory() {
@@ -174,11 +176,15 @@ public class Workflow {
 
     public long getGroupId() {return groupId;}
 
+    public void setEdit(boolean edit) {this.edit = edit;}
+
+    public boolean getEdit() {return edit;}
+
 	@Override
 	public String toString() {
 		return "Workflow [id=" + id + ", userID=" + userID + ", wfTitle=" + wfTitle
 				+ ", wfCategory=" + wfCategory + ", wfCode=" + wfCode
 				+ ", wfDesc=" + wfDesc + ", wfImg=" + wfImg + ", wfVisibility" + wfVisibility
-				+ ", user=" + user + ", wfContributors=" + wfContributors + ", wfRelated=" + wfRelated + ", viewCount=" + viewCount + ", groupId=" + groupId + "]";
+				+ ", user=" + user + ", wfContributors=" + wfContributors + ", wfRelated=" + wfRelated + ", viewCount=" + viewCount + ", groupId=" + groupId + ", edit=" + edit + "]";
 	}
 }
