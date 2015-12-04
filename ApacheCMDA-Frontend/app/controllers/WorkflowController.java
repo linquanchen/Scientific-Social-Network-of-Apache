@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import models.Group;
 import models.SearchResult;
 import models.Workflow;
 import org.apache.commons.io.FileUtils;
@@ -40,7 +41,13 @@ public class WorkflowController extends Controller {
     public static Result main() {
         // TODO: Get user groups and add them to the <selection>
         // TODO: we may need to create a Group class like backend implementation
-        return ok(workflow.render(session("username"), Long.parseLong(session("id"))));
+        JsonNode response = APICall.callAPI(Constants.NEW_BACKEND + "group/getGroupList/" + session("id") + "/json");
+        ArrayList<Group> groupArr = new ArrayList<Group>();
+        for (JsonNode n: response) {
+            Group g = new Group(n);
+            groupArr.add(g);
+        }
+        return ok(workflow.render(session("username"), Long.parseLong(session("id")), groupArr));
     }
 
     public static Result workflowDetail(Long wid) {
@@ -79,8 +86,7 @@ public class WorkflowController extends Controller {
                 e.printStackTrace();
             }
         } else {
-            flash("error", "Missing file");
-            return badRequest("Wrong!!!!!!!!");
+            imgPathToSave = "";
         }
         imgPathToSave = imgPathToSave.replaceFirst("public", "assets");
 
@@ -93,7 +99,7 @@ public class WorkflowController extends Controller {
             jnode.put("wfCategory", form.field("wfCategory").value());
             jnode.put("wfCode", form.field("wfCode").value());
             jnode.put("wfDesc", form.field("wfDesc").value());
-            jnode.put("wfVisibility", form.field("wfVisibility").value());
+            jnode.put("wfGroupId", form.field("wfVisibility").value());
             jnode.put("wfImg", imgPathToSave);
         }catch(Exception e) {
             flash("error", "Form value invalid");
