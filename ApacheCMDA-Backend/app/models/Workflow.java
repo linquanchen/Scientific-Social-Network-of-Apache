@@ -19,6 +19,7 @@ package models;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 
 @Entity
@@ -55,6 +56,10 @@ public class Workflow {
 	@JoinTable(name = "WorkflowAndRelated", joinColumns = { @JoinColumn(name ="workflowId", referencedColumnName = "id")}, inverseJoinColumns = { @JoinColumn(name = "relatedId", referencedColumnName = "id") })
 	private List<Workflow> wfRelated;
 
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(name = "WorkflowAndTags", joinColumns = { @JoinColumn(name ="workflowId", referencedColumnName = "id")}, inverseJoinColumns = { @JoinColumn(name = "tagId", referencedColumnName = "id") })
+	private Set<Tag> tags;
+
 	public Workflow() {
 	}
 
@@ -79,6 +84,10 @@ public class Workflow {
         this.edit = false;
 		this.comments = new ArrayList<>();
 	}
+
+	public Set<Tag> getTags() {return this.tags;}
+
+	public void setTags(Set<Tag> tags) {this.tags = tags;}
 
 	public List<Comment> getComments(){ return this.comments; }
 
@@ -195,4 +204,5 @@ public class Workflow {
 				+ ", wfDesc=" + wfDesc + ", wfImg=" + wfImg + ", wfVisibility" + wfVisibility
 				+ ", user=" + user + ", wfContributors=" + wfContributors + ", wfRelated=" + wfRelated + ", viewCount=" + viewCount + ", groupId=" + groupId + ", edit=" + edit + "]";
 	}
+
 }
