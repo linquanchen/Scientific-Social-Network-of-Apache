@@ -16,6 +16,7 @@
  */
 package models;
 
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
 import javax.inject.Named;
@@ -27,4 +28,7 @@ import java.util.List;
 public interface WorkflowRepository extends CrudRepository<Workflow, Long> {
     List<Workflow> findByUserID(Long id);
     Workflow findById(Long id);
+
+    @Query(value = "select w.* from Workflow w where (w.groupId = 0)", nativeQuery = true)
+    List<Workflow> findPubicWorkflow();
 }

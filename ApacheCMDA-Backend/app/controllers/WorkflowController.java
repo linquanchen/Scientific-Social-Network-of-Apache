@@ -234,6 +234,24 @@ public class WorkflowController extends Controller {
         return ok(result);
     }
 
+    //get user's own workflow list.
+    public Result getPublicWorkflow(String format) {
+
+        List<Workflow> workflowList = workflowRepository.findPubicWorkflow();
+        for(Workflow workflow: workflowList) {
+            workflow.setEdit(true);
+        }
+
+        String result = new String();
+        if (format.equals("json")) {
+            result = new Gson().toJson(workflowList);
+        }
+
+        return ok(result);
+    }
+
+
+
     public Result getTimeLine(Long id, Long offset, String format) {
         if(id == null) {
             System.out.println("Id not created, please enter valid user");

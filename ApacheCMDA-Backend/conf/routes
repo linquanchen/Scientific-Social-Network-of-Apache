@@ -75,7 +75,8 @@ POST           /workflow/deleteWorkflow                                         
 GET            /workflow/get/workflowID/:wfID/userID/:userID/json                                        @controllers.WorkflowController.get(wfID: Long, userID: Long, format: String="json")
 GET           /workflow/getTimeline/:id/offset/:offset/json                                              @controllers.WorkflowController.getTimeLine(id: Long, offset: Long, format: String="json")
 GET           /workflow/getWorkflowList/:id/json                                                         @controllers.WorkflowController.getWorkflowList(id: Long, format: String="json")
-POST           /workflow/uploadImage/:id                                                                    @controllers.WorkflowController.uploadImage(id:Long)
+POST           /workflow/uploadImage/:id                                                                 @controllers.WorkflowController.uploadImage(id:Long)
+GET           /workflow/getPublicWorkflow/json                                                           @controllers.WorkflowController.getPublicWorkflow(format: String="json")
 
 
 
