@@ -91,7 +91,6 @@ public class ProfileController extends Controller {
     }
 
     public static Result follow(Long id) {
-        // http://localhost:9034/users/follow/followerId/110/followeeId/12
         if (notpass()) return redirect(routes.Application.login());
         String followQuery = Constants.NEW_BACKEND
                 + "users/follow/followerId/"
@@ -106,7 +105,6 @@ public class ProfileController extends Controller {
     }
 
     public static Result unfollow(Long id) {
-        // http://localhost:9034/users/unfollow/followerId/110/followeeId/12
         if (notpass()) return redirect(routes.Application.login());
         String unfollowQuery = Constants.NEW_BACKEND
                 + "users/unfollow/followerId/"

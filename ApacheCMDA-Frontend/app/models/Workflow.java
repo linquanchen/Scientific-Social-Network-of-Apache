@@ -28,6 +28,17 @@ public class Workflow {
     public Workflow() {
     }
 
+    public Workflow(JsonNode node) {
+        if (node.get("id")!=null) id = node.get("id").asLong();
+        if (node.get("UserId")!=null) UserId = node.get("UserId").asLong();
+        if (node.get("wfTitle")!=null) wfTitle = node.get("wfTitle").asText();
+        if (node.get("wfCode")!=null) wfCode = node.get("wfCode").asText();
+        if (node.get("wfDesc")!=null) wfDesc = node.get("wfDesc").asText();
+        if (node.get("wfImg")!=null) wfImg = node.get("wfImg").asText();
+        if (node.get("wfCategory")!=null) wfCategory = node.get("wfCategory").asText();
+        if (node.get("wfVisibility")!=null) wfVisibility = node.get("wfVisibility").asText();
+    }
+
     public static JsonNode create(ObjectNode node) {
         JsonNode response = APICall.postAPI(CREATE, node);
         return response;

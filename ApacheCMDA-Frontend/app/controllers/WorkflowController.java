@@ -33,8 +33,25 @@ public class WorkflowController extends Controller {
         return false;
     }
 
+
     public static Result main() {
         return ok(workflow.render(session("username"), Long.parseLong(session("id"))));
+    }
+
+    public static Result workflowDetail(Long wid) {
+        JsonNode wfres = APICall.callAPI(Constants.NEW_BACKEND + "workflow/get/workflowID/"
+                +wid.toString()+ "/userID/" + session("id") + "/json");
+        if (wfres == null || wfres.has("error")) {
+            flash("error", wfres.get("error").textValue());
+            return redirect(routes.WorkflowController.main());
+        }
+        if (wfres.get("status").asText().contains("protected"))
+        {
+            flash("error", "The workflow is protected!");
+            return redirect(routes.WorkflowController.main());
+        }
+        Workflow wf = new Workflow(wfres);
+        return ok(workflowdetail.render(wf, session("username"), Long.parseLong(session("id"))));
     }
 
     // return json
