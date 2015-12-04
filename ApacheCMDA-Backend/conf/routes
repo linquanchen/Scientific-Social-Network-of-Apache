@@ -77,7 +77,6 @@ GET           /workflow/getTimeline/:id/offset/:offset/json                     
 GET           /workflow/getWorkflowList/:id/json                                                         @controllers.WorkflowController.getWorkflowList(id: Long, format: String="json")
 POST           /workflow/uploadImage/:id                                                                    @controllers.WorkflowController.uploadImage(id:Long)
 
->>>>>>> fe33154880b7874b936f5dc6ccfc02f50aae627f
 
 #Group
 POST           /group/createGroup                                                                        @controllers.GroupUsersController.createGroup
