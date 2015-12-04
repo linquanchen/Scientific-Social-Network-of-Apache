@@ -1,6 +1,8 @@
 package models;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by baishi on 12/3/15.
@@ -18,6 +20,10 @@ public class Comment {
     private long timestamp;
     private String content;
 
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name = "ReplyId", referencedColumnName = "id")
+    private List<Reply> replies;
+
     public Comment(){
 
     }
@@ -27,7 +33,12 @@ public class Comment {
         this.user = user;
         this.timestamp = timestamp;
         this.content = content;
+        this.replies = new ArrayList<>();
     }
+
+    public List<Reply> getReplies(){ return this.replies; }
+
+    public void setReplies(List<Reply> replies){ this.replies = replies; }
 
     public long getId() {
         return id;
