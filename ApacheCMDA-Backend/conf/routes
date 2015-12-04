@@ -75,8 +75,16 @@ GET           /workflow/getTimeline/:id/offset/:offset/json                     
 POST           /workflow/uploadImage/:id                                                                    @controllers.WorkflowController.uploadImage(id:Long)
 #GET           /workflow/getImage/:id/json/
 
+#Group
+POST           /group/createGroup                                                                        @controllers.GroupUsersController.createGroup
+POST           /group/addMembersToGroup                                                                  @controllers.GroupUsersController.addMembersToGroup
+GET            /group/getGroupList/:userID/json                                                          @controllers.GroupUsersController.getGroupList(userID: Long, format: String="json")
+GET            /group/getGroupMember/:groupId/json                                                       @controllers.GroupUsersController.getGroupMember(groupId: Long, format: String="json")
+
+
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file                                                                             controllers.Assets.at(path="/", file)
 
 #Workflow
 #GET           /workflow/getTimeline/:id/offset/:offset/json                                              @controllers.UserController.userSearch(id: Long, offset: Long, format: String="json")
+POST          /workflow/addComment                                                                        @controllers.WorkflowController.addComment
