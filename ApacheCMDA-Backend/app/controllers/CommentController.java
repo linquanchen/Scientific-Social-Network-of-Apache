@@ -1,0 +1,106 @@
+package controllers;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.google.gson.Gson;
+import models.*;
+import play.mvc.Controller;
+import play.mvc.Result;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+import java.util.List;
+
+/**
+ * Created by baishi on 11/24/15.
+ */
+@Named
+@Singleton
+public class CommentController extends Controller {
+
+    private final CommentRepository commentRepository;
+    private final UserRepository userRepository;
+    private final ReplyRepository replyRepository;
+
+    @Inject
+    public CommentController(final CommentRepository commentRepository,
+                             UserRepository userRepository, ReplyRepository replyRepository){
+        this.commentRepository = commentRepository;
+        this.userRepository = userRepository;
+        this.replyRepository = replyRepository;
+    }
+
+    public Result addReply() {
+        JsonNode jsonNode = request().body().asJson();
+        if (jsonNode == null){
+            System.out.println("Reply not added, expecting Json data");
+            return badRequest("Reply not added, expecting Json data");
+        }
+
+        long commentId = jsonNode.path("commentId").asLong();
+        long fromUserId = jsonNode.path("fromUserId").asLong();
+        long toUserId = jsonNode.path("toUserId").asLong();
+        long timestamp = jsonNode.path("timestamp").asLong();
+        String content = jsonNode.path("content").asText();
+        Comment comment = commentRepository.findOne(commentId);
+        if(comment==null){
+            System.out.println("Cannot find comment!");
+            return badRequest("Cannot find comment!");
+        }
+        User fromUser = userRepository.findOne(fromUserId);
+        if(fromUser==null){
+            System.out.println("Cannot find fromUser!");
+            return badRequest("Cannot find fromUser!");
+        }
+        User toUser = userRepository.findOne(toUserId);
+        if(toUser==null){
+            System.out.println("Cannot find toUser!");
+            return badRequest("Cannot find toUser!");
+        }
+
+        Reply reply = new Reply(fromUser, toUser, timestamp, content);
+        Reply savedReply = replyRepository.save(reply);
+        List<Reply> replyList = comment.getReplies();
+        replyList.add(reply);
+        commentRepository.save(comment);
+
+        return ok(new Gson().toJson(savedReply.getId()));
+    }
+
+    public Result replyReply() {
+        JsonNode jsonNode = request().body().asJson();
+        if(jsonNode == null){
+            System.out.println("Reply not added, expecting Json data");
+            return badRequest("Reply not added, expecting Json data");
+        }
+
+        long replyId = jsonNode.path("replyId").asLong();
+        long fromUserId = jsonNode.path("fromUserId").asLong();
+        long toUserId = jsonNode.path("toUserId").asLong();
+        long timestamp = jsonNode.path("timestamp").asLong();
+        String content = jsonNode.path("content").asText();
+        Reply reply = replyRepository.findOne(replyId);
+        if(reply==null){
+            System.out.println("Cannot find comment!");
+            return badRequest("Cannot find comment!");
+        }
+        User fromUser = userRepository.findOne(fromUserId);
+        if(fromUser==null){
+            System.out.println("Cannot find fromUser!");
+            return badRequest("Cannot find fromUser!");
+        }
+        User toUser = userRepository.findOne(toUserId);
+        if(toUser==null){
+            System.out.println("Cannot find toUser!");
+            return badRequest("Cannot find toUser!");
+        }
+
+        Reply reReply = new Reply(fromUser, toUser, timestamp, content);
+        Reply savedReply = replyRepository.save(reReply);
+        List<Reply> replies = reply.getReplies();
+        replies.add(reReply);
+        replyRepository.save(reply);
+
+        return ok(new Gson().toJson(savedReply.getId()));
+    }
+}

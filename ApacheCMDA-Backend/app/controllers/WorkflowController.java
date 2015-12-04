@@ -209,12 +209,13 @@ public class WorkflowController extends Controller {
             }
             Comment comment = new Comment(user, timestamp, content, commentImage);
             commentRepository.save(comment);
+            Comment comment = new Comment(user, timestamp, content);
+            Comment savedComment = commentRepository.save(comment);
             List<Comment> list = workflow.getComments();
             list.add(comment);
             workflow.setComments(list);
-
             workflowRepository.save(workflow);
-            return ok("Comment add successfully");
+            return ok(new Gson().toJson(savedComment.getId()));
         } catch (Exception e){
             e.printStackTrace();
             return badRequest("Failed to add comment!");

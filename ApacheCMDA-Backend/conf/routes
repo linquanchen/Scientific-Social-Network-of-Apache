@@ -85,5 +85,9 @@ GET            /group/getGroupMember/:groupId/json                              
 GET           /assets/*file                                                                             controllers.Assets.at(path="/", file)
 
 #Workflow
-#GET           /workflow/getTimeline/:id/offset/:offset/json                                              @controllers.UserController.userSearch(id: Long, offset: Long, format: String="json")
-POST          /workflow/addComment                                                                        @controllers.WorkflowController.addComment
+#GET            /workflow/getTimeline/:id/offset/:offset/json                                              @controllers.UserController.userSearch(id: Long, offset: Long, format: String="json")
+POST            /workflow/addComment                                                                       @controllers.WorkflowController.addComment
+
+#Comment
+POST           /Comment/addReply                                                                         @controllers.CommentController.addReply
+POST           /Comment/replyReply                                                                       @controllers.CommentController.replyReply
