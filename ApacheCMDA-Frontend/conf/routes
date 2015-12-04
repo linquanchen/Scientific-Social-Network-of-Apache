@@ -58,7 +58,7 @@ GET         /unfollow/:id                                       controllers.Prof
 
 # display and show work flow
 GET         /workflow                                           controllers.WorkflowController.main()
-GET         /timeline                                           controllers.TimelineController.main()
+GET         /timeline/:offset                                   controllers.TimelineController.main(offset: Long)
 POST        /workflow/new                                       controllers.WorkflowController.createFlow()
 POST        /workflow/newImage/:id                              controllers.WorkflowController.uploadImage(id: Long)
 GET         /workflow/get/:wid                                   controllers.WorkflowController.workflowDetail(wid: Long)

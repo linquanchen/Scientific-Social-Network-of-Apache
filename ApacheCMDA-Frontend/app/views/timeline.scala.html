@@ -1,4 +1,4 @@
-@(userName: String, userId: Long)
+@(userName: String, userId: Long, allTimeline: List[Workflow], offset: Long)
 
 <link href='@routes.Assets.at("css/bootstrap.min.css")'
 rel="stylesheet"/>
@@ -11,19 +11,27 @@ rel="stylesheet"/>
 @fixed.header(userName, userId)
 </div>
 @main("Timeline") {
-  <div>
-    <h3>Welcome to timeline of your friends</h3>
-    <form action="@routes.WorkflowController.createFlow()" method="POST">
-      <input type="hidden" name="userID" value="@userId">
-      <input type="text" name="wfTitle" placeholder="Title">
-      <input type="text" name="wfCategory" placeholder="Category">
-      <input type="text" name="wfCode" placeholder="Code">
-      <input type="text" name="wfDesc" placeholder="Description">
-      <select name="wfVisibility">
-        <option>public</option>
-        <option>private</option>
-      </select>
-      <button type="submit">Create</button>
-    </form>
-  </div>
+  @if(allTimeline != null) {
+    <p>Your friends' posts</p>
+    <table>
+      <tr><th>User</th><th>Workflow Title</th><th>Workflow Category</th><th>Workflow Description</th><th>View Count</th><th>Workflow Detail</th></tr>
+      @for( result <- allTimeline) {
+        <tr>
+          <td>@result.getUserName</td>
+          <td>@result.getWfTitle</td>
+          <td>@result.getWfCategory</td>
+          <td>@result.getWfDesc</td>
+          <td>@result.getWfViewCount</td>
+          <td><a href="/workflow/get/@result.getId">More</a></td>
+        </tr>
+      }
+    </table>
+
+  } else {
+    <p>No More timelines!</p>
+  }
+
+  <form action="/timeline/@offset ">
+    <button name="subject" type="submit" value="Next Page">Next Page</button>
+  </form>
 }

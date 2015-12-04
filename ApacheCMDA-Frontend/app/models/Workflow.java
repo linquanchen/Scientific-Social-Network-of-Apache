@@ -138,7 +138,7 @@ public class Workflow {
 
     public long getWfViewCount() {return wfViewCount;}
 
-    public void setWfViewCount(int wfViewCount) {this.wfViewCount = wfViewCount;}
+    public void setWfViewCount(long wfViewCount) {this.wfViewCount = wfViewCount;}
 
     public String getWfTag() {return wfTag;}
 
