@@ -24,6 +24,8 @@ public class Workflow {
     private String wfVisibility = "NaN";
     private long [] wfContributors = {-1};
     private long [] wfRelated = {-1};
+    private long wfViewCount = 0;
+    private String wfTag = "NaN";
 
     public Workflow() {
     }
@@ -37,6 +39,8 @@ public class Workflow {
         if (node.get("wfImg")!=null) wfImg = node.get("wfImg").asText();
         if (node.get("wfCategory")!=null) wfCategory = node.get("wfCategory").asText();
         if (node.get("wfVisibility")!=null) wfVisibility = node.get("wfVisibility").asText();
+        if (node.get("wfViewCount")!=null) wfViewCount = node.get("wfViewCount").asLong();
+        if (node.get("wfTag")!=null) wfTag = node.get("wfVisibility").asText();
     }
 
     public static JsonNode create(ObjectNode node) {
@@ -132,5 +136,11 @@ public class Workflow {
         this.wfRelated = wfRelated;
     }
 
+    public long getWfViewCount() {return wfViewCount;}
 
+    public void setWfViewCount(int wfViewCount) {this.wfViewCount = wfViewCount;}
+
+    public String getWfTag() {return wfTag;}
+
+    public void setWfTag(String wfTag) {this.wfTag = wfTag;}
 }
