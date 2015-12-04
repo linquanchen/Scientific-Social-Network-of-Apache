@@ -95,7 +95,7 @@ public class WorkflowController extends Controller {
 
         //groupId would be 0 if it is public
         Workflow workflow = new Workflow(userID, wfTitle, wfCategory, wfCode, wfDesc, wfImg,
-                wfVisibility, user, wfContributors, wfRelated, "norm", wfGroupId);
+                wfVisibility, user, wfContributors, wfRelated, "norm", wfGroupId, user.getUserName());
         Workflow savedWorkflow = workflowRepository.save(workflow);
 
         JsonObject jsonObject = new JsonObject();

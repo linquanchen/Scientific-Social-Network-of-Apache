@@ -28,6 +28,7 @@ public class Workflow {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
 	private long userID;
+	private String userName;
 	private String wfTitle;
 	private String wfCategory;
 	private String wfCode;
@@ -60,7 +61,7 @@ public class Workflow {
 	public Workflow(long userID, String wfTitle, String wfCategory, String wfCode,
 					String wfDesc, String wfImg, String wfVisibility,
 					User user, List<User> wfContributors, List<Workflow> wfRelated,
-					String status, long groupId) {
+					String status, long groupId, String userName) {
 		super();
 		this.userID = userID;
 		this.wfTitle = wfTitle;
@@ -76,6 +77,7 @@ public class Workflow {
 		this.viewCount = 0;
         this.groupId = groupId;
 		this.comments = new ArrayList<>();
+		this.userName = userName;
 	}
 
 	public List<Comment> getComments(){ return this.comments; }
@@ -182,11 +184,19 @@ public class Workflow {
 
     public long getGroupId() {return groupId;}
 
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
 	@Override
 	public String toString() {
 		return "Workflow [id=" + id + ", userID=" + userID + ", wfTitle=" + wfTitle
 				+ ", wfCategory=" + wfCategory + ", wfCode=" + wfCode
 				+ ", wfDesc=" + wfDesc + ", wfImg=" + wfImg + ", wfVisibility" + wfVisibility
-				+ ", user=" + user + ", wfContributors=" + wfContributors + ", wfRelated=" + wfRelated + ", viewCount=" + viewCount + ", groupId=" + groupId + "]";
+				+ ", user=" + user + ", wfContributors=" + wfContributors + ", wfRelated=" + wfRelated + ", viewCount=" + viewCount + ", groupId=" + groupId + ", userName=" + userName + "]";
 	}
 }
