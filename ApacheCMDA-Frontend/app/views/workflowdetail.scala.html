@@ -12,11 +12,17 @@
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
     <script src='@routes.Assets.at("js/jquery-1.1.js")'></script>
     <style type="text/css">
+        h1 {
+        text-align: center;
+        }
         ul {
-            float: left;
+        float: left;
+        width: 70%;
+        margin-left: 1%;
         }
         img {
-            float: left;
+        margin-left: 1%;
+        float: left;
         }
     </style>
 </head>
@@ -25,7 +31,9 @@
         @fixed.header(userName ,userId)
     </div>
     @main("Welcome") {
-        <h1>@wf.getWfTitle</h1>
+        <div class="jumbotron">
+            <h1>@wf.getWfTitle</h1>
+        </div>
         <img src="/@wf.getWfImg" class="img-thumbnail" width="27%">
         <ul class="list-group">
             <li class="list-group-item"><span class="badge">ID</span>@wf.getId</li>
