@@ -6,6 +6,7 @@ package controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import models.Group;
 import play.api.mvc.Controller;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -34,7 +35,13 @@ public class GroupController extends play.mvc.Controller {
 
     public static Result create()
     {
-        return ok(create_group.render(session("username"), Long.parseLong(session("id"))));
+        JsonNode response = APICall.callAPI(Constants.NEW_BACKEND + "group/getGroupList/" + session("id") + "/json");
+        ArrayList<Group> groupArr = new ArrayList<Group>();
+        for (JsonNode n: response) {
+            Group g = new Group(n);
+            groupArr.add(g);
+        }
+        return ok(create_group.render(session("username"), Long.parseLong(session("id")), groupArr));
     }
 
     public static Result join()
@@ -62,7 +69,13 @@ public class GroupController extends play.mvc.Controller {
         }
         String pass = res.textValue();
         flash("linkstring", pass);
-        return ok(create_group.render(session("username"), Long.parseLong(session("id"))));
+        JsonNode response = APICall.callAPI(Constants.NEW_BACKEND + "group/getGroupList/" + session("id") + "/json");
+        ArrayList<Group> groupArr = new ArrayList<Group>();
+        for (JsonNode n: response) {
+            Group g = new Group(n);
+            groupArr.add(g);
+        }
+        return ok(create_group.render(session("username"), Long.parseLong(session("id")), groupArr));
     }
 
     public static Result joinGroup()

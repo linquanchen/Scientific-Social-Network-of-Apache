@@ -39,8 +39,6 @@ public class WorkflowController extends Controller {
 
 
     public static Result main() {
-        // TODO: Get user groups and add them to the <selection>
-        // TODO: we may need to create a Group class like backend implementation
         JsonNode response = APICall.callAPI(Constants.NEW_BACKEND + "group/getGroupList/" + session("id") + "/json");
         ArrayList<Group> groupArr = new ArrayList<Group>();
         for (JsonNode n: response) {

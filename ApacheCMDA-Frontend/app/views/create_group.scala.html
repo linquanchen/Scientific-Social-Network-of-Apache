@@ -1,4 +1,4 @@
-@(userName: String, userId: Long)
+@(userName: String, userId: Long, groups: List[Group])
 
 <link href='@routes.Assets.at("css/bootstrap.min.css")'
 rel="stylesheet"/>
@@ -28,4 +28,19 @@ rel="stylesheet"/>
             <button type="submit">Create</button>
         </form>
     </div>
+
+    <h1>Your Groups</h1>
+    @if(groups != null) {
+        <table>
+        <tr><th>Group Name</th><th>Pass code</th></tr>
+        @for( group <- groups) {
+            <tr>
+                <td>@group.getGroupName</td>
+                <td>@group.getGroupUrl</td>
+            </tr>
+        }
+        </table>
+    } else {
+        <p>You are not the admin of any group!</p>
+    }
 }
