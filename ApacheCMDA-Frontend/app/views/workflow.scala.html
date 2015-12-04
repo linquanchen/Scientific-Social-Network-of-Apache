@@ -1,4 +1,4 @@
-@(userName: String, userId: Long)
+@(userName: String, userId: Long, groups: List[Group])
 
 <link href='@routes.Assets.at("css/bootstrap.min.css")'
 rel="stylesheet"/>
@@ -13,16 +13,21 @@ rel="stylesheet"/>
 @main("New Workflow") {
   <div>
     <h3>Create new workflow</h3>
-    <form action="@routes.WorkflowController.createFlow()" method="POST">
+    <form action="@routes.WorkflowController.createFlow()" enctype="multipart/form-data" method="POST">
       <input type="hidden" name="userID" value="@userId">
       <input type="text" name="wfTitle" placeholder="Title">
       <input type="text" name="wfCategory" placeholder="Category">
       <input type="text" name="wfCode" placeholder="Code">
       <input type="text" name="wfDesc" placeholder="Description">
       <select name="wfVisibility">
-        <option>public</option>
-        <option>private</option>
+        <option value="0">public</option>
+        @if(groups != null) {
+          @for( group <- groups) {
+            <option value="@group.getId">@group.getGroupName</option>
+          }
+        }
       </select>
+      <input type="file" name="image"/>
       <button type="submit">Create</button>
     </form>
   </div>

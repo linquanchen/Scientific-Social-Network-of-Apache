@@ -58,5 +58,10 @@ GET         /unfollow/:id                                       controllers.Prof
 # display and show work flow
 GET         /workflow                                           controllers.WorkflowController.main()
 POST        /workflow/new                                       controllers.WorkflowController.createFlow()
-POST        /workflow/newImage/:id                              controllers.WorkflowController.uploadImage(id: Long)
 GET         /workflow/get/:wid                                   controllers.WorkflowController.workflowDetail(wid: Long)
+
+# group
+GET         /group/create                                       controllers.GroupController.create()
+POST        /group/creategroup                                  controllers.GroupController.createGroup()
+GET         /group/join                                         controllers.GroupController.join()
+POST        /group/joingroup                                    controllers.GroupController.joinGroup()
