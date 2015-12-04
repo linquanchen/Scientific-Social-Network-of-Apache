@@ -18,8 +18,6 @@
 package controllers;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import models.*;
@@ -53,13 +51,16 @@ public class WorkflowController extends Controller {
     private final WorkflowRepository workflowRepository;
     private final UserRepository userRepository;
     private final GroupUsersRepository groupUsersRepository;
+    private final CommentRepository commentRepository;
 
     @Inject
     public WorkflowController(final WorkflowRepository workflowRepository,
-                              UserRepository userRepository, GroupUsersRepository groupUsersRepository) {
+                              UserRepository userRepository, GroupUsersRepository groupUsersRepository,
+                              CommentRepository commentRepository) {
         this.workflowRepository = workflowRepository;
         this.userRepository = userRepository;
         this.groupUsersRepository = groupUsersRepository;
+        this.commentRepository = commentRepository;
     }
 
     public Result post() {
@@ -226,5 +227,43 @@ public class WorkflowController extends Controller {
         }
 
         return ok(result);
+    }
+}
+
+    public Result addComment(){
+        try{
+            JsonNode json = request().body().asJson();
+            if(json==null){
+                System.out.println("Comment not created, expecting Json data");
+                return badRequest("Comment not created, expecting Json data");
+            }
+
+            long userId = json.path("userID").asLong();
+            long timestamp = json.path("timestamp").asLong();
+            long workflowId = json.path("workflowID").asLong();
+            String content = json.path("Content").asText();
+
+            User user = userRepository.findOne(userId);
+            if(user==null){
+                System.out.println("Cannot find user with given user id");
+                return badRequest("Cannot find user with given user id");
+            }
+            Workflow workflow = workflowRepository.findOne(workflowId);
+            if(workflow==null){
+                System.out.println("Cannot find workflow with given workflow id");
+                return badRequest("Cannot find workflow with given workflow id");
+            }
+            Comment comment = new Comment(user, timestamp, content);
+            commentRepository.save(comment);
+            List<Comment> list = workflow.getComments();
+            list.add(comment);
+            workflow.setComments(list);
+
+            workflowRepository.save(workflow);
+            return ok("Comment add successfully");
+        } catch (Exception e){
+            e.printStackTrace();
+            return badRequest("Failed to add comment!");
+        }
     }
 }

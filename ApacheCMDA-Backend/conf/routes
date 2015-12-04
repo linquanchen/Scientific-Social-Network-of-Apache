@@ -87,3 +87,4 @@ GET           /assets/*file                                                     
 
 #Workflow
 #GET           /workflow/getTimeline/:id/offset/:offset/json                                              @controllers.UserController.userSearch(id: Long, offset: Long, format: String="json")
+POST          /workflow/addComment                                                                        @controllers.WorkflowController.addComment
