@@ -18,15 +18,18 @@ public class Comment {
     private long timestamp;
     private String content;
 
+    private String commentImage;
+
     public Comment(){
 
     }
 
-    public Comment(User user, long timestamp, String content){
+    public Comment(User user, long timestamp, String content, String commentImage){
         this.status = true;
         this.user = user;
         this.timestamp = timestamp;
         this.content = content;
+        this.commentImage = commentImage;
     }
 
     public long getId() {
@@ -63,6 +66,14 @@ public class Comment {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public String getCommentImage() {
+        return commentImage;
+    }
+
+    public void setCommentImage(String commentImage) {
+        this.commentImage = commentImage;
     }
 
     @Override
