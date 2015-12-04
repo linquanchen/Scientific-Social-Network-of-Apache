@@ -23,4 +23,6 @@ libraryDependencies ++= Seq(
   "org.hibernate" % "hibernate-c3p0" % "4.3.7.Final"
 )
 
+libraryDependencies += "commons-io" % "commons-io" % "2.4"
+
 

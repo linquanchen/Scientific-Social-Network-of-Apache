@@ -16,9 +16,9 @@
  */
 package models;
 
-import java.util.List;
-
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
@@ -39,6 +39,9 @@ public class Workflow {
     private long   groupId;
     private boolean edit;
 
+	@OneToMany(fetch = FetchType.EAGER)
+	@JoinColumn(name = "CommentId", referencedColumnName = "id")
+	private List<Comment> comments;
 
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "creatorId", referencedColumnName = "id")
@@ -74,7 +77,12 @@ public class Workflow {
 		this.viewCount = 0;
         this.groupId = groupId;
         this.edit = false;
+		this.comments = new ArrayList<>();
 	}
+
+	public List<Comment> getComments(){ return this.comments; }
+
+	public void setComments(List<Comment> comments){ this.comments = comments; }
 
 	public String getWfCategory() {
 		return wfCategory;

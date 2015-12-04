@@ -39,6 +39,19 @@ public class User {
 				joinColumns = { @JoinColumn(name ="userId", referencedColumnName = "id")},
 				inverseJoinColumns = { @JoinColumn(name = "followerId", referencedColumnName = "id") })
 	private Set<User> followers;
+
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(	name = "friendRequests",
+			joinColumns = { @JoinColumn(name ="userId", referencedColumnName = "id")},
+			inverseJoinColumns = { @JoinColumn(name = "senderId", referencedColumnName = "id") })
+	private Set<User> friendRequestSender;
+
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(	name = "friendship",
+			joinColumns = { @JoinColumn(name ="userAId", referencedColumnName = "id")},
+			inverseJoinColumns = { @JoinColumn(name = "userBId", referencedColumnName = "id") })
+	private Set<User> friends;
+
 //	private String middleInitial;
 //	private String affiliation;
 //	private String title;
@@ -111,14 +124,14 @@ public class User {
 		this.followers = followers;
 	}
 
-	public void addFollower(User follower){
-		this.followers.add(follower);
+	public void setFriendRequestSender(Set<User> friendRequestSender) {
+		this.friendRequestSender = friendRequestSender;
 	}
+	public Set<User> getFriendRequestSender() {	return this.friendRequestSender;}
 
-	public void removeFollower(User follower){
-		this.followers.remove(follower);
-	}
+	public void setFriends(Set<User> friends) {this.friends = friends;}
 
+	public Set<User> getFriends() {return this.friends;}
 
 	@Override
 	public String toString() {
