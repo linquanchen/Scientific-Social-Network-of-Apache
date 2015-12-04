@@ -131,25 +131,6 @@ public class WorkflowController extends Controller {
         }
     }
 
-//    public static Result getImage(final String id) {
-//        try {
-//            File img = new File("/home/SOC/public/uploads/_20150829-min.jpg");
-//            BufferedImage bufferedImage = new BufferedImage(240, 240, BufferedImage.TYPE_INT_ARGB);
-//
-//            try {
-//                bufferedImage = ImageIO.read(img);
-//            }
-//            catch (IOException e) { }
-//
-//            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//            ImageIO.write(bufferedImage, "jpg", baos);
-//            return ok(baos.toByteArray()).as("image/jpg");
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//        }
-//        return ok();
-//    }
-
     //get detailed workflow.
     public Result get(Long wfID, Long userID, String format) {
         if (wfID == null) {
@@ -230,7 +211,7 @@ public class WorkflowController extends Controller {
 
         return ok(result);
     }
-}
+
 
     public Result addComment(){
         try{
@@ -268,4 +249,8 @@ public class WorkflowController extends Controller {
             return badRequest("Failed to add comment!");
         }
     }
+
+
+
+
 }
