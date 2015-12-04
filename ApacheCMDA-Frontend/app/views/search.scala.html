@@ -1,4 +1,4 @@
-@(username: String, userId: String, category: String, results: List[User] )
+@(username: String, userId: String, category: String, results: List[User], resultswf: List[Workflow] )
 
 <link href='@routes.Assets.at("css/bootstrap.min.css")'
       rel="stylesheet"/>
@@ -16,11 +16,12 @@
     <select name="category" id="">
       <option value="user">User</option>
       <option value="workflow">Workflow</option>
+      <option value="tag">Tag</option>
     </select>
     <input type="text" name="keywd">
     <input type="submit">
   </form>
-@if(results != null) {
+@if(results != null || resultswf != null) {
   <p>Results Here</p>
   <table>
   @if(category.equals("user")) {
@@ -33,6 +34,15 @@
       </tr>
     }
   }
+    @if(category.equals("tag")) {
+      <tr><th>Title</th><th>Description</th></tr>
+      @for( result <- resultswf) {
+        <tr>
+          <td><a href="/workflow/get/@result.getId">@result.getWfTitle</a></td>
+          <td>@result.getWfDesc</td>
+        </tr>
+      }
+    }
   </table>
 
 } else {

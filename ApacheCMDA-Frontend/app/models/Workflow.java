@@ -22,6 +22,7 @@ public class Workflow {
     private String wfDesc = "NaN";
     private String wfImg = "NaN";
     private String wfVisibility = "NaN";
+    private String wfTag = "";
     private long [] wfContributors = {-1};
     private long [] wfRelated = {-1};
 
@@ -37,6 +38,7 @@ public class Workflow {
         if (node.get("wfImg")!=null) wfImg = node.get("wfImg").asText();
         if (node.get("wfCategory")!=null) wfCategory = node.get("wfCategory").asText();
         if (node.get("wfVisibility")!=null) wfVisibility = node.get("wfVisibility").asText();
+        if (node.get("wfTag")!=null) wfTag = node.get("wfTag").asText();
     }
 
     public static JsonNode create(ObjectNode node) {
