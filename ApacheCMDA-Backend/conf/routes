@@ -69,9 +69,14 @@ GET           /users/acceptFriendRequest/userId/:userId/sender/:senderId        
 GET           /users/rejectFriendRequest/userId/:userId/sender/:senderId                                 @controllers.UserController.rejectFriendRequest(userId: Long, senderId: Long)
 
 # Workflow
-POST          /workflow/post                                                                            @controllers.WorkflowController.post
-GET           /workflow/get/workflowID/:wfID/userID/:userID/json                                        @controllers.WorkflowController.get(wfID: Long, userID: Long, format: String="json")
+POST           /workflow/post                                                                            @controllers.WorkflowController.post
+POST           /workflow/updateWorkflow                                                                  @controllers.WorkflowController.updateWorkflow
+POST           /workflow/deleteWorkflow                                                                  @controllers.WorkflowController.deleteWorkflow
+GET            /workflow/get/workflowID/:wfID/userID/:userID/json                                        @controllers.WorkflowController.get(wfID: Long, userID: Long, format: String="json")
 GET           /workflow/getTimeline/:id/offset/:offset/json                                              @controllers.WorkflowController.getTimeLine(id: Long, offset: Long, format: String="json")
+GET           /workflow/getWorkflowList/:id/json                                                         @controllers.WorkflowController.getWorkflowList(id: Long, format: String="json")
+POST           /workflow/uploadImage/:id                                                                    @controllers.WorkflowController.uploadImage(id:Long)
+
 
 
 #Group

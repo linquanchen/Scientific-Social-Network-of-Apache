@@ -97,12 +97,83 @@ public class WorkflowController extends Controller {
         Workflow workflow = new Workflow(userID, wfTitle, wfCategory, wfCode, wfDesc, wfImg,
                 wfVisibility, user, wfContributors, wfRelated, "norm", wfGroupId);
         Workflow savedWorkflow = workflowRepository.save(workflow);
-
-        JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("wfID", savedWorkflow.getId());
-        return created(new Gson().toJson(jsonObject));
+        return created(new Gson().toJson(savedWorkflow.getId()));
     }
 
+    //edit workflow
+    public Result updateWorkflow() {
+        JsonNode json = request().body().asJson();
+        if (json == null) {
+            System.out.println("Workflow not created, expecting Json data");
+            return badRequest("Workflow not created, expecting Json data");
+        }
+
+        long wfID = json.path("wfID").asLong();
+        long userID = json.path("userID").asLong();
+        String wfTitle = json.path("wfTitle").asText();
+        String wfCategory = json.path("wfCategory").asText();
+        String wfCode = json.path("wfCode").asText();
+        String wfDesc = json.path("wfDesc").asText();
+        //img
+        String wfVisibility = json.path("wfVisibility").asText();
+        String wfStatus = json.path("wfStatus").asText();
+
+        Workflow workflow = workflowRepository.findOne(wfID);
+        User user = userRepository.findOne(userID);
+        workflow.getWfContributors().add(user);
+        workflow.setWfTitle(wfTitle);
+        workflow.setWfCategory(wfCategory);
+        workflow.setWfCategory(wfCode);
+        workflow.setWfVisibility(wfVisibility);
+        workflow.setWfDesc(wfDesc);
+        workflow.setStatus(wfStatus);
+
+        workflowRepository.save(workflow);
+
+        return created(new Gson().toJson("success"));
+    }
+
+    //delete workflow
+    public Result deleteWorkflow() {
+        JsonNode json = request().body().asJson();
+        if (json == null) {
+            System.out.println("Workflow not created, expecting Json data");
+            return badRequest("Workflow not created, expecting Json data");
+        }
+
+        long wfID = json.path("wfID").asLong();
+        Workflow workflow = workflowRepository.findOne(wfID);
+        workflow.setStatus("deleted");
+        workflowRepository.save(workflow);
+        return created(new Gson().toJson("success"));
+    }
+
+    public Result uploadImage(Long id) {
+        Http.MultipartFormData body = request().body().asMultipartFormData();
+        Http.MultipartFormData.FilePart image = body.getFile("image");
+
+        Workflow workflow = workflowRepository.findOne(id);
+        if (image != null) {
+            File imgFile = image.getFile();
+            String imgPathToSave = "public/images/" + "image_" + id + ".jpg";
+
+            //save on disk
+            boolean success = new File("images").mkdirs();
+            try {
+                byte[] bytes = IOUtils.toByteArray(new FileInputStream(imgFile));
+                FileUtils.writeByteArrayToFile(new File(imgPathToSave), bytes);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            workflow.setWfImg(imgPathToSave);
+            workflowRepository.save(workflow);
+            return ok("File uploaded");
+        } else {
+            flash("error", "Missing file");
+            return badRequest("Wrong!!!!!!!!");
+            // return redirect(routes.Application.index());
+        }
+    }
     //get detailed workflow.
     public Result get(Long wfID, Long userID, String format) {
         if (wfID == null) {
@@ -143,6 +214,26 @@ public class WorkflowController extends Controller {
         return ok(result);
     }
 
+    //get user's own workflow list.
+    public Result getWorkflowList(Long userID, String format) {
+        if (userID == null) {
+            System.out.println("user id is null or empty!");
+            return badRequest("user id is null or empty!");
+        }
+
+        List<Workflow> workflowList = workflowRepository.findByUserID(userID);
+        for(Workflow workflow: workflowList) {
+            workflow.setEdit(true);
+        }
+
+        String result = new String();
+        if (format.equals("json")) {
+            result = new Gson().toJson(workflowList);
+        }
+
+        return ok(result);
+    }
+
     public Result getTimeLine(Long id, Long offset, String format) {
         if(id == null) {
             System.out.println("Id not created, please enter valid user");
@@ -150,9 +241,15 @@ public class WorkflowController extends Controller {
         }
 
         List<GroupUsers> groups = groupUsersRepository.findByUserId(id);
+        List<GroupUsers> adminGroup = groupUsersRepository.findByCreatorUser(id);
+        List<Integer> adminGroupParse = new ArrayList<>();
         List<Integer> groupsParse = new ArrayList<>();
+
         for(int i=0; i<groups.size(); i++) {
             groupsParse.add((int)groups.get(i).getId());
+        }
+        for(int i=0; i<adminGroup.size(); i++) {
+            adminGroupParse.add((int)adminGroup.get(i).getId());
         }
         List<Workflow> allWorkflows = new ArrayList<>();
         Set<User> followees = userRepository.findByFollowerId(id);
@@ -161,15 +258,19 @@ public class WorkflowController extends Controller {
                 List<Workflow> workflows = workflowRepository.findByUserID(followee.getId());
                 for(Workflow single: workflows) {
                     if((groupsParse.contains((int)single.getGroupId()) || single.getGroupId() == 0) && !single.getStatus().equals("deleted")) {
+                        if(adminGroup.contains((int)single.getGroupId())) {
+                            single.setEdit(true);
+                        }
                         allWorkflows.add(single);
                     }
                 }
             }
         }
         List<Workflow> workflows = workflowRepository.findByUserID(id);
-        allWorkflows.addAll(workflows);
-
-        System.out.println("size is " + allWorkflows.size());
+        for(Workflow w: workflows) {
+            w.setEdit(true);
+            allWorkflows.add(w);
+        }
 
         List<Workflow> workflowWithOffset = new ArrayList<>();
         for(int i=(offset.intValue()*6); i<allWorkflows.size() && i<(offset.intValue()*6+6); i++) {
