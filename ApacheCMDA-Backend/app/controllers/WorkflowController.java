@@ -75,7 +75,7 @@ public class WorkflowController extends Controller {
         String wfCategory = json.path("wfCategory").asText();
         String wfCode = json.path("wfCode").asText();
         String wfDesc = json.path("wfDesc").asText();
-        String wfImg = json.path("image").asText();
+        String wfImg = json.path("wfImg").asText();
         String wfVisibility = json.path("wfVisibility").asText();
         long wfGroupId = json.path("wfGroupId").asLong();
 
@@ -195,7 +195,7 @@ public class WorkflowController extends Controller {
             long timestamp = json.path("timestamp").asLong();
             long workflowId = json.path("workflowID").asLong();
             String content = json.path("Content").asText();
-            String commentImage = json.path("image").asText();
+            String commentImage = json.path("commentImg").asText();
 
             User user = userRepository.findOne(userId);
             if(user==null){
