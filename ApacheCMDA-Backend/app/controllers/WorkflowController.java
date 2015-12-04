@@ -21,21 +21,15 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import models.*;
-
-import models.Workflow;
-import models.WorkflowRepository;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
 
-import javax.imageio.ImageIO;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -338,6 +332,24 @@ public class WorkflowController extends Controller {
         } catch (Exception e){
             e.printStackTrace();
             return badRequest("Failed to add comment!");
+        }
+    }
+
+    public Result getComments(Long workflowId) {
+        try{
+            if(workflowId==null){
+                System.out.println("Expecting workflow id");
+                return badRequest("Expecting workflow id");
+            }
+
+            Workflow workflow = workflowRepository.findOne(workflowId);
+
+            List<Comment> comments = workflow.getComments();
+
+            return ok(new Gson().toJson(comments));
+        } catch (Exception e){
+            e.printStackTrace();
+            return badRequest("Failed to fetch comments");
         }
     }
 
