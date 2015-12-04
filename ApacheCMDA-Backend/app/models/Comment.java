@@ -18,8 +18,6 @@ public class Comment {
     private long timestamp;
     private String content;
 
-    @OneToMany(fetch = FetchType.EAGER)
-
     public Comment(){
 
     }
