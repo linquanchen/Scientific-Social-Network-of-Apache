@@ -35,6 +35,8 @@ public class WorkflowController extends Controller {
 
 
     public static Result main() {
+        // TODO: Get user groups and add them to the <selection>
+        // TODO: we may need to create a Group class like backend implementation
         return ok(workflow.render(session("username"), Long.parseLong(session("id"))));
     }
 
@@ -90,7 +92,7 @@ public class WorkflowController extends Controller {
 
         if (image != null) {
             File imgFile = image.getFile();
-
+            // TODO: upload file to backend
             return ok("File uploaded but not stored");
         } else {
             flash("error", "Missing file");
@@ -98,4 +100,7 @@ public class WorkflowController extends Controller {
             // return redirect(routes.Application.index());
         }
     }
+
+    // TODO: need a timeline page displaying the posts of followees.
+    // TODO: POST and DISPLAY comment on workflow. user can reply to comments.
 }
