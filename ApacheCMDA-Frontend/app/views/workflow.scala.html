@@ -13,7 +13,7 @@ rel="stylesheet"/>
 @main("New Workflow") {
   <div>
     <h3>Create new workflow</h3>
-    <form action="@routes.WorkflowController.createFlow()" method="POST">
+    <form action="@routes.WorkflowController.createFlow()" enctype="multipart/form-data" method="POST">
       <input type="hidden" name="userID" value="@userId">
       <input type="text" name="wfTitle" placeholder="Title">
       <input type="text" name="wfCategory" placeholder="Category">
@@ -23,6 +23,7 @@ rel="stylesheet"/>
         <option>public</option>
         <option>private</option>
       </select>
+      <input type="file" name="image"/>
       <button type="submit">Create</button>
     </form>
   </div>

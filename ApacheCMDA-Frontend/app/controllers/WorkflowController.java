@@ -6,6 +6,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import models.SearchResult;
 import models.Workflow;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import play.api.mvc.*;
 import play.data.Form;
 import play.mvc.*;
@@ -14,14 +16,15 @@ import util.APICall;
 import util.Constants;
 import views.html.*;
 import play.mvc.Controller;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import models.User;
 import play.api.Logger;
 import java.io.File;
 import java.io.FileInputStream;
-
-
+import java.util.UUID;
 
 public class WorkflowController extends Controller {
     final static Form<Workflow> f_wf = Form.form(Workflow.class);
@@ -47,7 +50,7 @@ public class WorkflowController extends Controller {
             flash("error", wfres.get("error").textValue());
             return redirect(routes.WorkflowController.main());
         }
-        if (wfres.get("status").asText().contains("protected"))
+        if (wfres.get("status").asText().contains("protected") || wfres.get("status").asText().contains("deleted") )
         {
             flash("error", "The workflow is protected!");
             return redirect(routes.WorkflowController.main());
@@ -60,6 +63,27 @@ public class WorkflowController extends Controller {
     public static Result createFlow() {
         Form<Workflow> form = f_wf.bindFromRequest();
 
+        Http.MultipartFormData body = request().body().asMultipartFormData();
+        Http.MultipartFormData.FilePart image = body.getFile("image");
+        String imgPathToSave = "";
+        if (image != null) {
+            String fileName = image.getFilename();
+            String contentType = image.getContentType();
+            java.io.File file = image.getFile();
+            imgPathToSave = "public/images/" + "image_" + UUID.randomUUID() + ".jpg";
+            boolean success = new File("images").mkdirs();
+            try {
+                byte[] bytes = IOUtils.toByteArray(new FileInputStream(file));
+                FileUtils.writeByteArrayToFile(new File(imgPathToSave), bytes);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            flash("error", "Missing file");
+            return badRequest("Wrong!!!!!!!!");
+        }
+        imgPathToSave = imgPathToSave.replaceFirst("public", "assets");
+
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode jnode = mapper.createObjectNode();
 
@@ -70,6 +94,7 @@ public class WorkflowController extends Controller {
             jnode.put("wfCode", form.field("wfCode").value());
             jnode.put("wfDesc", form.field("wfDesc").value());
             jnode.put("wfVisibility", form.field("wfVisibility").value());
+            jnode.put("wfImg", imgPathToSave);
         }catch(Exception e) {
             flash("error", "Form value invalid");
         }
@@ -81,24 +106,8 @@ public class WorkflowController extends Controller {
             else flash("error", wfresponse.get("error").textValue());
             return redirect(routes.WorkflowController.main());
         }
-        //Logger.debug("New workflow created");
         flash("success", "Create workflow successfully.");
         return redirect(routes.WorkflowController.main());
-    }
-
-    public static Result uploadImage(Long id) {
-        Http.MultipartFormData body = request().body().asMultipartFormData();
-        Http.MultipartFormData.FilePart image = body.getFile("image");
-
-        if (image != null) {
-            File imgFile = image.getFile();
-            // TODO: upload file to backend
-            return ok("File uploaded but not stored");
-        } else {
-            flash("error", "Missing file");
-            return badRequest("Wrong!!!!!!!!");
-            // return redirect(routes.Application.index());
-        }
     }
 
     // TODO: need a timeline page displaying the posts of followees.

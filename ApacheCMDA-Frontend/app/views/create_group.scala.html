@@ -1,0 +1,31 @@
+@(userName: String, userId: Long)
+
+<link href='@routes.Assets.at("css/bootstrap.min.css")'
+rel="stylesheet"/>
+<link href='@routes.Assets.at("css/header.css")'
+rel="stylesheet"/>
+
+<script src='@routes.Assets.at("js/jquery-1.1.js")'></script>
+
+<div id="header">
+@fixed.header(userName, userId)
+</div>
+@main("New Group") {
+    <div class="alert-info" role="alert">
+        @if(flash.containsKey("linkstring")) {
+            Congratulations, the pass for the group is @flash.get("linkstring") !
+        }
+        @if(flash.containsKey("failed")) {
+            @flash.get("failed")
+        }
+    </div>
+    <div>
+        <h3>Create new group</h3>
+        <form action="@routes.GroupController.createGroup()" method="POST">
+            <input type="hidden" name="userID" value="@userId">
+            <input type="text" name="groupName" placeholder="groupName">
+            <input type="text" name="groupDescription" placeholder="groupDescription">
+            <button type="submit">Create</button>
+        </form>
+    </div>
+}
