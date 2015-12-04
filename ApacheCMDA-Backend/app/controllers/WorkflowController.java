@@ -52,15 +52,17 @@ public class WorkflowController extends Controller {
     private final UserRepository userRepository;
     private final GroupUsersRepository groupUsersRepository;
     private final CommentRepository commentRepository;
+    private final TagRepository tagRepository;
 
     @Inject
     public WorkflowController(final WorkflowRepository workflowRepository,
                               UserRepository userRepository, GroupUsersRepository groupUsersRepository,
-                              CommentRepository commentRepository) {
+                              CommentRepository commentRepository, TagRepository tagRepository) {
         this.workflowRepository = workflowRepository;
         this.userRepository = userRepository;
         this.groupUsersRepository = groupUsersRepository;
         this.commentRepository = commentRepository;
+        this.tagRepository = tagRepository;
     }
 
     public Result post() {
@@ -324,7 +326,135 @@ public class WorkflowController extends Controller {
         }
     }
 
+    public Result setTag() {
+        try{
+            JsonNode json = request().body().asJson();
+            if(json==null){
+                System.out.println("Tag not created, expecting Json data");
+                return badRequest("Tag not created, expecting Json data");
+            }
 
+            long workflowId = json.path("workflowID").asLong();
+            String tagString = json.path("tags").asText();
+            String tagStrings[] = tagString.split(",");
+            for(int i=0; i<tagStrings.length; i++) {
+                tagStrings[i] = tagStrings[i].trim();
+            }
+
+            if(tagStrings.length<1) {
+                System.out.println("Please input tag");
+                return badRequest("Please input tag");
+            }
+
+            Workflow workflow = workflowRepository.findOne(workflowId);
+            if(workflow==null){
+                System.out.println("Cannot find workflow with given workflow id");
+                return badRequest("Cannot find workflow with given workflow id");
+            }
+
+            for(String t: tagStrings) {
+                Tag tag = tagRepository.findByTag(t);
+                if(tag == null) {
+                    tag = new Tag(t);
+                    tagRepository.save(tag);
+                }
+                Set<Tag> tags = workflow.getTags();
+                tags.add(tag);
+            }
+            workflowRepository.save(workflow);
+
+            return ok("Tags add successfully");
+        } catch (Exception e){
+            e.printStackTrace();
+            return badRequest("Failed to add Tag!");
+        }
+    }
+
+    public Result deleteTag( Long workflowId, String tagString) {
+        try{
+            Workflow workflow = workflowRepository.findOne(workflowId);
+            if(workflow==null){
+                System.out.println("Cannot find workflow with given workflow id");
+                return badRequest("Cannot find workflow with given workflow id");
+            }
+
+            Tag tag = tagRepository.findByTag(tagString);
+            if(tag==null){
+                System.out.println("Cannot find tag with given tagString");
+                return badRequest("Cannot find tag with given tagString");
+            }
+            Set<Tag> tags = workflow.getTags();
+            for(Tag tt : tags) {
+                if(tt.getTag().equals(tagString)) {
+                    tags.remove(tt);
+                }
+            }
+            workflow.setTags(tags);
+            workflowRepository.save(workflow);
+            return ok("Tags delete successfully");
+
+        } catch (Exception e){
+            e.printStackTrace();
+            return badRequest("Failed to delete Tag!");
+        }
+    }
+
+    public Result getTags(Long workflowId) {
+        try {
+            Workflow workflow = workflowRepository.findOne(workflowId);
+            if(workflow==null){
+                System.out.println("Cannot find workflow with given workflow id");
+                return badRequest("Cannot find workflow with given workflow id");
+            }
+
+            Set<Tag> tags = workflow.getTags();
+            StringBuilder sb = new StringBuilder();
+            sb.append("{\"tags\":");
+
+            if(!tags.isEmpty()) {
+                sb.append("[");
+                for (Tag t : tags) {
+                    sb.append(t.toJson() + ",");
+                }
+                if (sb.lastIndexOf(",") > 0) {
+                    sb.deleteCharAt(sb.lastIndexOf(","));
+                }
+                sb.append("]}");
+            } else {
+                sb.append("{}}");
+            }
+            return ok(sb.toString());
+        } catch (Exception e){
+            e.printStackTrace();
+            return badRequest("Failed to get Tags!");
+        }
+    }
+
+    public Result getByTag(String tagString) {
+        try {
+            if(tagString==null || tagString.equals("")) {
+                System.out.println("tag is null or empty!");
+                return badRequest("tag is null or empty!");
+            }
+
+            Tag tag = tagRepository.findByTag(tagString);
+            if(tag==null) {
+                System.out.println("Tag doesn't exist");
+                return ok();
+            }
+
+            Long tagId = tag.getId();
+
+            List<Workflow> workflowList = workflowRepository.findByTagId(tagId);
+
+            String result = new Gson().toJson(workflowList);
+            return  ok(result);
+
+        } catch (Exception e){
+            e.printStackTrace();
+            return badRequest("Failed to get workflow by Tag!");
+        }
+    }
 
 
 }
