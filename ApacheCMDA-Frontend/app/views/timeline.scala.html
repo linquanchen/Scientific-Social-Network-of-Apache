@@ -10,11 +10,17 @@ rel="stylesheet"/>
 <div id="header">
 @fixed.header(userName, userId)
 </div>
+  @plus(input: Long) = @{
+  input+1
+}
+  @minus(input: Long) = @{
+  input-1
+}
 @main("Timeline") {
   @if(allTimeline != null) {
     <p>Your friends' posts</p>
     <table>
-      <tr><th>User</th><th>Workflow Title</th><th>Workflow Category</th><th>Workflow Description</th><th>View Count</th><th>Workflow Detail</th></tr>
+      <tr><th>User</th><th>Workflow Title</th><th>Workflow Category</th><th>Workflow Description</th><th>View Count</th><th>Workflow Url</th><th>Workflow Detail</th></tr>
       @for( result <- allTimeline) {
         <tr>
           <td>@result.getUserName</td>
@@ -22,6 +28,7 @@ rel="stylesheet"/>
           <td>@result.getWfCategory</td>
           <td>@result.getWfDesc</td>
           <td>@result.getWfViewCount</td>
+          <td><a href=@result.getWfUrl>@result.getWfUrl</a></td>
           <td><a href="/workflow/get/@result.getId">More</a></td>
         </tr>
       }
@@ -31,7 +38,14 @@ rel="stylesheet"/>
     <p>No More timelines!</p>
   }
 
-  <form action="/timeline/@offset ">
+
+  <form action="/timeline/@plus(offset) ">
     <button name="subject" type="submit" value="Next Page">Next Page</button>
   </form>
+
+  @if(offset>0) {
+    <form action="/timeline/@minus(offset)">
+      <button name="subject" type="submit" value="Back">Back</button>
+    </form>
+  }
 }

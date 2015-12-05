@@ -28,12 +28,19 @@ public class Workflow {
     private long [] wfRelated = {-1};
     private long wfViewCount = 0;
     private String wfTag = "NaN";
+    private String wfUrl = "NaN";
 
     public Workflow() {
     }
 
     public Workflow(JsonNode node) {
         if (node.get("id")!=null) id = node.get("id").asLong();
+        if (node.get("user")!=null) {
+            JsonNode nameNode = node.get("user");
+            if (nameNode.get("userName") != null) {
+                userName = nameNode.get("userName").asText();
+            }
+        }
         if (node.get("UserId")!=null) UserId = node.get("UserId").asLong();
         if (node.get("wfTitle")!=null) wfTitle = node.get("wfTitle").asText();
         if (node.get("wfCode")!=null) wfCode = node.get("wfCode").asText();
@@ -41,8 +48,9 @@ public class Workflow {
         if (node.get("wfImg")!=null) wfImg = node.get("wfImg").asText();
         if (node.get("wfCategory")!=null) wfCategory = node.get("wfCategory").asText();
         if (node.get("wfVisibility")!=null) wfVisibility = node.get("wfVisibility").asText();
-        if (node.get("wfTag")!=null) wfTag = node.get("wfTag").asText();
         if (node.get("wfViewCount")!=null) wfViewCount = node.get("wfViewCount").asLong();
+        if (node.get("wfTag")!=null) wfTag = node.get("wfTag").asText();
+        if (node.get("wfUrl")!=null) wfUrl = node.get("wfUrl").asText();
     }
 
     public static JsonNode create(ObjectNode node) {
@@ -150,4 +158,8 @@ public class Workflow {
     public String getWfTag() {return wfTag;}
 
     public void setWfTag(String wfTag) {this.wfTag = wfTag;}
+
+    public String getWfUrl() {return wfUrl;}
+
+    public void setWfUrl(String wfUrl) {this.wfUrl = wfUrl;}
 }

@@ -32,8 +32,8 @@ public class TimelineController extends Controller {
 
     public static Result main(long offset) {
         //show first page of timeline
-        List<Workflow> timelines = getWorkflows(offset);
-        offset++;
+        List<Workflow> timelines = getWorkflows(offset);;
+
         return ok(timeline.render(session("username"), Long.parseLong(session("id")), timelines, offset));
     }
 
@@ -45,21 +45,9 @@ public class TimelineController extends Controller {
             return null;
         }
 
-        System.out.println("response is " + response);
         List<Workflow> timelines = new ArrayList<>();
         for (JsonNode n: response) {
-            System.out.println("node is " + n);
-            Workflow workflow = new Workflow();
-            JsonNode userNode = n.get("user");
-            workflow.setUserName(userNode.get("userName").textValue());
-            workflow.setId(n.get("id").longValue());
-            workflow.setWfTitle(n.get("wfTitle").asText());
-            workflow.setWfCategory(n.get("wfCategory").asText());
-            workflow.setWfCode(n.get("wfCode").asText());
-            //workflow.setWfContributors(n.get("wfContributors").asText());
-            workflow.setWfDesc(n.get("wfDesc").asText());
-            workflow.setWfImg(n.get("wfImg").asText());
-            workflow.setWfViewCount(n.get("viewCount").asLong());
+            Workflow workflow = new Workflow(n);
             timelines.add(workflow);
         }
         if (timelines.size() == 0) {

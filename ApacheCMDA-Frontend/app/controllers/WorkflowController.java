@@ -49,8 +49,10 @@ public class WorkflowController extends Controller {
     }
 
     public static Result workflowDetail(Long wid) {
+
         JsonNode wfres = APICall.callAPI(Constants.NEW_BACKEND + "workflow/get/workflowID/"
                 +wid.toString()+ "/userID/" + session("id") + "/json");
+        System.out.println("wfres is " + wfres);
         if (wfres == null || wfres.has("error")) {
             flash("error", wfres.get("error").textValue());
             return redirect(routes.WorkflowController.main());
