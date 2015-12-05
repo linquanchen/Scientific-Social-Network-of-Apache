@@ -39,9 +39,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Named
 @Singleton
@@ -119,12 +117,18 @@ public class WorkflowController extends Controller {
         //public workflow cannot be edit by others
         long wfGroupId = workflow.getGroupId();
         if((int) wfGroupId == 0) {
-            return badRequest("You have no access to edit the workflow!");
+            Map<String, String> map = new HashMap<>();
+            map.put("erro", "No Access!");
+            String erro = new Gson().toJson(map);
+            return ok(erro);
         }
         GroupUsers group = groupUsersRepository.findOne(wfGroupId);
         //only the admin of the group or the user himself could edit the workflow
         if((int)group.getCreatorUser() != userID && (int)workflow.getUserID() != userID) {
-            return badRequest("You have no access to edit the workflow!");
+            Map<String, String> map = new HashMap<>();
+            map.put("erro", "No Access!");
+            String erro = new Gson().toJson(map);
+            return ok(erro);
         }
         String wfTitle = json.path("wfTitle").asText();
         String wfCategory = json.path("wfCategory").asText();
@@ -231,17 +235,38 @@ public class WorkflowController extends Controller {
                     groupListParse.add((int)g.getId());
                 }
                 if(!groupListParse.contains((int) workflow.getGroupId())) {
-                    return badRequest("You have no access to this workflow");
+                    Map<String, String> map = new HashMap<>();
+                    map.put("erro", "No Access!");
+                    String erro = new Gson().toJson(map);
+                    return ok(erro);
                 }
             }
         }
 
         workflow.setViewCount();
         workflowRepository.save(workflow);
+        List<GroupUsers> adminGroup = groupUsersRepository.findByCreatorUser(userID);
+        List<Integer> adminGroupList = new ArrayList<>();
+        for (GroupUsers g:adminGroup) {
+            adminGroupList.add((int)g.getId());
+        }
+        System.out.println("admin group is " + adminGroupList);
+        if((int)workflow.getUserID() == userID.intValue() || adminGroupList.contains((int)workflow.getGroupId())) {
+            workflow.setEdit(true);
+        }
+
         String result = new String();
         if (format.equals("json")) {
             result = new Gson().toJson(workflow);
         }
+
+//        Map<String, Object> map = new HashMap<>();
+//        map.put("admin group", adminGroupList);
+//        map.put("workflow group id is ", (int)workflow.getGroupId());
+//        map.put("work flow user id", (int)workflow.getUserID());
+//        map.put("user id:", userID.intValue());
+//        String erro = new Gson().toJson(map);
+//        return ok(erro);
 
         return ok(result);
     }
