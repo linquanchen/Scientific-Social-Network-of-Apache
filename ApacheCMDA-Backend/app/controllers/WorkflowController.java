@@ -79,6 +79,7 @@ public class WorkflowController extends Controller {
         String wfDesc = json.path("wfDesc").asText();
         String wfImg = json.path("wfImg").asText();
         String wfVisibility = json.path("wfVisibility").asText();
+        String wfTags = json.path("wfTags").asText();
         long wfGroupId = json.path("wfGroupId").asLong();
 
         User user = userRepository.findOne(userID);
@@ -98,8 +99,33 @@ public class WorkflowController extends Controller {
         //groupId would be 0 if it is public
         Workflow workflow = new Workflow(userID, wfTitle, wfCategory, wfCode, wfDesc, wfImg,
                 wfVisibility, user, wfContributors, wfRelated, "norm", wfGroupId);
+
         Workflow savedWorkflow = workflowRepository.save(workflow);
-        return created(new Gson().toJson(savedWorkflow.getId()));
+        Workflow newWorkflow = workflowRepository.findById(savedWorkflow.getId());
+
+
+        if(wfTags!=null && !wfTags.equals("")) {
+            //add tag to workflow
+            String tagStrings[] = wfTags.split(",");
+            for (int i = 0; i < tagStrings.length; i++) {
+                tagStrings[i] = tagStrings[i].trim();
+            }
+
+            for (String t : tagStrings) {
+                Tag tag = tagRepository.findByTag(t);
+                if (tag == null) {
+                    tag = new Tag(t);
+                    tagRepository.save(tag);
+                }
+                Set<Tag> tags = newWorkflow.getTags();
+
+                tags.add(tag);
+                newWorkflow.setTags(tags);
+            }
+        }
+
+        newWorkflow = workflowRepository.save(newWorkflow);
+        return created(new Gson().toJson(newWorkflow.getId()));
     }
 
     //edit workflow
@@ -359,6 +385,7 @@ public class WorkflowController extends Controller {
                 }
                 Set<Tag> tags = workflow.getTags();
                 tags.add(tag);
+                workflow.setTags(tags);
             }
             workflowRepository.save(workflow);
 
