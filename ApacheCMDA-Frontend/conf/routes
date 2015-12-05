@@ -61,6 +61,7 @@ GET         /workflow                                           controllers.Work
 GET         /timeline/:offset                                   controllers.TimelineController.main(offset: Long)
 POST        /workflow/new                                       controllers.WorkflowController.createFlow()
 GET         /workflow/get/:wid                                   controllers.WorkflowController.workflowDetail(wid: Long)
+GET         /workflow/getPublicWorkflow                         controllers.WorkflowController.getPublicWorkflow()
 
 # group
 GET         /group/create                                       controllers.GroupController.create()
