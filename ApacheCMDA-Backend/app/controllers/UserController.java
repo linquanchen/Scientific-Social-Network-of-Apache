@@ -555,4 +555,66 @@ public class UserController extends Controller {
 		}
 	}
 
+
+	public Result getFriends(Long userId) {
+		if(userId==null){
+			System.out.println("User id is null or empty!");
+			return badRequest("User id is null or empty");
+		}
+		User user = userRepository.findOne(userId);
+		if(user==null){
+			System.out.println("Cannot find user");
+			return badRequest("Cannot find user");
+		}
+
+		Set<User> friends = user.getFriends();
+		StringBuilder sb = new StringBuilder();
+		sb.append("{\"friends\":");
+
+		if(!friends.isEmpty()) {
+			sb.append("[");
+			for (User friend : friends) {
+				sb.append(friend.toJson() + ",");
+			}
+			if (sb.lastIndexOf(",") > 0) {
+				sb.deleteCharAt(sb.lastIndexOf(","));
+			}
+			sb.append("]}");
+		} else {
+			sb.append("{}}");
+		}
+		return ok(sb.toString());
+	}
+
+	public Result deleteFriend(Long userId, Long friendId) {
+		if(userId==null){
+			System.out.println("User id is null or empty!");
+			return badRequest("User id is null or empty");
+		}
+		if(friendId==null){
+			System.out.println("friend id is null or empty!");
+			return badRequest("friend id is null or empty");
+		}
+		User user = userRepository.findOne(userId);
+		if(user==null){
+			System.out.println("Cannot find user");
+			return badRequest("Cannot find user");
+		}
+		User friend = userRepository.findOne(friendId);
+		if(friend==null){
+			System.out.println("Cannot find friend");
+			return badRequest("Cannot find friend");
+		}
+
+		Set<User> friends = user.getFriends();
+		for(User f: friends) {
+			if(f.getId()==friend.getId()) {
+				friends.remove(f);
+			}
+		}
+		user.setFriends(friends);
+		userRepository.save(user);
+		return ok();
+	}
+
 }

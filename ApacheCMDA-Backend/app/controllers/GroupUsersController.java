@@ -103,7 +103,7 @@ public class GroupUsersController extends Controller {
             return badRequest("user id is null or empty!");
         }
 
-        List<GroupUsers> groups = groupUsersRepository.findByCreatorUser(userID);
+        List<GroupUsers> groups = groupUsersRepository.findByUserId(userID);
         if (groups == null) {
             System.out.println("The group does not exist!");
             return badRequest("The group does not exist!");

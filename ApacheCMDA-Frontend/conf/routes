@@ -39,7 +39,8 @@ GET 		/climate/getSearchResult				 			controllers.DatasetController.getSearchRes
 #Map static resources from the /public folder to the /assets URL path
 GET     	/assets/*file               						controllers.Assets.at(path="/public", file)
 
-#Workflow project start here'
+#Workflow project start here
+
 
 GET         /                                                   controllers.Application.home()
 GET         /home                                               controllers.Application.home()
@@ -57,6 +58,15 @@ GET         /unfollow/:id                                       controllers.Prof
 
 # display and show work flow
 GET         /workflow                                           controllers.WorkflowController.main()
+GET         /timeline/:offset                                   controllers.TimelineController.main(offset: Long)
 POST        /workflow/new                                       controllers.WorkflowController.createFlow()
-POST        /workflow/newImage/:id                              controllers.WorkflowController.uploadImage(id: Long)
-GET         /workflow/get/:wid                                   controllers.WorkflowController.workflowDetail(wid: Long)
+GET         /workflow/get/:wid                                  controllers.WorkflowController.workflowDetail(wid: Long)
+GET         /workflow/update/:wid                               controllers.WorkflowController.edit(wid: Long)
+POST        /workflow/edit/:wid                                 controllers.WorkflowController.editFlow(wid: Long)
+
+
+# group
+GET         /group/create                                       controllers.GroupController.create()
+POST        /group/creategroup                                  controllers.GroupController.createGroup()
+GET         /group/join                                         controllers.GroupController.join()
+POST        /group/joingroup                                    controllers.GroupController.joinGroup()
