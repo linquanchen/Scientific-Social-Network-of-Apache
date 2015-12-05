@@ -20,7 +20,7 @@ rel="stylesheet"/>
   @if(allTimeline != null) {
     <p>Your friends' posts</p>
     <table>
-      <tr><th>User</th><th>Workflow Title</th><th>Workflow Category</th><th>Workflow Description</th><th>View Count</th><th>Workflow Detail</th></tr>
+      <tr><th>User</th><th>Workflow Title</th><th>Workflow Category</th><th>Workflow Description</th><th>View Count</th><th>Workflow Url</th><th>Workflow Detail</th></tr>
       @for( result <- allTimeline) {
         <tr>
           <td>@result.getUserName</td>
@@ -28,6 +28,7 @@ rel="stylesheet"/>
           <td>@result.getWfCategory</td>
           <td>@result.getWfDesc</td>
           <td>@result.getWfViewCount</td>
+          <td><a href=@result.getWfUrl>@result.getWfUrl</a></td>
           <td><a href="/workflow/get/@result.getId">More</a></td>
         </tr>
       }
