@@ -81,6 +81,7 @@ GET            /workflow/getTags/workflowId/:wfId                               
 POST           /workflow/setTag                                                                          @controllers.WorkflowController.setTag
 GET            /workflow/deleteTag/workflowId/:wfId/tag/:tag                                             @controllers.WorkflowController.deleteTag(wfId: Long, tag: String)
 GET            /workflow/getByTag/tag/:tag                                                               @controllers.WorkflowController.getByTag(tag: String)
+GET            /workflow/getByTitle/title/:title                                                         @controllers.WorkflowController.getByTitle(title: String)
 
 
 # Tag

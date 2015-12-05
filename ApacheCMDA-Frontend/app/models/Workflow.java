@@ -11,6 +11,7 @@ import util.Constants;
 public class Workflow {
 
     private final static String CREATE = Constants.NEW_BACKEND + "workflow/post";
+    private final static String EDIT = Constants.NEW_BACKEND + "workflow/updateWorkflow";
 
     private long id = (-1);
     private String userName = "NaN";
@@ -22,10 +23,10 @@ public class Workflow {
     private String wfDesc = "NaN";
     private String wfImg = "NaN";
     private String wfVisibility = "NaN";
+    private String wfTag = "";
     private long [] wfContributors = {-1};
     private long [] wfRelated = {-1};
     private long wfViewCount = 0;
-    private String wfTag = "NaN";
     private String wfUrl = "NaN";
 
     public Workflow() {
@@ -53,6 +54,11 @@ public class Workflow {
 
     public static JsonNode create(ObjectNode node) {
         JsonNode response = APICall.postAPI(CREATE, node);
+        return response;
+    }
+
+    public static JsonNode update(ObjectNode node) {
+        JsonNode response = APICall.postAPI(EDIT, node);
         return response;
     }
 
