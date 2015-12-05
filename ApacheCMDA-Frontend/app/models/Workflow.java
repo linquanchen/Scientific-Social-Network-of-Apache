@@ -27,7 +27,6 @@ public class Workflow {
     private long [] wfContributors = {-1};
     private long [] wfRelated = {-1};
     private long wfViewCount = 0;
-    private String wfTag = "NaN";
     private String wfUrl = "NaN";
 
     public Workflow() {
