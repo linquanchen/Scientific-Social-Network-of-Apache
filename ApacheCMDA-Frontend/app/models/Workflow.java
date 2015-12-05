@@ -11,6 +11,7 @@ import util.Constants;
 public class Workflow {
 
     private final static String CREATE = Constants.NEW_BACKEND + "workflow/post";
+    private final static String EDIT = Constants.NEW_BACKEND + "workflow/updateWorkflow";
 
     private long id = (-1);
     private String userName = "NaN";
@@ -22,14 +23,23 @@ public class Workflow {
     private String wfDesc = "NaN";
     private String wfImg = "NaN";
     private String wfVisibility = "NaN";
+    private String wfTag = "";
     private long [] wfContributors = {-1};
     private long [] wfRelated = {-1};
+    private long wfViewCount = 0;
+    private String wfUrl = "NaN";
 
     public Workflow() {
     }
 
     public Workflow(JsonNode node) {
         if (node.get("id")!=null) id = node.get("id").asLong();
+        if (node.get("user")!=null) {
+            JsonNode nameNode = node.get("user");
+            if (nameNode.get("userName") != null) {
+                userName = nameNode.get("userName").asText();
+            }
+        }
         if (node.get("UserId")!=null) UserId = node.get("UserId").asLong();
         if (node.get("wfTitle")!=null) wfTitle = node.get("wfTitle").asText();
         if (node.get("wfCode")!=null) wfCode = node.get("wfCode").asText();
@@ -37,10 +47,18 @@ public class Workflow {
         if (node.get("wfImg")!=null) wfImg = node.get("wfImg").asText();
         if (node.get("wfCategory")!=null) wfCategory = node.get("wfCategory").asText();
         if (node.get("wfVisibility")!=null) wfVisibility = node.get("wfVisibility").asText();
+        if (node.get("wfViewCount")!=null) wfViewCount = node.get("wfViewCount").asLong();
+        if (node.get("wfTag")!=null) wfTag = node.get("wfTag").asText();
+        if (node.get("wfUrl")!=null) wfUrl = node.get("wfUrl").asText();
     }
 
     public static JsonNode create(ObjectNode node) {
         JsonNode response = APICall.postAPI(CREATE, node);
+        return response;
+    }
+
+    public static JsonNode update(ObjectNode node) {
+        JsonNode response = APICall.postAPI(EDIT, node);
         return response;
     }
 
@@ -141,5 +159,15 @@ public class Workflow {
         this.wfRelated = wfRelated;
     }
 
+    public long getWfViewCount() {return wfViewCount;}
 
+    public void setWfViewCount(long wfViewCount) {this.wfViewCount = wfViewCount;}
+
+    public String getWfTag() {return wfTag;}
+
+    public void setWfTag(String wfTag) {this.wfTag = wfTag;}
+
+    public String getWfUrl() {return wfUrl;}
+
+    public void setWfUrl(String wfUrl) {this.wfUrl = wfUrl;}
 }

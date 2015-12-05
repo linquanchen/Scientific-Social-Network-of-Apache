@@ -78,6 +78,17 @@ GET           /workflow/getWorkflowList/:id/json                                
 POST           /workflow/uploadImage/:id                                                                 @controllers.WorkflowController.uploadImage(id:Long)
 GET           /workflow/getPublicWorkflow/json                                                           @controllers.WorkflowController.getPublicWorkflow(format: String="json")
 
+GET            /workflow/getTags/workflowId/:wfId                                                        @controllers.WorkflowController.getTags(wfId: Long)
+POST           /workflow/setTag                                                                          @controllers.WorkflowController.setTag
+GET            /workflow/deleteTag/workflowId/:wfId/tag/:tag                                             @controllers.WorkflowController.deleteTag(wfId: Long, tag: String)
+GET            /workflow/getByTag/tag/:tag                                                               @controllers.WorkflowController.getByTag(tag: String)
+GET            /workflow/getByTitle/title/:title                                                         @controllers.WorkflowController.getByTitle(title: String)
+
+
+# Tag
+#input:String tag
+POST           /tag/createTag                                                                            @controllers.TagController.createTag
+POST           /tag/deleteTag                                                                            @controllers.TagController.deleteTag
 
 
 #Group
@@ -89,6 +100,7 @@ GET            /group/getGroupMember/:groupId/json                              
 
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file                                                                             controllers.Assets.at(path="/", file)
+
 
 #Workflow
 #GET            /workflow/getTimeline/:id/offset/:offset/json                                              @controllers.UserController.userSearch(id: Long, offset: Long, format: String="json")

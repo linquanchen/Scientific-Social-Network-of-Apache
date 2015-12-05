@@ -1,46 +1,36 @@
 @(wf: Workflow, userName: String, userId: Long)
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <link href='@routes.Assets.at("css/bootstrap.min.css")'
-          rel="stylesheet"/>
-    <link href='@routes.Assets.at("css/header.css")'
-          rel="stylesheet"/>
-    <link rel="stylesheet"
-          href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-    <script src='@routes.Assets.at("js/jquery-1.1.js")'></script>
-    <style type="text/css">
-        h1 {
-        text-align: center;
-        }
-        ul {
-        float: left;
-        width: 70%;
-        margin-left: 1%;
-        }
-        img {
-        margin-left: 1%;
-        float: left;
-        }
-    </style>
-</head>
-<body>
-    <div id="header">
-        @fixed.header(userName ,userId)
-    </div>
-    @main("Welcome") {
-        <div class="jumbotron">
-            <h1>@wf.getWfTitle</h1>
-        </div>
-        <img src="/@wf.getWfImg" class="img-thumbnail" width="27%">
-        <ul class="list-group">
-            <li class="list-group-item"><span class="badge">ID</span>@wf.getId</li>
-            <li class="list-group-item"><span class="badge">Name</span>@wf.getUserName</li>
-            <li class="list-group-item"><span class="badge">Category</span>@wf.getWfCategory</li>
-            <li class="list-group-item"><span class="badge">Detail</span>@wf.getWfDesc</li>
-        </ul>
+
+<link href='@routes.Assets.at("css/bootstrap.min.css")'
+      rel="stylesheet"/>
+<link href='@routes.Assets.at("css/header.css")'
+      rel="stylesheet"/>
+<script src='@routes.Assets.at("js/jquery-1.1.js")'></script>
+<style type="text/css">
+    h1 {
+    text-align: center;
     }
-</body>
-</html>
+    ul {
+    float: left;
+    width: 70%;
+    margin-left: 1%;
+    }
+    img {
+    margin-left: 1%;
+    float: left;
+    }
+</style>
+<div id="header">
+    @fixed.header(userName ,userId)
+</div>
+@main("Welcome") {
+    <div class="jumbotron">
+        <h1>@wf.getWfTitle</h1>
+    </div>
+    <img src="/@wf.getWfImg" class="img-thumbnail" width="27%">
+    <ul class="list-group">
+        <li class="list-group-item"><span class="badge">ID</span>@wf.getId</li>
+        <li class="list-group-item"><span class="badge">Name</span>@wf.getUserName</li>
+        <li class="list-group-item"><span class="badge">Category</span>@wf.getWfCategory</li>
+        <li class="list-group-item"><span class="badge">Detail</span>@wf.getWfDesc</li>
+    </ul>
+}

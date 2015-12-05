@@ -58,18 +58,17 @@ public class GroupUsersController extends Controller {
         long userID = json.path("userID").asLong();
         String groupName = json.path("groupName").asText();
         String groupDescription = json.path("groupDescription").asText();
-        String groupStatus = json.path("groupStatus").asText();
 
         User user = userRepository.findOne(userID);
         System.out.println("user is " + user);
         List<User> groupMembers = new ArrayList<User>();
         groupMembers.add(user);
 
-        GroupUsers group = new GroupUsers(userID, groupName, groupDescription, groupStatus, groupMembers);
+        GroupUsers group = new GroupUsers(userID, groupName, groupDescription, groupMembers);
         System.out.println("group is " + group);
         groupUsersRepository.save(group);
 
-        return created(new Gson().toJson(group.getGroupName()));
+        return created(new Gson().toJson(group.getGroupUrl()));
     }
 
     //post
@@ -80,15 +79,21 @@ public class GroupUsersController extends Controller {
             return badRequest("group not created, expecting Json data");
         }
 
-        long groupID = json.path("groupID").asLong();
+        String groupUrl = json.path("groupUrl").asText();
         long userID = json.path("userID").asLong();
 
         User user = userRepository.findOne(userID);
-        GroupUsers group = groupUsersRepository.findById(groupID);
-        group.getGroupMembers().add(user);
-        groupUsersRepository.save(group);
+        List<GroupUsers> groups = groupUsersRepository.findByGroupUrl(groupUrl);
+        if(groups.size() == 0) {
+            return badRequest("Failed to add member!");
+        }
+        else {
+            GroupUsers group = groups.get(0);
+            group.getGroupMembers().add(user);
+            groupUsersRepository.save(group);
 
-        return created(new Gson().toJson("success"));
+            return created(new Gson().toJson("success"));
+        }
     }
 
     //get
@@ -98,7 +103,7 @@ public class GroupUsersController extends Controller {
             return badRequest("user id is null or empty!");
         }
 
-        List<GroupUsers> groups = groupUsersRepository.findByCreatorUser(userID);
+        List<GroupUsers> groups = groupUsersRepository.findByUserId(userID);
         if (groups == null) {
             System.out.println("The group does not exist!");
             return badRequest("The group does not exist!");
