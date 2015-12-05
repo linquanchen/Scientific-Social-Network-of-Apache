@@ -16,9 +16,7 @@
  */
 package controllers;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import models.User;
 import models.UserRepository;
@@ -131,7 +129,7 @@ public class UserController extends Controller {
 
 		userRepository.delete(deleteUser);
 		System.out.println("User is deleted: " + id);
-		return ok("User is deleted: " + id);
+		return okResponse("User is deleted: " + id);
 	}
 
 	public Result setProfile(long id) {
@@ -208,7 +206,7 @@ public class UserController extends Controller {
 			if (user.getPassword().equals(password)) {
 				System.out.println("User is deleted: "+user.getId());
 				userRepository.delete(user);
-				return ok("User is deleted");
+				return okResponse("User is deleted");
 			}
 			else {
 				System.out.println("User is not deleted for wrong password");
@@ -250,21 +248,21 @@ public class UserController extends Controller {
 		try{
 			if(userId==null){
 				System.out.println("Follower id is null or empty!");
-				return badRequest("Follower id is null or empty!");
+				return badResponse("Follower id is null or empty!");
 			}
 			User user = userRepository.findOne(userId);
             if(user==null){
-                return badRequest("Follower is not existed");
+                return badResponse("Follower is not existed");
             }
 
 
 			if(followeeId==null){
 				System.out.println("Followee id is null or empty!");
-				return badRequest("Followee id is null or empty!");
+				return badResponse("Followee id is null or empty!");
 			}
 			User followee = userRepository.findOne(followeeId);
             if(followee==null){
-                return badRequest("Followee is not existed");
+                return badResponse("Followee is not existed");
             }
 
             Set<User> followers = followee.getFollowers();
@@ -275,7 +273,7 @@ public class UserController extends Controller {
 			return ok("{\"success\":\"Success!\"}");
 		} catch (Exception e){
 			e.printStackTrace();
-			return badRequest("Followship is not established: Follower:"+userId+"\tFollowee:"+followeeId);
+			return badResponse("Followship is not established: Follower:"+userId+"\tFollowee:"+followeeId);
 		}
 	}
 
@@ -283,19 +281,19 @@ public class UserController extends Controller {
         try{
             if(userId==null){
                 System.out.println("Follower id is null or empty!");
-                return badRequest("Follower id is null or empty!");
+                return badResponse("Follower id is null or empty!");
             }
             User user = userRepository.findOne(userId);
             if(user==null){
-                return badRequest("Follower is not existed");
+                return badResponse("Follower is not existed");
             }
             if(followeeId==null){
                 System.out.println("Followee id is null or empty!");
-                return badRequest("Followee id is null or empty!");
+                return badResponse("Followee id is null or empty!");
             }
             User followee = userRepository.findOne(followeeId);
             if(followee==null){
-                return badRequest("Followee is not existed");
+                return badResponse("Followee is not existed");
             }
 
 			Set<User> followers = followee.getFollowers();
@@ -310,7 +308,7 @@ public class UserController extends Controller {
             return ok("{\"success\":\"Success!\"}");
         } catch (Exception e){
             e.printStackTrace();
-            return badRequest("Followship is established: Follower:"+userId+"\tFollowee:"+followeeId);
+            return badResponse("Followship is established: Follower:"+userId+"\tFollowee:"+followeeId);
         }
     }
 
@@ -318,12 +316,12 @@ public class UserController extends Controller {
 		try{
 			if(id==null){
 				System.out.println("User id is null or empty!");
-				return badRequest("User id is null or empty");
+				return badResponse("User id is null or empty");
 			}
 			User user = userRepository.findOne(id);
 			if(user==null){
 				System.out.println("Cannot find user");
-				return badRequest("Cannot find user");
+				return badResponse("Cannot find user");
 			}
 			Set<User> followers = user.getFollowers();
 			StringBuilder sb = new StringBuilder();
@@ -344,7 +342,7 @@ public class UserController extends Controller {
 			return ok(sb.toString());
 		} catch (Exception e){
 			e.printStackTrace();
-			return badRequest("Cannot get followers");
+			return badResponse("Cannot get followers");
 		}
 	}
 
@@ -352,12 +350,12 @@ public class UserController extends Controller {
 		try{
 			if(id==null){
 				System.out.println("User id is null or empty!");
-				return badRequest("User id is null or empty");
+				return badResponse("User id is null or empty");
 			}
 			User user = userRepository.findOne(id);
 			if(user==null){
 				System.out.println("Cannot find user");
-				return badRequest("Cannot find user");
+				return badResponse("Cannot find user");
 			}
 			Set<User> followees = userRepository.findByFollowerId(id);
 			StringBuilder sb = new StringBuilder();
@@ -378,7 +376,7 @@ public class UserController extends Controller {
 			return ok(sb.toString());
 		} catch (Exception e){
 			e.printStackTrace();
-			return badRequest("Cannot get followers");
+			return badResponse("Cannot get followers");
 		}
 	}
 
@@ -386,22 +384,22 @@ public class UserController extends Controller {
 		try {
 			if(receiverId==null){
 				System.out.println("User id is null or empty!");
-				return badRequest("User id is null or empty");
+				return badResponse("User id is null or empty");
 			}
 			User receiver = userRepository.findOne(receiverId);
 			if(receiverId==null){
 				System.out.println("Cannot find friend request sender");
-				return badRequest("Cannot find friend request sender");
+				return badResponse("Cannot find friend request sender");
 			}
 
 			if(senderId==null){
 				System.out.println("User id is null or empty!");
-				return badRequest("User id is null or empty");
+				return badResponse("User id is null or empty");
 			}
 			User sender = userRepository.findOne(senderId);
 			if(receiverId==null){
 				System.out.println("Cannot find friend request sender");
-				return badRequest("Cannot find friend request sender");
+				return badResponse("Cannot find friend request sender");
 			}
 
 			Set<User> senders = receiver.getFriendRequestSender();
@@ -409,11 +407,11 @@ public class UserController extends Controller {
 			receiver.setFriendRequestSender(senders);
 
 			userRepository.save(receiver);
-			return ok("Friend Request is sent");
+			return okResponse("Friend Request is sent");
 
 		} catch (Exception e){
 			e.printStackTrace();
-			return badRequest("Cannot send friend request");
+			return badResponse("Cannot send friend request");
 		}
 	}
 
@@ -421,12 +419,12 @@ public class UserController extends Controller {
 		try{
 			if(id==null){
 				System.out.println("User id is null or empty!");
-				return badRequest("User id is null or empty");
+				return badResponse("User id is null or empty");
 			}
 			User user = userRepository.findOne(id);
 			if(user==null){
 				System.out.println("Cannot find user");
-				return badRequest("Cannot find user");
+				return badResponse("Cannot find user");
 			}
 			Set<User> senders = user.getFriendRequestSender();
 			StringBuilder sb = new StringBuilder();
@@ -447,7 +445,7 @@ public class UserController extends Controller {
 			return ok(sb.toString());
 		} catch (Exception e){
 			e.printStackTrace();
-			return badRequest("Cannot get friend-requests");
+			return badResponse("Cannot get friend-requests");
 		}
 	}
 
@@ -455,22 +453,22 @@ public class UserController extends Controller {
 		try {
 			if(receiverId==null){
 				System.out.println("User id is null or empty!");
-				return badRequest("User id is null or empty");
+				return badResponse("User id is null or empty");
 			}
 			User receiver = userRepository.findOne(receiverId);
 			if(receiverId==null){
 				System.out.println("Cannot find friend accept receiver");
-				return badRequest("Cannot find friend accept receiver");
+				return badResponse("Cannot find friend accept receiver");
 			}
 
 			if(senderId==null){
 				System.out.println("User id is null or empty!");
-				return badRequest("User id is null or empty");
+				return badResponse("User id is null or empty");
 			}
 			User sender = userRepository.findOne(senderId);
 			if(receiverId==null){
 				System.out.println("Cannot find friend accept sender");
-				return badRequest("Cannot find friend accept sender");
+				return badResponse("Cannot find friend accept sender");
 			}
 
 			Set<User> reqSenders = receiver.getFriendRequestSender();
@@ -484,7 +482,7 @@ public class UserController extends Controller {
 			}
 			if(flag == false) {
 				System.out.println("Friend Request doesn't exist");
-				return badRequest("Friend Request doesn't exist");
+				return badResponse("Friend Request doesn't exist");
 			}
 
 			receiver.setFriendRequestSender(reqSenders);
@@ -503,7 +501,7 @@ public class UserController extends Controller {
 			return ok("Friend request is accepted!");
 		} catch (Exception e){
 			e.printStackTrace();
-			return badRequest("Cannot create friendship");
+			return badResponse("Cannot create friendship");
 		}
 
 	}
@@ -512,22 +510,22 @@ public class UserController extends Controller {
 		try {
 			if(receiverId==null){
 				System.out.println("User id is null or empty!");
-				return badRequest("User id is null or empty");
+				return badResponse("User id is null or empty");
 			}
 			User receiver = userRepository.findOne(receiverId);
 			if(receiverId==null){
 				System.out.println("Cannot find friend accept receiver");
-				return badRequest("Cannot find friend accept receiver");
+				return badResponse("Cannot find friend accept receiver");
 			}
 
 			if(senderId==null){
 				System.out.println("User id is null or empty!");
-				return badRequest("User id is null or empty");
+				return badResponse("User id is null or empty");
 			}
 			User sender = userRepository.findOne(senderId);
 			if(receiverId==null){
 				System.out.println("Cannot find friend accept sender");
-				return badRequest("Cannot find friend accept sender");
+				return badResponse("Cannot find friend accept sender");
 			}
 
 			Set<User> reqSenders = receiver.getFriendRequestSender();
@@ -541,17 +539,17 @@ public class UserController extends Controller {
 			}
 			if(flag == false) {
 				System.out.println("Friend Request doesn't exist");
-				return badRequest("Friend Request doesn't exist");
+				return badResponse("Friend Request doesn't exist");
 			}
 
 			receiver.setFriendRequestSender(reqSenders);
 
 			userRepository.save(receiver);
 
-			return ok("Friend request is rejected!");
+			return okResponse("Friend request is rejected!");
 		} catch (Exception e){
 			e.printStackTrace();
-			return badRequest("Cannot create friendship");
+			return badResponse("Cannot create friendship");
 		}
 	}
 
@@ -559,12 +557,12 @@ public class UserController extends Controller {
 	public Result getFriends(Long userId) {
 		if(userId==null){
 			System.out.println("User id is null or empty!");
-			return badRequest("User id is null or empty");
+			return badResponse("User id is null or empty");
 		}
 		User user = userRepository.findOne(userId);
 		if(user==null){
 			System.out.println("Cannot find user");
-			return badRequest("Cannot find user");
+			return badResponse("Cannot find user");
 		}
 
 		Set<User> friends = user.getFriends();
@@ -589,21 +587,21 @@ public class UserController extends Controller {
 	public Result deleteFriend(Long userId, Long friendId) {
 		if(userId==null){
 			System.out.println("User id is null or empty!");
-			return badRequest("User id is null or empty");
+			return badResponse("User id is null or empty");
 		}
 		if(friendId==null){
 			System.out.println("friend id is null or empty!");
-			return badRequest("friend id is null or empty");
+			return badResponse("friend id is null or empty");
 		}
 		User user = userRepository.findOne(userId);
 		if(user==null){
 			System.out.println("Cannot find user");
-			return badRequest("Cannot find user");
+			return badResponse("Cannot find user");
 		}
 		User friend = userRepository.findOne(friendId);
 		if(friend==null){
 			System.out.println("Cannot find friend");
-			return badRequest("Cannot find friend");
+			return badResponse("Cannot find friend");
 		}
 
 		Set<User> friends = user.getFriends();
@@ -614,7 +612,21 @@ public class UserController extends Controller {
 		}
 		user.setFriends(friends);
 		userRepository.save(user);
-		return ok();
+		return okResponse("Friend deleted");
+	}
+
+	public Result okResponse(String message) {
+		Map<String, String> map = new HashMap<>();
+		map.put("success", message);
+		String result = new Gson().toJson(map);
+		return ok(result);
+	}
+
+	public Result badResponse(String message) {
+		Map<String, String> map = new HashMap<>();
+		map.put("Error", message);
+		String result = new Gson().toJson(map);
+		return ok(result);
 	}
 
 }
