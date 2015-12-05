@@ -4,9 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import models.Group;
-import models.SearchResult;
-import models.Workflow;
+import models.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import play.api.mvc.*;
@@ -21,7 +19,7 @@ import play.mvc.Controller;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import models.User;
+
 import play.api.Logger;
 import java.io.File;
 import java.io.FileInputStream;
@@ -51,7 +49,7 @@ public class WorkflowController extends Controller {
     public static Result workflowDetail(Long wid) {
 
         JsonNode wfres = APICall.callAPI(Constants.NEW_BACKEND + "workflow/get/workflowID/"
-                +wid.toString()+ "/userID/" + session("id") + "/json");
+                + wid.toString() + "/userID/" + session("id") + "/json");
         System.out.println("wfres is " + wfres);
         if (wfres == null || wfres.has("error")) {
             flash("error", wfres.get("error").textValue());
@@ -63,7 +61,31 @@ public class WorkflowController extends Controller {
             return redirect(routes.WorkflowController.main());
         }
         Workflow wf = new Workflow(wfres);
-        return ok(workflowdetail.render(wf, session("username"), Long.parseLong(session("id"))));
+
+        JsonNode commentList = APICall.callAPI(Constants.NEW_BACKEND + "/workflow/getComments/"
+                + wid.toString() + "/json");
+        List<Comment> commentRes = new ArrayList<>();
+        List<List<Reply>> replyRes = new ArrayList<>();
+
+        for (int i = 0; i < commentList.size(); i++) {
+            JsonNode node = commentList.get(i);
+            Comment comment = new Comment(node);
+            commentRes.add(comment);
+
+            Long commentId = comment.getId();
+            JsonNode replyList = APICall.callAPI(Constants.NEW_BACKEND + "/Comment/getReply/"
+                    + commentId.toString() + "/json");
+            List<Reply> listReply = new ArrayList<Reply>();
+            for (int j = 0; j < replyList.size(); j++) {
+                JsonNode rNode = replyList.get(j);
+                Reply reply = new Reply(rNode);
+                listReply.add(reply);
+            }
+            replyRes.add(listReply);
+        }
+        //return ok(workflowdetail.render(wf, session("username"), Long.parseLong(session("id"))));
+
+        return ok(workflowdetail.render(wf, commentRes, replyRes, session("username"), Long.parseLong(session("id"))));
     }
 
     public static Result edit(Long wid)

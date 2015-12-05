@@ -60,6 +60,7 @@ GET         /unfollow/:id                                       controllers.Prof
 GET         /workflow                                           controllers.WorkflowController.main()
 GET         /timeline/:offset                                   controllers.TimelineController.main(offset: Long)
 POST        /workflow/new                                       controllers.WorkflowController.createFlow()
+GET         /workflow/getPublicWorkflow                         controllers.WorkflowController.getPublicWorkflow()
 GET         /workflow/get/:wid                                  controllers.WorkflowController.workflowDetail(wid: Long)
 GET         /workflow/update/:wid                               controllers.WorkflowController.edit(wid: Long)
 POST        /workflow/edit/:wid                                 controllers.WorkflowController.editFlow(wid: Long)
