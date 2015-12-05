@@ -114,6 +114,22 @@ public class WorkflowController extends Controller {
         return redirect(routes.WorkflowController.main());
     }
 
+    public static Result getPublicWorkflow() {
+        JsonNode wfres = APICall.callAPI(Constants.NEW_BACKEND + "workflow/getPublicWorkflow/json");
+        if (wfres == null || wfres.has("error")) {
+            flash("error", wfres.get("error").textValue());
+            return redirect(routes.WorkflowController.main());
+        }
+
+        List<Workflow> res = new ArrayList<Workflow>();
+        for (int i = 0; i < wfres.size(); i++) {
+            JsonNode node = wfres.get(i);
+            Workflow wf = new Workflow(node);
+            res.add(wf);
+        }
+        return ok(forum.render(res, session("username"), Long.parseLong(session("id"))));
+    }
+
     // TODO: need a timeline page displaying the posts of followees.
     // TODO: POST and DISPLAY comment on workflow. user can reply to comments.
 }
