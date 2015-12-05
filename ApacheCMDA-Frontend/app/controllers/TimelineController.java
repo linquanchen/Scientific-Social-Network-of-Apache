@@ -32,8 +32,8 @@ public class TimelineController extends Controller {
 
     public static Result main(long offset) {
         //show first page of timeline
-        List<Workflow> timelines = getWorkflows(offset);
-        offset++;
+        List<Workflow> timelines = getWorkflows(offset);;
+
         return ok(timeline.render(session("username"), Long.parseLong(session("id")), timelines, offset));
     }
 
