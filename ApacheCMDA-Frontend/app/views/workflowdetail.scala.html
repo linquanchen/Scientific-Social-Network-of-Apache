@@ -1,4 +1,4 @@
-@(wf: Workflow, userName: String, userId: Long)
+@(wf: Workflow, comments: List[Comment], replyRes: List[List[Reply]], userName: String, userId: Long)
 
 <link href='@routes.Assets.at("css/bootstrap.min.css")'
       rel="stylesheet"/>
@@ -11,7 +11,7 @@
     }
     ul {
     float: left;
-    width: 70%;
+    width: 67%;
     margin-left: 1%;
     }
     img {
@@ -26,11 +26,12 @@
     <div class="jumbotron">
         <h1>@wf.getWfTitle</h1>
     </div>
-    <img src="/@wf.getWfImg" class="img-thumbnail" width="27%">
+    <img src="/@wf.getWfImg" class="img-thumbnail" width="30%">
     <ul class="list-group">
         <li class="list-group-item"><span class="badge">ID</span>@wf.getId</li>
         <li class="list-group-item"><span class="badge">Name</span>@wf.getUserName</li>
         <li class="list-group-item"><span class="badge">Category</span>@wf.getWfCategory</li>
         <li class="list-group-item"><span class="badge">Detail</span>@wf.getWfDesc</li>
+        <li class="list-group-item"><span class="badge">Code</span>@wf.getWfCode</li>
     </ul>
 }
