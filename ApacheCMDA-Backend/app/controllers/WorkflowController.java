@@ -79,7 +79,9 @@ public class WorkflowController extends Controller {
         String wfDesc = json.path("wfDesc").asText();
         String wfImg = json.path("wfImg").asText();
         String wfVisibility = json.path("wfVisibility").asText();
+        String wfTags = json.path("wfTags").asText();
         long wfGroupId = json.path("wfGroupId").asLong();
+        String wfUrl = json.path("wfUrl").asText();
 
         User user = userRepository.findOne(userID);
 
@@ -97,9 +99,33 @@ public class WorkflowController extends Controller {
 
         //groupId would be 0 if it is public
         Workflow workflow = new Workflow(userID, wfTitle, wfCategory, wfCode, wfDesc, wfImg,
-                wfVisibility, user, wfContributors, wfRelated, "norm", wfGroupId, user.getUserName());
+                wfVisibility, user, wfContributors, wfRelated, "norm", wfGroupId, user.getUserName(), wfUrl);
         Workflow savedWorkflow = workflowRepository.save(workflow);
-        return created(new Gson().toJson(savedWorkflow.getId()));
+        Workflow newWorkflow = workflowRepository.findById(savedWorkflow.getId());
+
+
+        if(wfTags!=null && !wfTags.equals("")) {
+            //add tag to workflow
+            String tagStrings[] = wfTags.split(",");
+            for (int i = 0; i < tagStrings.length; i++) {
+                tagStrings[i] = tagStrings[i].trim();
+            }
+
+            for (String t : tagStrings) {
+                Tag tag = tagRepository.findByTag(t);
+                if (tag == null) {
+                    tag = new Tag(t);
+                    tagRepository.save(tag);
+                }
+                Set<Tag> tags = newWorkflow.getTags();
+
+                tags.add(tag);
+                newWorkflow.setTags(tags);
+            }
+        }
+
+        newWorkflow = workflowRepository.save(newWorkflow);
+        return created(new Gson().toJson(newWorkflow.getId()));
     }
 
     //edit workflow
@@ -112,6 +138,19 @@ public class WorkflowController extends Controller {
 
         long wfID = json.path("wfID").asLong();
         long userID = json.path("userID").asLong();
+        Workflow workflow = workflowRepository.findOne(wfID);
+        User user = userRepository.findOne(userID);
+
+        //public workflow cannot be edit by others
+        long wfGroupId = workflow.getGroupId();
+        if((int) wfGroupId == 0) {
+            return badRequest("You have no access to edit the workflow!");
+        }
+        GroupUsers group = groupUsersRepository.findOne(wfGroupId);
+        //only the admin of the group or the user himself could edit the workflow
+        if((int)group.getCreatorUser() != userID && (int)workflow.getUserID() != userID) {
+            return badRequest("You have no access to edit the workflow!");
+        }
         String wfTitle = json.path("wfTitle").asText();
         String wfCategory = json.path("wfCategory").asText();
         String wfCode = json.path("wfCode").asText();
@@ -120,9 +159,10 @@ public class WorkflowController extends Controller {
         String wfVisibility = json.path("wfVisibility").asText();
         String wfStatus = json.path("wfStatus").asText();
 
-        Workflow workflow = workflowRepository.findOne(wfID);
-        User user = userRepository.findOne(userID);
-        workflow.getWfContributors().add(user);
+
+        if(!workflow.getWfContributors().contains(user)) {
+            workflow.getWfContributors().add(user);
+        }
         workflow.setWfTitle(wfTitle);
         workflow.setWfCategory(wfCategory);
         workflow.setWfCategory(wfCode);
@@ -144,7 +184,20 @@ public class WorkflowController extends Controller {
         }
 
         long wfID = json.path("wfID").asLong();
+        long userID = json.path("userID").asLong();
         Workflow workflow = workflowRepository.findOne(wfID);
+        if(workflow == null) {
+            return badRequest("Workflow doesn't exist!");
+        }
+
+        List<GroupUsers> groups = groupUsersRepository.findByCreatorUser(userID);
+        List<Integer> groupList = new ArrayList<>();
+        for (GroupUsers g: groups) {
+            groupList.add((int)g.getId());
+        }
+        if(!groupList.contains((int)workflow.getGroupId()) && (int)userID != (int)workflow.getUserID()) {
+            return badRequest("No access!");
+        }
         workflow.setStatus("deleted");
         workflowRepository.save(workflow);
         return created(new Gson().toJson("success"));
@@ -184,8 +237,6 @@ public class WorkflowController extends Controller {
         }
 
         Workflow workflow = workflowRepository.findOne(wfID);
-        workflow.setViewCount();
-        workflowRepository.save(workflow);
 
         if (workflow == null) {
             System.out.println("The workflow does not exist!");
@@ -193,21 +244,25 @@ public class WorkflowController extends Controller {
         }
         else {
             if (workflow.getStatus().equals("deleted")) {
-                JsonObject jsonObject = new JsonObject();
-                jsonObject.addProperty("status", "deleted");
-                return ok(new Gson().toJson(jsonObject));
+                return badRequest("This workflow has been deleted");
             }
-            else {
-                if (workflow.getWfVisibility().equals("private")) {
-                    if(workflow.getUserID() != userID) {
-                        JsonObject jsonObject = new JsonObject();
-                        jsonObject.addProperty("status", "protected");
-                        return ok(new Gson().toJson(jsonObject));
-                    }
+            else if (workflow.getWfVisibility().equals("private")){
+                return badRequest("This workflow has is private");
+            }
+            else if((int) workflow.getGroupId() != 0 && (int)workflow.getUserID() != userID.intValue()) {
+                List<GroupUsers> groupList = groupUsersRepository.findByUserId(userID);
+                List<Integer> groupListParse = new ArrayList<>();
+                for (GroupUsers g: groupList) {
+                    groupListParse.add((int)g.getId());
+                }
+                if(!groupListParse.contains((int) workflow.getGroupId())) {
+                    return badRequest("You have no access to this workflow");
                 }
             }
         }
 
+        workflow.setViewCount();
+        workflowRepository.save(workflow);
         String result = new String();
         if (format.equals("json")) {
             result = new Gson().toJson(workflow);
@@ -244,6 +299,13 @@ public class WorkflowController extends Controller {
 
         List<GroupUsers> groups = groupUsersRepository.findByUserId(id);
         List<GroupUsers> adminGroup = groupUsersRepository.findByCreatorUser(id);
+        List<Workflow> allWorkflows = new ArrayList<>();
+
+        for (GroupUsers g: groups) {
+            List<Workflow> cur = workflowRepository.findByGroupId(g.getId());
+            allWorkflows.addAll(new ArrayList<>(cur));
+        }
+
         List<Integer> adminGroupParse = new ArrayList<>();
         List<Integer> groupsParse = new ArrayList<>();
 
@@ -253,8 +315,9 @@ public class WorkflowController extends Controller {
         for(int i=0; i<adminGroup.size(); i++) {
             adminGroupParse.add((int)adminGroup.get(i).getId());
         }
-        List<Workflow> allWorkflows = new ArrayList<>();
+
         Set<User> followees = userRepository.findByFollowerId(id);
+
         if(followees.size()>0) {
             for (User followee: followees) {
                 List<Workflow> workflows = workflowRepository.findByUserID(followee.getId());
@@ -456,6 +519,24 @@ public class WorkflowController extends Controller {
         } catch (Exception e){
             e.printStackTrace();
             return badRequest("Failed to get workflow by Tag!");
+        }
+    }
+    
+    public Result getByTitle(String title) {
+        try {
+            if(title==null || title.equals("")) {
+                System.out.println("title is null or empty!");
+                return badRequest("title is null or empty!");
+            }
+            
+            List<Workflow> workflowList = workflowRepository.findByTitle("%" + title + "%");
+
+            String result = new Gson().toJson(workflowList);
+            return  ok(result);
+
+        } catch (Exception e){
+            e.printStackTrace();
+            return badRequest("Failed to get workflow by Title!");
         }
     }
 
