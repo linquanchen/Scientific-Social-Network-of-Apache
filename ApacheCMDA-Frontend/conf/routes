@@ -63,7 +63,7 @@ POST        /workflow/new                                       controllers.Work
 GET         /workflow/get/:wid                                  controllers.WorkflowController.workflowDetail(wid: Long)
 GET         /workflow/update/:wid                               controllers.WorkflowController.edit(wid: Long)
 POST        /workflow/edit/:wid                                 controllers.WorkflowController.editFlow(wid: Long)
-
+GET         /workflow/getPublicWorkflow                         controllers.WorkflowController.getPublicWorkflow()
 
 # group
 GET         /group/create                                       controllers.GroupController.create()

@@ -4,25 +4,8 @@
       rel="stylesheet"/>
 <link href='@routes.Assets.at("css/header.css")'
       rel="stylesheet"/>
+
 <script src='@routes.Assets.at("js/jquery-1.1.js")'></script>
-<style>
-    .forum.table > tbody > tr > td {
-        vertical-align: middle;
-    }
-
-    .forum .fa {
-        width: 1em;
-        text-align: center;
-    }
-
-    .forum.table th.cell-stat {
-        width: 6em;
-    }
-
-    .forum.table th.cell-stat-2x {
-        width: 14em;
-    }
-</style>
 
 <div id="header">
     @fixed.header(userName, userId)
@@ -47,19 +30,19 @@
                     <th class="cell-stat text-center hidden-xs hidden-sm">Views</th>
                 </tr>
             </thead>
+            <tbody>
+                @for(workflow <- workflows) {
+                    <tr>
+                        <td class="text-center"><i class="fa fa-question fa-2x text-primary"></i></td>
+                        <td>
+                            <h4><a href="#">@workflow.getWfTitle</a><br><small>@workflow.getShortWfDesc</small></h4>
+                        </td>
+                        <td class="text-center hidden-xs hidden-sm"><a href="#">@workflow.getUserName</a></td>
+                        <td class="text-center hidden-xs hidden-sm"><a href="#">@workflow.getWfCategory</a></td>
+                        <td class="text-center hidden-xs hidden-sm"><p>998</p></td>
+                    </tr>
+                }
+            </tbody>
         </table>
-        <tbody>
-            @for(workflow <- workflows) {
-                <tr>
-                    <td class="text-center"><i class="fa fa-question fa-2x text-primary"></i></td>
-                    <td>
-                        <h4><a href="#">@workflow.getWfTitle</a><br><small>@workflow.getShortWfDesc</small></h4>
-                    </td>
-                    <td class="text-center hidden-xs hidden-sm"><a href="#">@workflow.getUserName</a></td>
-                    <td class="text-center hidden-xs hidden-sm"><a href="#">@workflow.getWfCategory</a></td>
-                    <td class="text-center hidden-xs hidden-sm"><p>998</p></td>
-                </tr>
-            }
-        </tbody>
     </div>
 }
