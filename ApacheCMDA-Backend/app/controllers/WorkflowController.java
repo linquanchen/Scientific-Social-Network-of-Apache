@@ -103,7 +103,6 @@ public class WorkflowController extends Controller {
         Workflow savedWorkflow = workflowRepository.save(workflow);
         Workflow newWorkflow = workflowRepository.findById(savedWorkflow.getId());
 
-
         if(wfTags!=null && !wfTags.equals("")) {
             //add tag to workflow
             String tagStrings[] = wfTags.split(",");
@@ -426,6 +425,7 @@ public class WorkflowController extends Controller {
                 }
                 Set<Tag> tags = workflow.getTags();
                 tags.add(tag);
+                workflow.setTags(tags);
             }
             workflowRepository.save(workflow);
 

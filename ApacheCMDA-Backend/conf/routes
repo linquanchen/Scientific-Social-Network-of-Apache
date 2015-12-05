@@ -67,6 +67,9 @@ GET           /users/sendFriendRequest/sender/:senderId/receiver/:receiverId    
 GET           /users/getFriendRequests/userId/:userId                                                    @controllers.UserController.getFriendRequests(userId: Long)
 GET           /users/acceptFriendRequest/userId/:userId/sender/:senderId                                 @controllers.UserController.acceptFriendRequest(userId: Long, senderId: Long)
 GET           /users/rejectFriendRequest/userId/:userId/sender/:senderId                                 @controllers.UserController.rejectFriendRequest(userId: Long, senderId: Long)
+GET           /users/getFriends/userId/:userId                                                           @controllers.UserController.getFriends(userId: Long)
+GET           /users/deleteFriend/userId/:userId/friendId/:friendId                                      @controllers.UserController.deleteFriend(userId: Long, friendId: Long)
+
 
 # Workflow
 POST           /workflow/post                                                                            @controllers.WorkflowController.post
