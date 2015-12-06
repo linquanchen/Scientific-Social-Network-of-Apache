@@ -5,6 +5,9 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import util.APICall;
 import util.Constants;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by gavin on 11/24/15.
  */
@@ -28,6 +31,8 @@ public class Workflow {
     private String wfTag = "NaN";
     private String wfUrl = "NaN";
     private boolean wfEdit = false;
+    private List<String> wfInput = new ArrayList<>();
+    private List<String> wfOutput = new ArrayList<>();
 
     public Workflow() {
     }
@@ -51,7 +56,18 @@ public class Workflow {
         if (node.get("wfTag")!=null) wfTag = node.get("wfTag").asText();
         if (node.get("wfUrl")!=null) wfUrl = node.get("wfUrl").asText();
         if (node.get("edit")!=null) wfEdit = node.get("edit").asBoolean();
-
+        if (node.get("wfInput") != null) {
+            String inputs[] = node.get("wfInput").asText().split("|");
+            for (String in: inputs) {
+                wfInput.add(in);
+            }
+        }
+        if (node.get("wfOutput") != null) {
+            String outputs[] = node.get("wfOutput").asText().split("|");
+            for (String in: outputs) {
+                wfOutput.add(in);
+            }
+        }
     }
 
     public static JsonNode create(ObjectNode node) {
@@ -158,4 +174,24 @@ public class Workflow {
     public String getWfUrl() {return wfUrl;}
 
     public void setWfUrl(String wfUrl) {this.wfUrl = wfUrl;}
+
+    public List<String> getWfInput() {
+        return wfInput;
+    }
+
+    public void setWfInput(List<String> wfInput) {
+        this.wfInput = wfInput;
+    }
+
+    public List<String> getWfOutput() {
+        return wfOutput;
+    }
+
+    public void setWfOutput(List<String> wfOutput) {
+        this.wfOutput = wfOutput;
+    }
+
+    public boolean getWfEdit() {
+        return wfEdit;
+    }
 }
