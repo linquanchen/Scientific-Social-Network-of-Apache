@@ -34,4 +34,21 @@
         <li class="list-group-item"><span class="badge">Detail</span>@wf.getWfDesc</li>
         <li class="list-group-item"><span class="badge">Code</span>@wf.getWfCode</li>
     </ul>
+    <table class="table forum table-striped">
+        <tbody>
+            @for(i <- 0 until comments.size){
+                <tr>
+                    <h4><a>@comments(i).getContent</a><br><small>@comments(i).getTimestamp</small></h4>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <form class="form-horizontal" role="form" action="@routes.WorkflowController.addComment(@wf.getId())"
+          enctype="multipart/form-data" method="POST">
+        <div class="form-group">
+            <label for="comment">Comment:</label>
+            <textarea class="form-control" rows="5" id="comment" name="Comment"></textarea>
+            <button type="submit" class="btn btn-primary" >Submit</button>
+        </div>
+    </form>
 }
