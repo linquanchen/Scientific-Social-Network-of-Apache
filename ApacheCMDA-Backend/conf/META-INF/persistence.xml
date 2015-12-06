@@ -10,9 +10,9 @@
             
             <!-- Configuring JDBC properties -->
         	<property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver" />
-            <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/testdb" />
+            <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3307/testdb" />
             <property name="javax.persistence.jdbc.user" value="root" />
-            <property name="javax.persistence.jdbc.password" value="root" />
+            <property name="javax.persistence.jdbc.password" value="my_password" />
         	
             <!-- Hibernate properties -->
             <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />

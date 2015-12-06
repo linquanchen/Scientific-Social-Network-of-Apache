@@ -90,7 +90,7 @@ public class WorkflowController extends Controller {
         Workflow wf = new Workflow(wfres);
 
         JsonNode commentList = APICall.callAPI(Constants.NEW_BACKEND + "/workflow/getComments/"
-                + wid.toString() + "/json");
+                + wid.toString());
         List<Comment> commentRes = new ArrayList<>();
         List<List<Reply>> replyRes = new ArrayList<>();
 
@@ -101,7 +101,7 @@ public class WorkflowController extends Controller {
 
             Long commentId = comment.getId();
             JsonNode replyList = APICall.callAPI(Constants.NEW_BACKEND + "/Comment/getReply/"
-                    + commentId.toString() + "/json");
+                    + commentId.toString());
             List<Reply> listReply = new ArrayList<Reply>();
             for (int j = 0; j < replyList.size(); j++) {
                 JsonNode rNode = replyList.get(j);
