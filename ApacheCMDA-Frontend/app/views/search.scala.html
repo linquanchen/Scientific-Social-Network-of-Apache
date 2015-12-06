@@ -16,61 +16,59 @@
         <div id="header">
         @fixed.header(username, Long.parseLong(userId))
         </div>
-        <div class="container">
-            <form action="/searchResult">
-                <select name="category" id="">
-                    <option value="user">User</option>
-                    <option value="workflow">Workflow</option>
-                    <option value="tag">Tag</option>
-                </select>
-                <input type="text" name="keywd">
-                <input type="submit">
-            </form>
-            <form action="/searchResult">
-                <div class="input-group">
-                    <div class="input-group-btn">
-                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span id="searchLabel">User</span> <span class="caret"></span></button>
-                        <ul class="dropdown-menu">
-                            <li><a href="#">User</a></li>
-                            <li><a href="#">Workflow</a></li>
-                            <li><a href="#">Tag</a></li>
-                        </ul>
-                    </div><!-- /btn-group -->
-                    <input type="hidden" value="user" name="category">
-                    <input type="text" class="form-control" name="keywd" aria-label="...">
-                    <span class="input-group-btn">
-                        <input class="btn btn-default" type="submit">Search</input>
-                    </span>
-                </div><!-- /input-group -->
-            </form>
-            @if(results != null || resultswf != null) {
-                <p>Results Here</p>
-                <table>
-                    @if(category.equals("user")) {
-                        <tr><th>User</th><th>Email</th><th>View</th></tr>
-                        @for( result <- results) {
-                            <tr>
-                                <td>@result.getUserName</td>
-                                <td>@result.getEmail</td>
-                                <td><a href="/profile/@result.getId">More</a></td>
-                            </tr>
+        <div class="container row">
+            <div class="col-md-8 col-md-offset-1">
+                <form action="/searchResult">
+                    <div class="input-group">
+                        <div class="input-group-btn">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span id="searchLabel">User</span> <span class="caret"></span></button>
+                            <ul id="search-category" class="dropdown-menu">
+                                <li><a href="javascript:void(0)" data-opt="user">User</a></li>
+                                <li><a href="javascript:void(0)" data-opt="workflow">Workflow</a></li>
+                                <li><a href="javascript:void(0)" data-opt="tag">Tag</a></li>
+                            </ul>
+                        </div> <!-- /btn-group -->
+                        <input type="hidden" value="user" name="category" id="input-category">
+                        <input type="text" class="form-control" name="keywd" aria-label="...">
+                        <span class="input-group-btn">
+                            <input class="btn btn-default" type="submit">Search</input>
+                        </span>
+                    </div> <!-- /input-group -->
+                </form>
+                @if((results != null && results.size > 0) || (resultswf != null && resultswf.size > 0)) {
+                    <h3>Search result:</h3>
+                    <table class="table">
+                        @if(category.equals("user")) {
+                            <tr><th>User</th><th>Email</th><th>View</th></tr>
+                            @for( result <- results) {
+                                <tr>
+                                    <td>@result.getUserName</td>
+                                    <td>@result.getEmail</td>
+                                    <td><a href="/profile/@result.getId">More</a></td>
+                                </tr>
+                            }
                         }
-                    }
-                    @if(category.equals("tag") || category.equals("workflow")) {
-                        <tr><th>Title</th><th>Description</th></tr>
-                        @for( result <- resultswf) {
-                            <tr>
-                                <td><a href="/workflow/get/@result.getId">@result.getWfTitle</a></td>
-                                <td>@result.getWfDesc</td>
-                            </tr>
+                        @if(category.equals("tag") || category.equals("workflow")) {
+                            <tr><th>Title</th><th>Description</th></tr>
+                            @for( result <- resultswf) {
+                                <tr>
+                                    <td><a href="/workflow/get/@result.getId">@result.getWfTitle</a></td>
+                                    <td>@result.getWfDesc</td>
+                                </tr>
+                            }
                         }
-                    }
-                </table>
+                    </table>
 
-            } else {
-                <p>No Results!</p>
-            }
+                } else {
+                    @if(category != null) {
+                        <h3>We haven't find any matches.</h3>
+                    }else{
+                        <p>Search please.</p>
+                    }
+                }
+            </div>
         </div>
+        <script src='@routes.Assets.at("/js/wf-search.js")'></script>
     </body>
 </html>
 
