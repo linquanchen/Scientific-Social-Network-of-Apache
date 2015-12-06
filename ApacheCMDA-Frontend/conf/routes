@@ -79,3 +79,5 @@ POST        /group/joingroup                                    controllers.Grou
 GET         /notifications                                      controllers.NotificationController.main()
 GET         /friends/accept/:id                                 controllers.NotificationController.accpetFriend(id: Long)
 GET         /friends/reject/:id                                 controllers.NotificationController.rejectFriend(id: Long)
+POST        /mail/sendmail                                      controllers.NotificationController.sendMessage()
+GET         /mail/detail/:id                                    controllers.NotificationController.pmdetailpage(id: Long)
