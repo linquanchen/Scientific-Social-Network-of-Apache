@@ -1,4 +1,4 @@
-@(req: List[User], username: String, userId: String)
+@(req: List[User], inbox: List[PMessage], outbox: List[PMessage], username: String, userId: String)
 
 <link href='@routes.Assets.at("css/bootstrap.min.css")'
 rel="stylesheet"/>
@@ -12,6 +12,7 @@ rel="stylesheet"/>
 </div>
 
 @main("Notification Center"){
+    @flashmsg()
         <h1>This is the notification center!</h1>
         <h2>Friend Requests</h2>
         @if(req.isEmpty) {
@@ -29,4 +30,40 @@ rel="stylesheet"/>
                 }
             </table>
         }
+    <h2>Inbox</h2>
+    @if(!inbox.isEmpty) {
+        <table>
+            <tr><th>From</th><th>Title</th><th>Date</th><th>isRead</th></tr>
+            @for( result <- inbox) {
+                <tr>
+                    <td>@result.getFromUserMail</td>
+                    <td><a href="/mail/detail/@result.getId">@result.getMailTitle</a></td>
+                    <td>@result.getMailDate</td>
+                    <td>@result.isReadstatus</td>
+                </tr>
+            }
+        </table>
+    } else {
+        <p>No mail!</p>
+    }
+
+    <h2>OutBox</h2>
+    @if(!outbox.isEmpty) {
+        <table>
+            <tr><th>To</th><th>Title</th><th>Date</th><th>isRead</th></tr>
+            @for( result <- outbox) {
+                <tr>
+                    <td>@result.getToUserMail</td>
+                    <td>@result.getMailTitle</td>
+                    <td>@result.getMailDate</td>
+                    <td>@result.isReadstatus</td>
+                </tr>
+            }
+        </table>
+    } else {
+        <p>No mail!</p>
+    }
+
+    <h2>Send private Mail!</h2>
+    @write_message("")
 }
