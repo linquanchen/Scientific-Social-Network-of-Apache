@@ -21,5 +21,8 @@ rel="stylesheet"/>
         wfImg: <p>@wf.getWfImg</p>
         Desc: <p>@wf.getWfDesc</p>
         <img src="/@wf.getWfImg">
+        @if(wf.isWfEdit) {
+        <a href="/workflow/update/@wf.getId">Edit</a>
+        }
     </div>
 }

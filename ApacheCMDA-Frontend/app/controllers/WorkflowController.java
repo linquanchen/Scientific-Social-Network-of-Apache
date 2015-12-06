@@ -54,8 +54,8 @@ public class WorkflowController extends Controller {
         JsonNode wfres = APICall.callAPI(Constants.NEW_BACKEND + "workflow/get/workflowID/"
                 +wid.toString()+ "/userID/" + session("id") + "/json");
         System.out.println("wfres is " + wfres);
-        if (wfres == null || wfres.has("error")) {
-            flash("error", wfres.get("error").textValue());
+        if (wfres == null || wfres.has("erro")) {
+            flash("error", wfres.get("erro").textValue());
             return redirect(routes.WorkflowController.main());
         }
         if (wfres.get("status").asText().contains("protected") || wfres.get("status").asText().contains("deleted") )
