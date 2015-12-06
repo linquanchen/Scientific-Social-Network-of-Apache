@@ -1,29 +1,31 @@
 package controllers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import models.*;
+import models.Comment;
+import models.Group;
+import models.Reply;
+import models.Workflow;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import play.api.mvc.*;
 import play.data.Form;
-import play.mvc.*;
+import play.mvc.Controller;
+import play.mvc.Http;
 import play.mvc.Result;
 import util.APICall;
 import util.Constants;
-import views.html.*;
-import play.mvc.Controller;
+import views.html.forum;
+import views.html.workflow;
+import views.html.workflow_edit;
+import views.html.workflowdetail;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import play.api.Logger;
-import java.io.File;
-import java.io.FileInputStream;
 import java.util.UUID;
 
 public class WorkflowController extends Controller {
@@ -89,18 +91,20 @@ public class WorkflowController extends Controller {
         }
         Workflow wf = new Workflow(wfres);
 
-        JsonNode commentList = APICall.callAPI(Constants.NEW_BACKEND + "/workflow/getComments/"
+        JsonNode commentList = APICall.callAPI(Constants.NEW_BACKEND + "workflow/getComments/"
                 + wid.toString());
         List<Comment> commentRes = new ArrayList<>();
         List<List<Reply>> replyRes = new ArrayList<>();
+
+        System.out.println(commentList.toString());
 
         for (int i = 0; i < commentList.size(); i++) {
             JsonNode node = commentList.get(i);
             Comment comment = new Comment(node);
             commentRes.add(comment);
-
+            System.out.println("cccccccccc"+comment.getContent());
             Long commentId = comment.getId();
-            JsonNode replyList = APICall.callAPI(Constants.NEW_BACKEND + "/Comment/getReply/"
+            JsonNode replyList = APICall.callAPI(Constants.NEW_BACKEND + "Comment/getReply/"
                     + commentId.toString());
             List<Reply> listReply = new ArrayList<Reply>();
             for (int j = 0; j < replyList.size(); j++) {
