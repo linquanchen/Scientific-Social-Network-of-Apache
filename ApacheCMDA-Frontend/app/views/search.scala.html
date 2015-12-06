@@ -1,58 +1,60 @@
-@(username: String, userId: String, category: String, results: List[User], resultswf: List[Workflow] )
+@(username: String, userId: String, category: String, results: List[User], resultswf: List[Workflow])
 
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <title>Document</title>
-    <link href='@routes.Assets.at("css/bootstrap.min.css")'
-    rel="stylesheet"/>
-    <link href='@routes.Assets.at("css/header.css")'
-    rel="stylesheet"/>
+    <head>
+        <meta charset="UTF-8">
+        <title>Document</title>
+        <link href='@routes.Assets.at("css/bootstrap.min.css")'
+        rel="stylesheet"/>
+        <link href='@routes.Assets.at("css/header.css")'
+        rel="stylesheet"/>
 
-    <script src='@routes.Assets.at("js/jquery-1.1.js")'></script>
-  </head>
-  <body>
-    <div id="header">
-    @fixed.header(username,Long.parseLong(userId))
-    </div>
-    <form action="/searchResult">
-      <select name="category" id="">
-        <option value="user">User</option>
-        <option value="workflow">Workflow</option>
-        <option value="tag">Tag</option>
-      </select>
-      <input type="text" name="keywd">
-      <input type="submit">
-    </form>
-    @if(results != null || resultswf != null) {
-      <p>Results Here</p>
-      <table>
-        @if(category.equals("user")) {
-          <tr><th>User</th><th>Email</th><th>View</th></tr>
-          @for( result <- results) {
-            <tr>
-              <td>@result.getUserName</td>
-              <td>@result.getEmail</td>
-              <td><a href="/profile/@result.getId">More</a></td>
-            </tr>
-          }
-        }
-        @if(category.equals("tag") || category.equals("workflow")) {
-          <tr><th>Title</th><th>Description</th></tr>
-          @for( result <- resultswf) {
-            <tr>
-              <td><a href="/workflow/get/@result.getId">@result.getWfTitle</a></td>
-              <td>@result.getWfDesc</td>
-            </tr>
-          }
-        }
-      </table>
+        <script src='@routes.Assets.at("js/jquery-1.1.js")'></script>
+    </head>
+    <body>
+        <div id="header">
+        @fixed.header(username, Long.parseLong(userId))
+        </div>
+        <div class="container">
+            <form action="/searchResult">
+                <select name="category" id="">
+                    <option value="user">User</option>
+                    <option value="workflow">Workflow</option>
+                    <option value="tag">Tag</option>
+                </select>
+                <input type="text" name="keywd">
+                <input type="submit">
+            </form>
+            @if(results != null || resultswf != null) {
+                <p>Results Here</p>
+                <table>
+                    @if(category.equals("user")) {
+                        <tr><th>User</th><th>Email</th><th>View</th></tr>
+                        @for( result <- results) {
+                            <tr>
+                                <td>@result.getUserName</td>
+                                <td>@result.getEmail</td>
+                                <td><a href="/profile/@result.getId">More</a></td>
+                            </tr>
+                        }
+                    }
+                    @if(category.equals("tag") || category.equals("workflow")) {
+                        <tr><th>Title</th><th>Description</th></tr>
+                        @for( result <- resultswf) {
+                            <tr>
+                                <td><a href="/workflow/get/@result.getId">@result.getWfTitle</a></td>
+                                <td>@result.getWfDesc</td>
+                            </tr>
+                        }
+                    }
+                </table>
 
-    } else {
-      <p>No Results!</p>
-    }
-  </body>
+            } else {
+                <p>No Results!</p>
+            }
+        </div>
+    </body>
 </html>
 
 

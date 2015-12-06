@@ -13,22 +13,23 @@
         <div id="header">
         @fixed.header(userName, userId)
         </div>
-
-        <div class="alert-info" role="alert">
-            @if(flash.containsKey("success")) {
-                @flash.get("success")
-            }
-            @if(flash.containsKey("failed")) {
-                @flash.get("failed")
-            }
-        </div>
-        <div>
-            <h3>Join group</h3>
-            <form action="@routes.GroupController.joinGroup()" method="POST">
-                <input type="hidden" name="userID" value="@userId">
-                <input type="text" name="groupUrl" placeholder="pass code">
-                <button type="submit">Join</button>
-            </form>
+        <div class="container">
+            <div class="alert-info" role="alert">
+                @if(flash.containsKey("success")) {
+                    @flash.get("success")
+                }
+                @if(flash.containsKey("failed")) {
+                    @flash.get("failed")
+                }
+            </div>
+            <div>
+                <h3>Join group</h3>
+                <form action="@routes.GroupController.joinGroup()" method="POST">
+                    <input type="hidden" name="userID" value="@userId">
+                    <input type="text" name="groupUrl" placeholder="pass code">
+                    <button type="submit">Join</button>
+                </form>
+            </div>
         </div>
     </body>
 </html>

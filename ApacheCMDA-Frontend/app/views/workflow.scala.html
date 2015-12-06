@@ -1,41 +1,40 @@
 @(userName: String, userId: Long, groups: List[Group])
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <title>Document</title>
-    <link href='@routes.Assets.at("css/bootstrap.min.css")'
-    rel="stylesheet"/>
-    <link href='@routes.Assets.at("css/header.css")'
-    rel="stylesheet"/>
+    <head>
+        <meta charset="UTF-8">
+        <title>Document</title>
+        <link href='@routes.Assets.at("css/bootstrap.min.css")'
+        rel="stylesheet"/>
+        <link href='@routes.Assets.at("css/header.css")'
+        rel="stylesheet"/>
 
-    <script src='@routes.Assets.at("js/jquery-1.1.js")'></script>
-
-    <div id="header">
-    @fixed.header(userName, userId)
-    </div>
-  </head>
-  <body>
-    <div class="container">
-      <h3>Create new workflow</h3>
-      <form action="@routes.WorkflowController.createFlow()" enctype="multipart/form-data" method="POST">
-        <input type="hidden" name="userID" value="@userId">
-        <input type="text" name="wfTitle" placeholder="Title">
-        <input type="text" name="wfCategory" placeholder="Category">
-        <input type="text" name="wfCode" placeholder="Code">
-        <input type="text" name="wfDesc" placeholder="Description">
-        <input type="text" name="wfTag" placeholder="Tags">
-        <select name="wfVisibility">
-          <option value="0">public</option>
-          @if(groups != null) {
-            @for( group <- groups) {
-              <option value="@group.getId">@group.getGroupName</option>
-            }
-          }
-        </select>
-        <input type="file" name="image"/>
-        <button type="submit">Create</button>
-      </form>
-    </div>
-  </body>
+        <script src='@routes.Assets.at("js/jquery-1.1.js")'></script>
+    </head>
+    <body>
+        <div id="header">
+        @fixed.header(userName, userId)
+        </div>
+        <div class="container">
+            <h3>Create new workflow</h3>
+            <form action="@routes.WorkflowController.createFlow()" enctype="multipart/form-data" method="POST">
+                <input type="hidden" name="userID" value="@userId">
+                <input type="text" name="wfTitle" placeholder="Title">
+                <input type="text" name="wfCategory" placeholder="Category">
+                <input type="text" name="wfCode" placeholder="Code">
+                <input type="text" name="wfDesc" placeholder="Description">
+                <input type="text" name="wfTag" placeholder="Tags">
+                <select name="wfVisibility">
+                    <option value="0">public</option>
+                    @if(groups != null) {
+                        @for( group <- groups) {
+                            <option value="@group.getId">@group.getGroupName</option>
+                        }
+                    }
+                </select>
+                <input type="file" name="image"/>
+                <button type="submit">Create</button>
+            </form>
+        </div>
+    </body>
 </html>
