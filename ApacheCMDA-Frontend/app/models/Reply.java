@@ -14,13 +14,19 @@ public class Reply {
     private long toUserId;
     private String content;
 
+    public Reply() {
+
+    }
+
     public Reply(JsonNode node){
-        if (node.get("id") != null) id = node.get("id").asLong();
-        if (node.get("fromUserName") != null) fromUserName = node.get("fromUserName").asText();
-        if (node.get("fromUserId") != null) fromUserId = node.get("fromUserId").asLong();
-        if (node.get("toUserName") != null) toUserName = node.get("toUserName").asText();
-        if (node.get("toUserId") != null) toUserId = node.get("toUserId").asLong();
-        if (node.get("content") != null) content = node.get("content").asText();
+        if (node != null) {
+            if (node.get("id") != null) id = node.get("id").asLong();
+            if (node.get("fromUserName") != null) fromUserName = node.get("fromUserName").asText();
+            if (node.get("fromUserId") != null) fromUserId = node.get("fromUserId").asLong();
+            if (node.get("toUserName") != null) toUserName = node.get("toUserName").asText();
+            if (node.get("toUserId") != null) toUserId = node.get("toUserId").asLong();
+            if (node.get("content") != null) content = node.get("content").asText();
+        }
     }
 
     public long getId() {
