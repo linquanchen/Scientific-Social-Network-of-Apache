@@ -9,7 +9,7 @@ import util.Constants;
  * Created by chenlinquan on 12/4/15.
  */
 public class Comment {
-    private final static String CREATE = Constants.NEW_BACKEND + "/workflow/addComment";
+    private final static String CREATE = Constants.NEW_BACKEND + "workflow/addComment";
 
     private long id;
     private long user;

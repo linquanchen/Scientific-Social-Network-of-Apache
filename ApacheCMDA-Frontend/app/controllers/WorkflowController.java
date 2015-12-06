@@ -65,12 +65,12 @@ public class WorkflowController extends Controller {
         JsonNode commentResponse = Comment.create(jnode);
         if (commentResponse == null || commentResponse.has("error")) {
             //Logger.debug("Create Failed!");
-            if (commentResponse == null) flash("error", "Create workflow error.");
+            if (commentResponse == null) flash("error", "Create Comment error.");
             else flash("error", commentResponse.get("error").textValue());
-            return redirect(routes.WorkflowController.main());
+            return redirect(routes.WorkflowController.workflowDetail(wid));
         }
-        flash("success", "Create workflow successfully.");
-        return redirect(routes.WorkflowController.main());
+        flash("success", "Create Comment successfully.");
+        return redirect(routes.WorkflowController.workflowDetail(wid));
     }
 
     public static Result workflowDetail(Long wid) {
