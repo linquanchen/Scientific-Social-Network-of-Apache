@@ -16,11 +16,17 @@ public class Comment {
     private long timestamp;
     private String content;
 
+    public Comment() {
+
+    }
+
     public Comment(JsonNode node) {
-        if (node.get("id") != null) id = node.get("id").asLong();
-        if (node.get("user") != null) user = node.get("user").asLong();
-        if (node.get("timestamp") != null) timestamp = node.get("timestamp").asLong();
-        if (node.get("content") != null) content = node.get("content").asText();
+        if (node != null) {
+            if (node.get("id") != null) id = node.get("id").asLong();
+            if (node.get("user") != null) user = node.get("user").asLong();
+            if (node.get("timestamp") != null) timestamp = node.get("timestamp").asLong();
+            if (node.get("content") != null) content = node.get("content").asText();
+        }
     }
 
     public static JsonNode create(ObjectNode node) {
