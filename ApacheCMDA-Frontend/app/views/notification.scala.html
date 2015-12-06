@@ -1,0 +1,32 @@
+@(req: List[User], username: String, userId: String)
+
+<link href='@routes.Assets.at("css/bootstrap.min.css")'
+rel="stylesheet"/>
+<link href='@routes.Assets.at("css/header.css")'
+rel="stylesheet"/>
+
+<script src='@routes.Assets.at("js/jquery-1.1.js")'></script>
+
+<div id="header">
+@fixed.header(username,Long.parseLong(userId))
+</div>
+
+@main("Notification Center"){
+        <h1>This is the notification center!</h1>
+        <h2>Friend Requests</h2>
+        @if(req.isEmpty) {
+            <p>There is no pending requests!</p>
+        }
+        @if(!req.isEmpty) {
+            <table>
+                <tr><th>User</th><th>Email</th><th>Action</th></tr>
+                @for( result <- req) {
+                    <tr>
+                        <td>@result.getUserName</td>
+                        <td>@result.getEmail</td>
+                        <td><a href="/friends/accept/@result.getId">Accept</a> <a href="/friends/reject/@result.getId">Reject</a></td>
+                    </tr>
+                }
+            </table>
+        }
+}
