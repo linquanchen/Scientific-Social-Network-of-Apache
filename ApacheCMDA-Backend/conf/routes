@@ -86,6 +86,11 @@ GET            /workflow/deleteTag/workflowId/:wfId/tag/:tag                    
 GET            /workflow/getByTag/tag/:tag                                                               @controllers.WorkflowController.getByTag(tag: String)
 GET            /workflow/getByTitle/title/:title                                                         @controllers.WorkflowController.getByTitle(title: String)
 
+# Mail
+POST           /mail/sendMail                                                                            @controllers.MailController.sendMail
+GET            /mail/getMailDetail/mailId/:mailId                                                        @controllers.MailController.readMail(mailId: Long)
+GET           /mail/getInbox/:id/json                                                                    @controllers.MailController.getInbox(id: Long, format: String="json")
+GET           /mail/getOutbox/:id/json                                                                   @controllers.MailController.getOutbox(id: Long, format: String="json")
 
 # Tag
 #input:String tag
