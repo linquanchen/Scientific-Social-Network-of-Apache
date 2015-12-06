@@ -66,7 +66,8 @@ GET         /workflow/update/:wid                               controllers.Work
 POST        /workflow/edit/:wid                                 controllers.WorkflowController.editFlow(wid: Long)
 GET         /workflow/getPublicWorkflow                         controllers.WorkflowController.getPublicWorkflow()
 POST        /workflow/addComment/:wid                           controllers.WorkflowController.addComment(wid: Long)
-
+POST        /workflow/addReply/:toUserId/:commentId/:wid        controllers.WorkflowController.addReply(toUserId: Long, commentId: Long, wid: Long)
+POST        /workflow/replyReply/:toUserId/:replyId/:wid        controllers.WorkflowController.addReply(toUserId: Long, replyId: Long, wid: Long)
 
 
 # group

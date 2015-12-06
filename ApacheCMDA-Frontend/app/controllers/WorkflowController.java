@@ -31,6 +31,7 @@ import java.util.UUID;
 public class WorkflowController extends Controller {
     final static Form<Workflow> f_wf = Form.form(Workflow.class);
     final static Form<Comment> f_comment = Form.form(Comment.class);
+    final static Form<Reply> f_reply = Form.form(Reply.class);
 
     public static boolean notpass() {
         if (session("id") == null) {
@@ -52,9 +53,9 @@ public class WorkflowController extends Controller {
 
     public static Result addComment(Long wid) {
         Form<Comment> form = f_comment.bindFromRequest();
+
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode jnode = mapper.createObjectNode();
-
         try {
             jnode.put("userID", session("id"));
             jnode.put("timestamp", new Date().getTime());
@@ -74,6 +75,57 @@ public class WorkflowController extends Controller {
         flash("success", "Create Comment successfully.");
         return redirect(routes.WorkflowController.workflowDetail(wid));
     }
+
+    public static Result addReply(long toUserId, long commentId, long wid) {
+        Form<Reply> form = f_reply.bindFromRequest();
+
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode jnode = mapper.createObjectNode();
+        try {
+            jnode.put("commentId", commentId);
+            jnode.put("fromUserId", session("id"));
+            jnode.put("toUserId", toUserId);
+            jnode.put("timestamp", new Date().getTime());
+            jnode.put("Content", form.field("content").value());
+        }catch(Exception e) {
+            flash("error", "Form value invalid");
+        }
+
+        JsonNode replyResponse = Reply.create(jnode);
+        if (replyResponse == null || replyResponse.has("error")) {
+            if (replyResponse == null) flash("error", "Create Reply error.");
+            else flash("error", replyResponse.get("error").textValue());
+            return redirect(routes.WorkflowController.workflowDetail(wid));
+        }
+        flash("success", "Create Reply successfully.");
+        return redirect(routes.WorkflowController.workflowDetail(wid));
+    }
+
+    public static Result replyReply(long toUserId, long replyId, long wid) {
+        Form<Reply> form = f_reply.bindFromRequest();
+
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode jnode = mapper.createObjectNode();
+        try {
+            jnode.put("replyId", replyId);
+            jnode.put("fromUserId", session("id"));
+            jnode.put("toUserId", toUserId);
+            jnode.put("timestamp", new Date().getTime());
+            jnode.put("Content", form.field("content").value());
+        }catch(Exception e) {
+            flash("error", "Form value invalid");
+        }
+
+        JsonNode replyResponse = Reply.create(jnode);
+        if (replyResponse == null || replyResponse.has("error")) {
+            if (replyResponse == null) flash("error", "Create Reply error.");
+            else flash("error", replyResponse.get("error").textValue());
+            return redirect(routes.WorkflowController.workflowDetail(wid));
+        }
+        flash("success", "Create Reply successfully.");
+        return redirect(routes.WorkflowController.workflowDetail(wid));
+    }
+
 
     public static Result workflowDetail(Long wid) {
 
@@ -96,13 +148,10 @@ public class WorkflowController extends Controller {
         List<Comment> commentRes = new ArrayList<>();
         List<List<Reply>> replyRes = new ArrayList<>();
 
-        System.out.println(commentList.toString());
-
         for (int i = 0; i < commentList.size(); i++) {
             JsonNode node = commentList.get(i);
             Comment comment = new Comment(node);
             commentRes.add(comment);
-            System.out.println("cccccccccc"+comment.getContent());
             Long commentId = comment.getId();
             JsonNode replyList = APICall.callAPI(Constants.NEW_BACKEND + "Comment/getReply/"
                     + commentId.toString());
@@ -114,7 +163,6 @@ public class WorkflowController extends Controller {
             }
             replyRes.add(listReply);
         }
-        //return ok(workflowdetail.render(wf, session("username"), Long.parseLong(session("id"))));
 
         return ok(workflowdetail.render(wf, commentRes, replyRes, session("username"), Long.parseLong(session("id"))));
     }
