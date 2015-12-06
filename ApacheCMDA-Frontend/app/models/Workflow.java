@@ -123,15 +123,6 @@ public class Workflow {
         return wfDesc;
     }
 
-    public String getShortWfDesc() {
-        if(wfDesc.length()>15){
-            return wfDesc.substring(0,12)+"...";
-        }
-        else{
-            return wfDesc;
-        }
-    }
-
     public void setWfDesc(String wfDesc) {
         this.wfDesc = wfDesc;
     }

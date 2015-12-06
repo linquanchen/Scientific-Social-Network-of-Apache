@@ -18,6 +18,7 @@ import play.mvc.Controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import play.api.Logger;
@@ -27,6 +28,7 @@ import java.util.UUID;
 
 public class WorkflowController extends Controller {
     final static Form<Workflow> f_wf = Form.form(Workflow.class);
+    final static Form<Comment> f_comment = Form.form(Comment.class);
 
     public static boolean notpass() {
         if (session("id") == null) {
@@ -44,6 +46,31 @@ public class WorkflowController extends Controller {
             groupArr.add(g);
         }
         return ok(workflow.render(session("username"), Long.parseLong(session("id")), groupArr));
+    }
+
+    public static Result addComment(Long wid) {
+        Form<Comment> form = f_comment.bindFromRequest();
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode jnode = mapper.createObjectNode();
+
+        try {
+            jnode.put("userID", session("id"));
+            jnode.put("timestamp", new Date().getTime());
+            jnode.put("workflowID", wid);
+            jnode.put("Content", form.field("content").value());
+        }catch(Exception e) {
+            flash("error", "Form value invalid");
+        }
+
+        JsonNode commentResponse = Comment.create(jnode);
+        if (commentResponse == null || commentResponse.has("error")) {
+            //Logger.debug("Create Failed!");
+            if (commentResponse == null) flash("error", "Create workflow error.");
+            else flash("error", commentResponse.get("error").textValue());
+            return redirect(routes.WorkflowController.main());
+        }
+        flash("success", "Create workflow successfully.");
+        return redirect(routes.WorkflowController.main());
     }
 
     public static Result workflowDetail(Long wid) {
