@@ -8,6 +8,7 @@ import models.Group;
 import models.SearchResult;
 import models.Workflow;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import play.api.mvc.*;
 import play.data.Form;
@@ -121,6 +122,7 @@ public class WorkflowController extends Controller {
             String fileName = image.getFilename();
             String contentType = image.getContentType();
             java.io.File file = image.getFile();
+            String ext = FilenameUtils.getExtension(file.getName());
             imgPathToSave = "public/images/" + "image_" + UUID.randomUUID() + ".jpg";
             boolean success = new File("images").mkdirs();
             try {
