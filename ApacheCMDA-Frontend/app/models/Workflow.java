@@ -28,6 +28,7 @@ public class Workflow {
     private long [] wfRelated = {-1};
     private long wfViewCount = 0;
     private String wfUrl = "NaN";
+    private boolean wfEdit = false;
 
     public Workflow() {
     }
@@ -50,6 +51,8 @@ public class Workflow {
         if (node.get("wfViewCount")!=null) wfViewCount = node.get("wfViewCount").asLong();
         if (node.get("wfTag")!=null) wfTag = node.get("wfTag").asText();
         if (node.get("wfUrl")!=null) wfUrl = node.get("wfUrl").asText();
+        if (node.get("edit")!=null) wfEdit = node.get("edit").asBoolean();
+
     }
 
     public static JsonNode create(ObjectNode node) {
