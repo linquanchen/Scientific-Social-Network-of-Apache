@@ -28,6 +28,15 @@ public class Workflow {
     private long [] wfRelated = {-1};
     private long wfViewCount = 0;
     private String wfUrl = "NaN";
+
+    public boolean isWfEdit() {
+        return wfEdit;
+    }
+
+    public void setWfEdit(boolean wfEdit) {
+        this.wfEdit = wfEdit;
+    }
+
     private boolean wfEdit = false;
 
     public Workflow() {
