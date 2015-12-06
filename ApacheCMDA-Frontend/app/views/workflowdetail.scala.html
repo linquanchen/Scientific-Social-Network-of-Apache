@@ -1,28 +1,35 @@
 @(wf: Workflow, userName: String, userId: Long)
 
-<link href='@routes.Assets.at("css/bootstrap.min.css")'
-rel="stylesheet"/>
-<link href='@routes.Assets.at("css/header.css")'
-rel="stylesheet"/>
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Document</title>
+        <link href='@routes.Assets.at("css/bootstrap.min.css")'
+        rel="stylesheet"/>
+        <link href='@routes.Assets.at("css/header.css")'
+        rel="stylesheet"/>
 
-<script src='@routes.Assets.at("js/jquery-1.1.js")'></script>
+        <script src='@routes.Assets.at("js/jquery-1.1.js")'></script>
+    </head>
+    <body>
+        <div id="header">
+        @fixed.header(userName ,userId)
+        </div>
 
-<div id="header">
-@fixed.header(userName ,userId)
-</div>
 
-@main("Welcome") {
-    <div>
-        <h1>Workflow Details</h1>
-        Title: <p>@wf.getWfTitle</p>
-        id: <p>@wf.getId</p>
-        username: <p>@wf.getUserName</p>
-        Category: <p>@wf.getWfCategory</p>
-        wfImg: <p>@wf.getWfImg</p>
-        Desc: <p>@wf.getWfDesc</p>
-        <img src="/@wf.getWfImg">
-        @if(wf.isWfEdit) {
-        <a href="/workflow/update/@wf.getId">Edit</a>
-        }
-    </div>
-}
+        <div>
+            <h1>Workflow Details</h1>
+            Title: <p>@wf.getWfTitle</p>
+            id: <p>@wf.getId</p>
+            username: <p>@wf.getUserName</p>
+            Category: <p>@wf.getWfCategory</p>
+            wfImg: <p>@wf.getWfImg</p>
+            Desc: <p>@wf.getWfDesc</p>
+            <img src="/@wf.getWfImg">
+            @if(wf.isWfEdit) {
+                <a href="/workflow/update/@wf.getId">Edit</a>
+            }
+        </div>
+    </body>
+</html>
