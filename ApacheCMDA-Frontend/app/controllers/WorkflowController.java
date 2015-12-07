@@ -147,6 +147,8 @@ public class WorkflowController extends Controller {
             jnode.put("wfDesc", form.field("wfDesc").value());
             jnode.put("wfGroupId", form.field("wfVisibility").value());
             jnode.put("wfImg", imgPathToSave);
+            jnode.put("wfInput", form.field("wfInput").value());
+            jnode.put("wfOutput", form.field("wfOutput").value());
             jnode.put("wfTags", form.field("wfTag").valueOr(""));
         }catch(Exception e) {
             flash("error", "Form value invalid");

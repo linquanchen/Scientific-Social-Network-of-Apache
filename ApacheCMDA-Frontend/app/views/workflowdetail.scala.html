@@ -18,7 +18,25 @@ rel="stylesheet"/>
         id: <p>@wf.getId</p>
         username: <p>@wf.getUserName</p>
         Category: <p>@wf.getWfCategory</p>
-        wfImg: <p>@wf.getWfImg</p>
+        Input:<p>
+    <table>
+        <tr><th>Input</th></tr>
+        @for( result <- wf.getWfInput) {
+            <tr>
+                <td>@result</td>
+            </tr>
+        }
+    </table>
+        output:<p>
+    <table>
+        <tr><th>Output</th></tr>
+        @for( result <- wf.getWfOutput) {
+            <tr>
+                <td>@result</td>
+            </tr>
+        }
+    </table>
+        Image: <p>@wf.getWfImg</p>
         Desc: <p>@wf.getWfDesc</p>
         <img src="/@wf.getWfImg">
         @if(wf.isWfEdit) {
