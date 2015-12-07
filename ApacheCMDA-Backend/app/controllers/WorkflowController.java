@@ -97,9 +97,11 @@ public class WorkflowController extends Controller {
             wfRelated.add(workflowRepository.findOne(node.path("workflowID").asLong()));
         }
 
+        Date wfDate = new Date();
+
         //groupId would be 0 if it is public
         Workflow workflow = new Workflow(userID, wfTitle, wfCategory, wfCode, wfDesc, wfImg,
-                wfVisibility, user, wfContributors, wfRelated, "norm", wfGroupId, user.getUserName(), wfUrl, wfInput, wfOutput);
+                wfVisibility, user, wfContributors, wfRelated, "norm", wfGroupId, user.getUserName(), wfUrl, wfInput, wfOutput, wfDate);
         Workflow savedWorkflow = workflowRepository.save(workflow);
         Workflow newWorkflow = workflowRepository.findById(savedWorkflow.getId());
 
@@ -156,6 +158,7 @@ public class WorkflowController extends Controller {
             String error = new Gson().toJson(map);
             return ok(error);
         }
+        Date wfDate = new Date();
         String wfTitle = json.path("wfTitle").asText();
         String wfCategory = json.path("wfCategory").asText();
         String wfCode = json.path("wfCode").asText();
@@ -178,6 +181,7 @@ public class WorkflowController extends Controller {
         workflow.setStatus(wfStatus);
         workflow.setWfInput(wfInput);
         workflow.setWfOutput(wfOutput);
+        workflow.setWfDate(wfDate);
 
         workflowRepository.save(workflow);
 
@@ -362,11 +366,28 @@ public class WorkflowController extends Controller {
             }
         }
         List<Workflow> workflows = workflowRepository.findByUserID(id);
+
         for(Workflow w: workflows) {
-            w.setEdit(true);
-            allWorkflows.add(w);
+            if(allWorkflows.contains(w)) {
+                int index = allWorkflows.indexOf(w);
+                allWorkflows.get(index).setEdit(true);
+            }
+            else {
+                w.setEdit(true);
+                allWorkflows.add(w);
+            }
         }
 
+        Comparator<Workflow> cmp = new Comparator<Workflow>() {
+            @Override
+            public int compare(Workflow o1, Workflow o2) {
+                return o2.getWfDate().compareTo(o1.getWfDate());
+            }
+        };
+
+        Collections.sort(allWorkflows, cmp);
+        Map<String, Object> map = new HashMap<>();
+        map.put("size", allWorkflows.size());
         List<Workflow> workflowWithOffset = new ArrayList<>();
         for(int i=(offset.intValue()*6); i<allWorkflows.size() && i<(offset.intValue()*6+6); i++) {
             workflowWithOffset.add(allWorkflows.get(i));
@@ -374,7 +395,8 @@ public class WorkflowController extends Controller {
 
         String result = new String();
         if (format.equals("json")) {
-            result = new Gson().toJson(workflowWithOffset);
+            map.put("timeline", workflowWithOffset);
+            result = new Gson().toJson(map);
         }
 
         return ok(result);
@@ -571,5 +593,9 @@ public class WorkflowController extends Controller {
         }
     }
 
-
+    public Result getTop3WorkFlow() {
+        List<Workflow> topWorkflow = workflowRepository.findTop3Workflow();
+        String result = new Gson().toJson(topWorkflow);
+        return  ok(result);
+    }
 }

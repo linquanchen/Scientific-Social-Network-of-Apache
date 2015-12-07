@@ -18,6 +18,7 @@ package models;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -43,6 +44,7 @@ public class Workflow {
     private String wfUrl;
 	private String wfInput;
 	private String wfOutput;
+	private Date wfDate;
 
 	@OneToMany(fetch = FetchType.EAGER)
 	@JoinColumn(name = "CommentId", referencedColumnName = "id")
@@ -70,7 +72,7 @@ public class Workflow {
 	public Workflow(long userID, String wfTitle, String wfCategory, String wfCode,
 					String wfDesc, String wfImg, String wfVisibility,
 					User user, List<User> wfContributors, List<Workflow> wfRelated,
-					String status, long groupId, String userName, String wfUrl, String wfInput, String wfOutput) {
+					String status, long groupId, String userName, String wfUrl, String wfInput, String wfOutput, Date wfDate) {
 		super();
 		this.userID = userID;
 		this.wfTitle = wfTitle;
@@ -91,6 +93,7 @@ public class Workflow {
         this.wfUrl = wfUrl;
 		this.wfInput = wfInput;
 		this.wfOutput = wfOutput;
+		this.wfDate = wfDate;
 	}
 
 	public Set<Tag> getTags() {return this.tags;}
@@ -237,7 +240,13 @@ public class Workflow {
 		this.wfOutput = wfOutput;
 	}
 
+	public Date getWfDate() {
+		return wfDate;
+	}
 
+	public void setWfDate(Date wfDate) {
+		this.wfDate = wfDate;
+	}
 
 	@Override
 	public String toString() {

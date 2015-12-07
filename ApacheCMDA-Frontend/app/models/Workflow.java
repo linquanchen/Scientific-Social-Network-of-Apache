@@ -6,6 +6,7 @@ import util.APICall;
 import util.Constants;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -31,15 +32,7 @@ public class Workflow {
     private long [] wfRelated = {-1};
     private long wfViewCount = 0;
     private String wfUrl = "NaN";
-
-    public boolean isWfEdit() {
-        return wfEdit;
-    }
-
-    public void setWfEdit(boolean wfEdit) {
-        this.wfEdit = wfEdit;
-    }
-
+    private String wfDate = "NaN";
     private boolean wfEdit = false;
     private List<String> wfInput = new ArrayList<>();
     private List<String> wfOutput = new ArrayList<>();
@@ -62,10 +55,12 @@ public class Workflow {
         if (node.get("wfImg")!=null) wfImg = node.get("wfImg").asText();
         if (node.get("wfCategory")!=null) wfCategory = node.get("wfCategory").asText();
         if (node.get("wfVisibility")!=null) wfVisibility = node.get("wfVisibility").asText();
-        if (node.get("wfViewCount")!=null) wfViewCount = node.get("wfViewCount").asLong();
+        if (node.get("viewCount")!=null) wfViewCount = node.get("viewCount").asLong();
         if (node.get("wfTag")!=null) wfTag = node.get("wfTag").asText();
         if (node.get("wfUrl")!=null) wfUrl = node.get("wfUrl").asText();
         if (node.get("edit")!=null) wfEdit = node.get("edit").asBoolean();
+        if (node.get("wfDate")!=null) wfDate = node.get("wfDate").asText();
+
         if (node.get("wfInput") != null) {
             String inputs[] = node.get("wfInput").asText().split("\\|");
             for (String in: inputs) {
@@ -206,7 +201,16 @@ public class Workflow {
         this.wfOutput = wfOutput;
     }
 
-    public boolean getWfEdit() {
+    public boolean isWfEdit() {
         return wfEdit;
     }
+
+    public String getWfDate() {
+        return wfDate;
+    }
+
+    public void setWfDate(String wfDate) {
+        this.wfDate = wfDate;
+    }
+
 }

@@ -36,7 +36,8 @@ public class NotificationController extends Controller {
         if (response == null || !response.has("friendRequestSender"))
         {
             flash("error", "No response from server!");
-            return ok(home.render(session("username"), session("id")));
+            List<Workflow> top3Wf = getTop3Workflow();
+            return ok(home.render(session("username"), session("id"), top3Wf));
         }
         ArrayList<User> requests = new ArrayList<User>();
         for (JsonNode ni : response.get("friendRequestSender") )
@@ -135,6 +136,16 @@ public class NotificationController extends Controller {
         JsonNode response = APICall.callAPI(apiquery);
         PMessage message = new PMessage(response);
         return ok(mail_detail.render(message, session("username"), session("id")));
+    }
+
+    public static List<Workflow> getTop3Workflow() {
+        List<Workflow> result = new ArrayList<>();
+        JsonNode response = APICall.callAPI(Constants.NEW_BACKEND + "workflow/getTop3WorkFlow");
+        for (JsonNode n: response) {
+            Workflow cur = new Workflow(n);
+            result.add(cur);
+        }
+        return result;
     }
 
 }
