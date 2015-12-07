@@ -79,7 +79,7 @@ public class WorkflowController extends Controller {
 
         JsonNode wfres = APICall.callAPI(Constants.NEW_BACKEND + "workflow/get/workflowID/"
                 + wid.toString() + "/userID/" + session("id") + "/json");
-        System.out.println("wfres is " + wfres);
+
         if (wfres == null || wfres.has("error")) {
             flash("error", wfres.get("error").textValue());
             return redirect(routes.WorkflowController.main());
@@ -96,13 +96,10 @@ public class WorkflowController extends Controller {
         List<Comment> commentRes = new ArrayList<>();
         List<List<Reply>> replyRes = new ArrayList<>();
 
-        System.out.println(commentList.toString());
-
         for (int i = 0; i < commentList.size(); i++) {
             JsonNode node = commentList.get(i);
             Comment comment = new Comment(node);
             commentRes.add(comment);
-            System.out.println("cccccccccc"+comment.getContent());
             Long commentId = comment.getId();
             JsonNode replyList = APICall.callAPI(Constants.NEW_BACKEND + "Comment/getReply/"
                     + commentId.toString());
