@@ -9,6 +9,7 @@ import play.mvc.Result;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -62,6 +63,7 @@ public class CommentController extends Controller {
         Reply savedReply = replyRepository.save(reply);
         List<Reply> replyList = comment.getReplies();
         replyList.add(reply);
+        comment.setReplies(replyList);
         commentRepository.save(comment);
 
         return ok(new Gson().toJson(savedReply.getId()));
@@ -102,5 +104,26 @@ public class CommentController extends Controller {
         replyRepository.save(reply);
 
         return ok(new Gson().toJson(savedReply.getId()));
+    }
+
+    public Result getReply(Long commentId) {
+        try{
+            if(commentId==null){
+                System.out.println("Expecting comment id");
+                return badRequest("Expecting comment id");
+            }
+
+            List<Reply> replies = replyRepository.findByCommentId(commentId);
+            int size = replies.size();
+            for(int i=0;i<size;i++){
+                replies.addAll(replies.get(i).getReplies());
+            }
+            Collections.sort(replies);
+
+            return ok(new Gson().toJson(replies));
+        } catch (Exception e){
+            e.printStackTrace();
+            return badRequest("Fail to fetch replies");
+        }
     }
 }

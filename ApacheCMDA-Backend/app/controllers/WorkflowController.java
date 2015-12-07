@@ -19,23 +19,16 @@ package controllers;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import models.*;
-
-import models.Workflow;
-import models.WorkflowRepository;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
 
-import javax.imageio.ImageIO;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -321,6 +314,24 @@ public class WorkflowController extends Controller {
         return ok(result);
     }
 
+    //get user's own workflow list.
+    public Result getPublicWorkflow(String format) {
+
+        List<Workflow> workflowList = workflowRepository.findPubicWorkflow();
+        for(Workflow workflow: workflowList) {
+            workflow.setEdit(true);
+        }
+
+        String result = new String();
+        if (format.equals("json")) {
+            result = new Gson().toJson(workflowList);
+        }
+
+        return ok(result);
+    }
+
+
+
     public Result getTimeLine(Long id, Long offset, String format) {
         if(id == null) {
             System.out.println("Id not created, please enter valid user");
@@ -406,9 +417,6 @@ public class WorkflowController extends Controller {
                 return badRequest("Cannot find workflow with given workflow id");
             }
             Comment comment = new Comment(user, timestamp, content, commentImage);
-
-            commentRepository.save(comment);
-            //Comment comment = new Comment(user, timestamp, content);
 
             Comment savedComment = commentRepository.save(comment);
             List<Comment> list = workflow.getComments();
@@ -571,5 +579,52 @@ public class WorkflowController extends Controller {
         }
     }
 
+    public Result getComments(Long workflowId) {
+        try{
+            if(workflowId==null){
+                System.out.println("Expecting workflow id");
+                return badRequest("Expecting workflow id");
+            }
+
+            List<Comment> comments = commentRepository.findByWorkflowId(workflowId);
+
+
+            return ok(new Gson().toJson(comments));
+        } catch (Exception e){
+            e.printStackTrace();
+            return badRequest("Failed to fetch comments");
+        }
+    }
+
+//    public Result uploadCommentImage(Long id) {
+//        Http.MultipartFormData body = request().body().asMultipartFormData();
+//        Http.MultipartFormData.FilePart image = body.getFile("image");
+//
+//        Comment comment = commentRepository.findOne(id);
+//
+//
+//        if (image != null) {
+//            File imgFile = image.getFile();
+//            String imgPathToSave = "public/images/" + "commentImage_" + id + ".jpg";
+//
+//            //save on disk
+//            boolean success = new File("images").mkdirs();
+//            try {
+//                byte[] bytes = IOUtils.toByteArray(new FileInputStream(imgFile));
+//                FileUtils.writeByteArrayToFile(new File(imgPathToSave), bytes);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//            comment.setCommentImage(imgPathToSave);
+//            commentRepository.save(comment);
+//            return ok("File uploaded");
+//        }
+//        else {
+//            flash("error", "Missing file");
+//            return badRequest("Wrong!!!!!!!!");
+//            // return redirect(routes.Application.index());
+//        }
+//
+//    }
 
 }

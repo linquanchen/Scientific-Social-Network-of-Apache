@@ -1,35 +1,38 @@
 package controllers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import models.Comment;
 import models.Group;
-import models.SearchResult;
+import models.Reply;
 import models.Workflow;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
-import play.api.mvc.*;
 import play.data.Form;
-import play.mvc.*;
+import play.mvc.Controller;
+import play.mvc.Http;
 import play.mvc.Result;
 import util.APICall;
 import util.Constants;
-import views.html.*;
-import play.mvc.Controller;
+import views.html.forum;
+import views.html.workflow;
+import views.html.workflow_edit;
+import views.html.workflowdetail;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import models.User;
-import play.api.Logger;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 public class WorkflowController extends Controller {
     final static Form<Workflow> f_wf = Form.form(Workflow.class);
+    final static Form<Comment> f_comment = Form.form(Comment.class);
+    final static Form<Reply> f_reply = Form.form(Reply.class);
 
     public static boolean notpass() {
         if (session("id") == null) {
@@ -49,13 +52,90 @@ public class WorkflowController extends Controller {
         return ok(workflow.render(session("username"), Long.parseLong(session("id")), groupArr));
     }
 
+    public static Result addComment(Long wid) {
+        Form<Comment> form = f_comment.bindFromRequest();
+
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode jnode = mapper.createObjectNode();
+        try {
+            jnode.put("userID", session("id"));
+            jnode.put("timestamp", new Date().getTime());
+            jnode.put("workflowID", wid);
+            jnode.put("Content", form.field("content").value());
+        }catch(Exception e) {
+            flash("error", "Form value invalid");
+        }
+
+        JsonNode commentResponse = Comment.create(jnode);
+        if (commentResponse == null || commentResponse.has("error")) {
+            //Logger.debug("Create Failed!");
+            if (commentResponse == null) flash("error", "Create Comment error.");
+            else flash("error", commentResponse.get("error").textValue());
+            return redirect(routes.WorkflowController.workflowDetail(wid));
+        }
+        flash("success", "Create Comment successfully.");
+        return redirect(routes.WorkflowController.workflowDetail(wid));
+    }
+
+    public static Result addReply(long toUserId, long commentId, long wid) {
+        Form<Reply> form = f_reply.bindFromRequest();
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode jnode = mapper.createObjectNode();
+        try {
+            jnode.put("commentId", commentId);
+            jnode.put("fromUserId", session("id"));
+            jnode.put("toUserId", toUserId);
+            jnode.put("timestamp", new Date().getTime());
+            jnode.put("content", form.field("content").value());
+            System.out.println(form.field("content").value());
+        }catch(Exception e) {
+            flash("error", "Form value invalid");
+        }
+
+        JsonNode replyResponse = Reply.create(jnode);
+        if (replyResponse == null || replyResponse.has("error")) {
+            System.out.println("Add Reply: Step four");
+            if (replyResponse == null) flash("error", "Create Reply error.");
+            else flash("error", replyResponse.get("error").textValue());
+            return redirect(routes.WorkflowController.workflowDetail(wid));
+        }
+        flash("success", "Create Reply successfully.");
+        return redirect(routes.WorkflowController.workflowDetail(wid));
+    }
+
+    public static Result replyReply(long toUserId, long replyId, long wid) {
+        Form<Reply> form = f_reply.bindFromRequest();
+
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode jnode = mapper.createObjectNode();
+        try {
+            jnode.put("replyId", replyId);
+            jnode.put("fromUserId", session("id"));
+            jnode.put("toUserId", toUserId);
+            jnode.put("timestamp", new Date().getTime());
+            jnode.put("content", form.field("content").value());
+        }catch(Exception e) {
+            flash("error", "Form value invalid");
+        }
+        JsonNode replyResponse = Reply.createReply(jnode);
+        if (replyResponse == null || replyResponse.has("error")) {
+
+            if (replyResponse == null) flash("error", "Create Reply error.");
+            else flash("error", replyResponse.get("error").textValue());
+            return redirect(routes.WorkflowController.workflowDetail(wid));
+        }
+        flash("success", "Create Reply successfully.");
+        return redirect(routes.WorkflowController.workflowDetail(wid));
+    }
+
+
     public static Result workflowDetail(Long wid) {
 
         JsonNode wfres = APICall.callAPI(Constants.NEW_BACKEND + "workflow/get/workflowID/"
-                +wid.toString()+ "/userID/" + session("id") + "/json");
-        System.out.println("wfres is " + wfres);
-        if (wfres == null || wfres.has("erro")) {
-            flash("error", wfres.get("erro").textValue());
+                + wid.toString() + "/userID/" + session("id") + "/json");
+
+        if (wfres == null || wfres.has("error")) {
+            flash("error", wfres.get("error").textValue());
             return redirect(routes.WorkflowController.main());
         }
         if (wfres.get("status").asText().contains("protected") || wfres.get("status").asText().contains("deleted") )
@@ -64,7 +144,30 @@ public class WorkflowController extends Controller {
             return redirect(routes.WorkflowController.main());
         }
         Workflow wf = new Workflow(wfres);
-        return ok(workflowdetail.render(wf, session("username"), Long.parseLong(session("id"))));
+
+        JsonNode commentList = APICall.callAPI(Constants.NEW_BACKEND + "workflow/getComments/"
+                + wid.toString());
+
+        List<Comment> commentRes = new ArrayList<>();
+        List<List<Reply>> replyRes = new ArrayList<>();
+
+        for (int i = 0; i < commentList.size(); i++) {
+            JsonNode node = commentList.get(i);
+            Comment comment = new Comment(node);
+            commentRes.add(comment);
+            Long commentId = comment.getId();
+            JsonNode replyList = APICall.callAPI(Constants.NEW_BACKEND + "Comment/getReply/"
+                    + commentId.toString());
+            List<Reply> listReply = new ArrayList<>();
+            for (int j = 0; j < replyList.size(); j++) {
+                JsonNode rNode = replyList.get(j);
+                Reply reply = new Reply(rNode);
+                listReply.add(reply);
+            }
+            replyRes.add(listReply);
+        }
+
+        return ok(workflowdetail.render(wf, commentRes, replyRes, session("username"), Long.parseLong(session("id"))));
     }
 
     public static Result edit(Long wid)
@@ -199,6 +302,22 @@ public class WorkflowController extends Controller {
         }
         flash("success", "Create workflow successfully.");
         return redirect(routes.WorkflowController.main());
+    }
+
+    public static Result getPublicWorkflow() {
+        JsonNode wfres = APICall.callAPI(Constants.NEW_BACKEND + "workflow/getPublicWorkflow/json");
+        if (wfres == null || wfres.has("error")) {
+            flash("error", wfres.get("error").textValue());
+            return redirect(routes.WorkflowController.main());
+        }
+
+        List<Workflow> res = new ArrayList<Workflow>();
+        for (int i = 0; i < wfres.size(); i++) {
+            JsonNode node = wfres.get(i);
+            Workflow wf = new Workflow(node);
+            res.add(wf);
+        }
+        return ok(forum.render(res, session("username"), Long.parseLong(session("id"))));
     }
 
     // TODO: need a timeline page displaying the posts of followees.

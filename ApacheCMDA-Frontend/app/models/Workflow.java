@@ -105,6 +105,15 @@ public class Workflow {
         return response;
     }
 
+    public String getShortWfDesc() {
+        if(wfDesc.length()>15){
+            return wfDesc.substring(0,12)+"...";
+        }
+        else{
+            return wfDesc;
+        }
+    }
+
     public long getId() {
         return id;
     }
