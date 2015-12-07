@@ -86,6 +86,7 @@ POST           /workflow/setTag                                                 
 GET            /workflow/deleteTag/workflowId/:wfId/tag/:tag                                             @controllers.WorkflowController.deleteTag(wfId: Long, tag: String)
 GET            /workflow/getByTag/tag/:tag                                                               @controllers.WorkflowController.getByTag(tag: String)
 GET            /workflow/getByTitle/title/:title                                                         @controllers.WorkflowController.getByTitle(title: String)
+GET            /workflow/getTop3WorkFlow                                                                 @controllers.WorkflowController.getTop3WorkFlow()
 
 # Mail
 POST           /mail/sendMail                                                                            @controllers.MailController.sendMail
@@ -116,5 +117,7 @@ POST            /workflow/addComment                                            
 GET             /workflow/getComments/:workflowId                                                         @controllers.WorkflowController.getComments(workflowId: Long)
 #Comment
 POST           /Comment/addReply                                                                         @controllers.CommentController.addReply
-POST           /Comment/replyReply                                                                       @controllers.CommentController.replyReply
 GET            /Comment/getReply/:commentId                                                              @controllers.CommentController.getReply(commentId: Long)
+GET            /Comment/getReply/:commentId                                                              @controllers.CommentController.getReply(commentId: Long)
+GET            /Comment/thumbUp/:commentId                                                              @controllers.CommentController.thumbUp(commentId: Long)
+GET            /Comment/thumbDown/:commentId                                                              @controllers.CommentController.thumbDown(commentId: Long)

@@ -1,4 +1,4 @@
-@(username: String, userId: String)
+@(username: String, userId: String, top3Wf: List[Workflow])
 <!doctype html>
 <html lang="en">
     <head>
@@ -17,6 +17,16 @@
             <p><a href="/search">SearchUser</a></p>
             <p><a href="/group/create">Create Group</a></p>
             <p><a href="/group/join">Join Group</a></p>
+            <p><table>
+            <tr><th>Workflow Title</th><th>Workflow View</th><th>Workflow Detail</th></tr>
+            @for( i <- top3Wf.indices) {
+                <tr>
+                    <td>@top3Wf(i).getWfTitle</td>
+                    <td>@top3Wf(i).getWfViewCount</td>
+                    <td><a href="/workflow/get/@top3Wf(i).getId">Detail</a></td>
+                </tr>
+            }
+        </table>
             <hr>
             <a href="/logout">Logout</a>
         </div>

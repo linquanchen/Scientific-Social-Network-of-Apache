@@ -1,8 +1,6 @@
 package models;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by baishi on 11/24/15.
@@ -22,11 +20,6 @@ public class Reply implements Comparable<Reply>{
     private User toUser;
     private long timestamp;
     private String content;
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable  (name = "Replies",
-                joinColumns = {@JoinColumn(name = "replyee", referencedColumnName = "id")},
-                inverseJoinColumns = {@JoinColumn(name = "replyer", referencedColumnName = "id")})
-    private List<Reply> replies;
 
     public Reply(){
 
@@ -38,7 +31,6 @@ public class Reply implements Comparable<Reply>{
         this.toUser = toUser;
         this.timestamp = timestamp;
         this.content = content;
-        this.replies = new ArrayList<>();
     }
 
     public String getContent() {
@@ -76,10 +68,6 @@ public class Reply implements Comparable<Reply>{
     public void setContent(String content) {
         this.content = content;
     }
-
-    public List<Reply> getReplies() { return this.replies; }
-
-    public void setReplies(List<Reply> replies) { this.replies=replies; }
 
     @Override
     public String toString(){

@@ -69,43 +69,6 @@ public class CommentController extends Controller {
         return ok(new Gson().toJson(savedReply.getId()));
     }
 
-    public Result replyReply() {
-        JsonNode jsonNode = request().body().asJson();
-        if(jsonNode == null){
-            System.out.println("Reply not added, expecting Json data");
-            return badRequest("Reply not added, expecting Json data");
-        }
-
-        long replyId = jsonNode.path("replyId").asLong();
-        long fromUserId = jsonNode.path("fromUserId").asLong();
-        long toUserId = jsonNode.path("toUserId").asLong();
-        long timestamp = jsonNode.path("timestamp").asLong();
-        String content = jsonNode.path("content").asText();
-        Reply reply = replyRepository.findOne(replyId);
-        if(reply==null){
-            System.out.println("Cannot find comment!");
-            return badRequest("Cannot find comment!");
-        }
-        User fromUser = userRepository.findOne(fromUserId);
-        if(fromUser==null){
-            System.out.println("Cannot find fromUser!");
-            return badRequest("Cannot find fromUser!");
-        }
-        User toUser = userRepository.findOne(toUserId);
-        if(toUser==null){
-            System.out.println("Cannot find toUser!");
-            return badRequest("Cannot find toUser!");
-        }
-
-        Reply reReply = new Reply(fromUser, toUser, timestamp, content);
-        Reply savedReply = replyRepository.save(reReply);
-        List<Reply> replies = reply.getReplies();
-        replies.add(reReply);
-        replyRepository.save(reply);
-
-        return ok(new Gson().toJson(savedReply.getId()));
-    }
-
     public Result getReply(Long commentId) {
         try{
             if(commentId==null){
@@ -114,10 +77,7 @@ public class CommentController extends Controller {
             }
 
             List<Reply> replies = replyRepository.findByCommentId(commentId);
-            int size = replies.size();
-            for(int i=0;i<size;i++){
-                replies.addAll(replies.get(i).getReplies());
-            }
+
             Collections.sort(replies);
 
             return ok(new Gson().toJson(replies));
@@ -125,5 +85,37 @@ public class CommentController extends Controller {
             e.printStackTrace();
             return badRequest("Fail to fetch replies");
         }
+    }
+
+    public Result thumbUp(Long commentId) {
+        try{
+            if(commentId==null){
+                System.out.println("Expecting comment id");
+                return badRequest("Expecting comment id");
+            }
+            Comment comment = commentRepository.findOne(commentId);
+            comment.setThumb(comment.getThumb() + 1);
+            commentRepository.save(comment);
+            return ok("{\"success\":\"Success!\"}");
+        }catch (Exception e){
+            e.printStackTrace();
+            return badRequest("Fail to fetch replies");
+        }
+    }
+
+    public Result thumbDown(Long commentId) {
+        try{
+            if(commentId==null){
+                System.out.println("Expecting comment id");
+                return badRequest("Expecting comment id");
+            }
+            Comment comment = commentRepository.findOne(commentId);
+            comment.setThumb(comment.getThumb() - 1);
+            commentRepository.save(comment);
+            return ok("{\"success\":\"Success!\"}");
+        }catch (Exception e){
+            e.printStackTrace();
+            return badRequest("Fail to fetch replies");
+        }   
     }
 }
