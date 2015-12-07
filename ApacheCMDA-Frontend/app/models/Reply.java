@@ -28,11 +28,15 @@ public class Reply {
         if (node != null) {
             if (node.get("id") != null) id = node.get("id").asLong();
             if (node.get("timestamp") != null) timestamp = node.get("timestamp").asLong();
-            if (node.get("fromUser") != null) fromUserId = node.get("fromUser").get("id").asLong();
-            if (node.get("toUser") != null) toUserId = node.get("toUser").get("id").asLong();
+            if (node.get("fromUser") != null) {
+                fromUserId = node.get("fromUser").get("id").asLong();
+                fromUserName = node.get("fromUser").get("userName").asText();
+            }
+            if (node.get("toUser") != null) {
+                toUserId = node.get("toUser").get("id").asLong();
+                toUserName = node.get("toUser").get("userName").asText();
+            }
             if (node.get("content") != null) content = node.get("content").asText();
-//            if (node.get("fromUserName")!=null) fromUserName = node.get("fromUserName").asText();
-//            if (node.get("toUserName")!=null) toUserName = node.get("toUserName").asText();
         }
     }
 

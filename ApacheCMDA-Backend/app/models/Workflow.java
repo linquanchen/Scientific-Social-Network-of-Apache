@@ -113,6 +113,7 @@ public class Workflow {
 		wfDate = new Date();
 	}
 
+
 	public Set<Tag> getTags() {return this.tags;}
 
 	public void setTags(Set<Tag> tags) {this.tags = tags;}
@@ -272,7 +273,7 @@ public class Workflow {
 				+ ", wfDesc=" + wfDesc + ", wfImg=" + wfImg + ", wfVisibility" + wfVisibility
 				+ ", user=" + user + ", wfContributors=" + wfContributors + ", wfRelated=" + wfRelated + ", viewCount="
                 + viewCount + ", groupId=" + groupId + ", userName=" + userName + ", edit=" + edit + ", wfUrl=" + wfUrl
-				+ ", wfInput=" + wfInput  + ", wfOutput=" + wfOutput+"]";
+				+ ", wfInput=" + wfInput  + ", wfOutput=" + wfOutput + "]";
 
 	}
 
