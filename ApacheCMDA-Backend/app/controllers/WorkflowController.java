@@ -77,6 +77,7 @@ public class WorkflowController extends Controller {
         String wfDesc = json.path("wfDesc").asText();
         String wfImg = json.path("wfImg").asText();
         String wfVisibility = json.path("wfVisibility").asText();
+        String wfTags = json.path("wfTags").asText();
         long wfGroupId = json.path("wfGroupId").asLong();
         String wfUrl = json.path("wfUrl").asText();
         String wfInput = json.path("wfInput").asText();
@@ -100,7 +101,30 @@ public class WorkflowController extends Controller {
         Workflow workflow = new Workflow(userID, wfTitle, wfCategory, wfCode, wfDesc, wfImg,
                 wfVisibility, user, wfContributors, wfRelated, "norm", wfGroupId, user.getUserName(), wfUrl, wfInput, wfOutput);
         Workflow savedWorkflow = workflowRepository.save(workflow);
-        return created(new Gson().toJson(savedWorkflow.getId()));
+        Workflow newWorkflow = workflowRepository.findById(savedWorkflow.getId());
+
+        if(wfTags!=null && !wfTags.equals("")) {
+            //add tag to workflow
+            String tagStrings[] = wfTags.split(",");
+            for (int i = 0; i < tagStrings.length; i++) {
+                tagStrings[i] = tagStrings[i].trim();
+            }
+
+            for (String t : tagStrings) {
+                Tag tag = tagRepository.findByTag(t);
+                if (tag == null) {
+                    tag = new Tag(t);
+                    tagRepository.save(tag);
+                }
+                Set<Tag> tags = newWorkflow.getTags();
+
+                tags.add(tag);
+                newWorkflow.setTags(tags);
+            }
+        }
+
+        newWorkflow = workflowRepository.save(newWorkflow);
+        return created(new Gson().toJson(newWorkflow.getId()));
     }
 
     //edit workflow
@@ -432,6 +456,7 @@ public class WorkflowController extends Controller {
                 }
                 Set<Tag> tags = workflow.getTags();
                 tags.add(tag);
+                workflow.setTags(tags);
             }
             workflowRepository.save(workflow);
 
@@ -525,6 +550,24 @@ public class WorkflowController extends Controller {
         } catch (Exception e){
             e.printStackTrace();
             return badRequest("Failed to get workflow by Tag!");
+        }
+    }
+    
+    public Result getByTitle(String title) {
+        try {
+            if(title==null || title.equals("")) {
+                System.out.println("title is null or empty!");
+                return badRequest("title is null or empty!");
+            }
+            
+            List<Workflow> workflowList = workflowRepository.findByTitle("%" + title + "%");
+
+            String result = new Gson().toJson(workflowList);
+            return  ok(result);
+
+        } catch (Exception e){
+            e.printStackTrace();
+            return badRequest("Failed to get workflow by Title!");
         }
     }
 

@@ -14,6 +14,7 @@ import java.util.List;
 public class Workflow {
 
     private final static String CREATE = Constants.NEW_BACKEND + "workflow/post";
+    private final static String EDIT = Constants.NEW_BACKEND + "workflow/updateWorkflow";
 
     private long id = (-1);
     private String userName = "NaN";
@@ -25,11 +26,20 @@ public class Workflow {
     private String wfDesc = "NaN";
     private String wfImg = "NaN";
     private String wfVisibility = "NaN";
+    private String wfTag = "";
     private long [] wfContributors = {-1};
     private long [] wfRelated = {-1};
     private long wfViewCount = 0;
-    private String wfTag = "NaN";
     private String wfUrl = "NaN";
+
+    public boolean isWfEdit() {
+        return wfEdit;
+    }
+
+    public void setWfEdit(boolean wfEdit) {
+        this.wfEdit = wfEdit;
+    }
+
     private boolean wfEdit = false;
     private List<String> wfInput = new ArrayList<>();
     private List<String> wfOutput = new ArrayList<>();
@@ -72,6 +82,11 @@ public class Workflow {
 
     public static JsonNode create(ObjectNode node) {
         JsonNode response = APICall.postAPI(CREATE, node);
+        return response;
+    }
+
+    public static JsonNode update(ObjectNode node) {
+        JsonNode response = APICall.postAPI(EDIT, node);
         return response;
     }
 
