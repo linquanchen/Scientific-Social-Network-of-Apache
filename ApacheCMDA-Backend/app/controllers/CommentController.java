@@ -134,7 +134,7 @@ public class CommentController extends Controller {
                 return badRequest("Expecting comment id");
             }
             Comment comment = commentRepository.findOne(commentId);
-            comment.setThumbUp(comment.getThumbUp() + 1);
+            comment.setThumb(comment.getThumb() + 1);
             commentRepository.save(comment);
             return ok("{\"success\":\"Success!\"}");
         }catch (Exception e){
@@ -150,7 +150,7 @@ public class CommentController extends Controller {
                 return badRequest("Expecting comment id");
             }
             Comment comment = commentRepository.findOne(commentId);
-            comment.setThumbDown(comment.getThumbDown() + 1);
+            comment.setThumb(comment.getThumb() - 1);
             commentRepository.save(comment);
             return ok("{\"success\":\"Success!\"}");
         }catch (Exception e){

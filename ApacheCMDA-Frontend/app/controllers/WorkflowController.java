@@ -105,6 +105,7 @@ public class WorkflowController extends Controller {
 
     public static Result replyReply(long toUserId, long replyId, long wid) {
         Form<Reply> form = f_reply.bindFromRequest();
+        System.out.println("Step One");
 
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode jnode = mapper.createObjectNode();
@@ -117,6 +118,8 @@ public class WorkflowController extends Controller {
         }catch(Exception e) {
             flash("error", "Form value invalid");
         }
+        System.out.println("Step Two");
+        System.out.println(jnode);
         JsonNode replyResponse = Reply.createReply(jnode);
         if (replyResponse == null || replyResponse.has("error")) {
 

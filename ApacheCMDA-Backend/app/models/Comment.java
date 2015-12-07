@@ -20,8 +20,7 @@ public class Comment {
     private long timestamp;
     private String content;
 
-    private int thumbUp;
-    private int thumbDown;
+    private int thumb;
 
     private String commentImage;
     @OneToMany(fetch = FetchType.EAGER)
@@ -39,24 +38,15 @@ public class Comment {
         this.content = content;
         this.commentImage = commentImage;
         this.replies = new ArrayList<>();
-        this.thumbUp = 0;
-        this.thumbDown = 0;
+        this.thumb = 0;
     }
 
-    public void setThumbUp(int thumbUp) {
-        this.thumbUp = thumbUp;
+    public void setThumb(int thumb) {
+        this.thumb = thumb;
     }
 
-    public int getThumbUp() {
-        return thumbUp;
-    }
-
-    public void setThumbDown(int thumbDown) {
-        this.thumbDown = thumbDown;
-    }
-
-    public int getThumbDown() {
-        return thumbDown;
+    public int getThumb() {
+        return thumb;
     }
 
     public List<Reply> getReplies(){ return this.replies; }
@@ -110,6 +100,6 @@ public class Comment {
     @Override
     public String toString() {
         return "Comments [id="+id+", user="+user.getId()+", timestamp="+timestamp+", content="+content
-        +", thumbUp=" + thumbUp + ", thumbDown=" + thumbDown + "]";
+        +", thumb=" + thumb + "]";
     }
 }
