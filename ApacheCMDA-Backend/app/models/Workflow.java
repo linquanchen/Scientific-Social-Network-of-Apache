@@ -16,6 +16,8 @@
  */
 package models;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
@@ -94,6 +96,21 @@ public class Workflow {
 		this.wfInput = wfInput;
 		this.wfOutput = wfOutput;
 		this.wfDate = wfDate;
+	}
+
+	public Workflow(JsonNode node) {
+		if (node.get("userID")!=null) userID = node.get("userID").asLong();
+		if (node.get("wfTitle")!=null) wfTitle = node.get("wfTitle").asText();
+		if (node.get("wfCode")!=null) wfCode = node.get("wfCode").asText();
+		if (node.get("wfDesc")!=null) wfDesc = node.get("wfDesc").asText();
+		if (node.get("wfImg")!=null) wfImg = node.get("wfImg").asText();
+		if (node.get("wfCategory")!=null) wfCategory = node.get("wfCategory").asText();
+		if (node.get("wfVisibility")!=null) wfVisibility = node.get("wfVisibility").asText();
+		if (node.get("wfUrl")!=null) wfUrl = node.get("wfUrl").asText();
+		if (node.get("wfGroupId")!=null) groupId = node.get("wfGroupId").asLong();
+		if (node.get("wfInput")!=null) wfInput = node.get("wfInput").asText();
+		if (node.get("wfOutput")!=null) wfOutput = node.get("wfOutput").asText();
+		wfDate = new Date();
 	}
 
 	public Set<Tag> getTags() {return this.tags;}

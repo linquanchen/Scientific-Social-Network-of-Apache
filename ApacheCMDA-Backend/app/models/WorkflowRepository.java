@@ -29,6 +29,9 @@ public interface WorkflowRepository extends CrudRepository<Workflow, Long> {
     List<Workflow> findByUserID(Long id);
     Workflow findById(Long id);
 
+    @Query(value = "select w.* from Workflow w where (w.groupId = 0)", nativeQuery = true)
+    List<Workflow> findPubicWorkflow();
+
     @Query(value = "select * from Workflow where id in (select workflowId from WorkflowAndTags where (tagId = ?1))", nativeQuery = true)
     List<Workflow> findByTagId(Long tag);
     

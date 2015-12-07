@@ -19,23 +19,16 @@ package controllers;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import models.*;
-
-import models.Workflow;
-import models.WorkflowRepository;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
 
-import javax.imageio.ImageIO;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -70,20 +63,25 @@ public class WorkflowController extends Controller {
             return badRequest("Workflow not created, expecting Json data");
         }
 
-        long userID = json.path("userID").asLong();
-        String wfTitle = json.path("wfTitle").asText();
-        String wfCategory = json.path("wfCategory").asText();
-        String wfCode = json.path("wfCode").asText();
-        String wfDesc = json.path("wfDesc").asText();
-        String wfImg = json.path("wfImg").asText();
-        String wfVisibility = json.path("wfVisibility").asText();
-        String wfTags = json.path("wfTags").asText();
-        long wfGroupId = json.path("wfGroupId").asLong();
-        String wfUrl = json.path("wfUrl").asText();
-        String wfInput = json.path("wfInput").asText();
-        String wfOutput = json.path("wfOutput").asText();
+//        long userID = json.path("userID").asLong();
+//        String wfTitle = json.path("wfTitle").asText();
+//        String wfCategory = json.path("wfCategory").asText();
+//        String wfCode = json.path("wfCode").asText();
+//        String wfDesc = json.path("wfDesc").asText();
+//        String wfImg = json.path("wfImg").asText();
+//        String wfVisibility = json.path("wfVisibility").asText();
+//        String wfTags = json.path("wfTags").asText();
+//        long wfGroupId = json.path("wfGroupId").asLong();
+//        String wfUrl = json.path("wfUrl").asText();
+//        String wfInput = json.path("wfInput").asText();
+//        String wfOutput = json.path("wfOutput").asText();
 
+        long userID = json.path("userID").asLong();
+        String wfTags = json.path("wfTags").asText();
         User user = userRepository.findOne(userID);
+        if(user == null) {
+            return badRequest("User doesn't exist!");
+        }
 
         JsonNode contributorsID = json.path("wfContributors");
         List<User> wfContributors = new ArrayList<User>();
@@ -97,11 +95,12 @@ public class WorkflowController extends Controller {
             wfRelated.add(workflowRepository.findOne(node.path("workflowID").asLong()));
         }
 
-        Date wfDate = new Date();
-
         //groupId would be 0 if it is public
-        Workflow workflow = new Workflow(userID, wfTitle, wfCategory, wfCode, wfDesc, wfImg,
-                wfVisibility, user, wfContributors, wfRelated, "norm", wfGroupId, user.getUserName(), wfUrl, wfInput, wfOutput, wfDate);
+        Workflow workflow = new Workflow(json);
+        workflow.setWfContributors(wfContributors);
+        workflow.setWfRelated(wfRelated);
+        workflow.setUserName(user.getUserName());
+        workflow.setStatus("norm");
         Workflow savedWorkflow = workflowRepository.save(workflow);
         Workflow newWorkflow = workflowRepository.findById(savedWorkflow.getId());
 
@@ -141,10 +140,13 @@ public class WorkflowController extends Controller {
         long userID = json.path("userID").asLong();
         Workflow workflow = workflowRepository.findOne(wfID);
         User user = userRepository.findOne(userID);
+        if (workflow == null) {
+            return badRequest("Workflow doesn't exist.");
+        }
 
         //public workflow cannot be edit by others
         long wfGroupId = workflow.getGroupId();
-        if((int) wfGroupId == 0) {
+        if((int) wfGroupId == 0 && (int)workflow.getUserID() != (int) userID) {
             Map<String, String> map = new HashMap<>();
             map.put("error", "No Access!");
             String error = new Gson().toJson(map);
@@ -152,37 +154,27 @@ public class WorkflowController extends Controller {
         }
         GroupUsers group = groupUsersRepository.findOne(wfGroupId);
         //only the admin of the group or the user himself could edit the workflow
-        if((int)group.getCreatorUser() != userID && (int)workflow.getUserID() != userID) {
+        if((int) wfGroupId != 0 && (int)group.getCreatorUser() != userID && (int)workflow.getUserID() != (int)userID) {
             Map<String, String> map = new HashMap<>();
             map.put("error", "No Access!");
             String error = new Gson().toJson(map);
             return ok(error);
         }
-        Date wfDate = new Date();
-        String wfTitle = json.path("wfTitle").asText();
-        String wfCategory = json.path("wfCategory").asText();
-        String wfCode = json.path("wfCode").asText();
-        String wfDesc = json.path("wfDesc").asText();
-        //img
-        String wfVisibility = json.path("wfVisibility").asText();
-        String wfStatus = json.path("wfStatus").asText();
-        String wfInput = json.path("wfInput").asText();
-        String wfOutput = json.path("wfOutput").asText();
 
-
+        if (json.get("wfTitle")!=null) workflow.setWfTitle(json.get("wfTitle").asText());
+        if (json.get("wfCode")!=null) workflow.setWfCode(json.get("wfCode").asText());
+        if (json.get("wfDesc")!=null)  workflow.setWfDesc(json.get("wfDesc").asText());
+        if (json.get("wfImg")!=null)   workflow.setWfImg(json.get("wfImg").asText());
+        if (json.get("wfCategory")!=null) workflow.setWfCategory(json.get("wfCategory").asText());
+        if (json.get("wfVisibility")!=null) workflow.setWfVisibility(json.get("wfVisibility").asText());
+        if (json.get("wfUrl")!=null)  workflow.setWfUrl(json.get("wfUrl").asText());
+        if (json.get("wfInput")!=null) workflow.setWfInput(json.get("wfInput").asText());
+        if (json.get("wfOutput")!=null) workflow.setWfOutput(json.get("wfOutput").asText());
+        if (json.get("wfStatus")!=null) workflow.setStatus(json.get("wfStatus").asText());
+        workflow.setWfDate(new Date());
         if(!workflow.getWfContributors().contains(user)) {
             workflow.getWfContributors().add(user);
         }
-        workflow.setWfTitle(wfTitle);
-        workflow.setWfCategory(wfCategory);
-        workflow.setWfCategory(wfCode);
-        workflow.setWfVisibility(wfVisibility);
-        workflow.setWfDesc(wfDesc);
-        workflow.setStatus(wfStatus);
-        workflow.setWfInput(wfInput);
-        workflow.setWfOutput(wfOutput);
-        workflow.setWfDate(wfDate);
-
         workflowRepository.save(workflow);
 
         return created(new Gson().toJson("success"));
@@ -325,6 +317,24 @@ public class WorkflowController extends Controller {
         return ok(result);
     }
 
+    //get user's own workflow list.
+    public Result getPublicWorkflow(String format) {
+
+        List<Workflow> workflowList = workflowRepository.findPubicWorkflow();
+        for(Workflow workflow: workflowList) {
+            workflow.setEdit(true);
+        }
+
+        String result = new String();
+        if (format.equals("json")) {
+            result = new Gson().toJson(workflowList);
+        }
+
+        return ok(result);
+    }
+
+
+
     public Result getTimeLine(Long id, Long offset, String format) {
         if(id == null) {
             System.out.println("Id not created, please enter valid user");
@@ -429,9 +439,6 @@ public class WorkflowController extends Controller {
             }
             Comment comment = new Comment(user, timestamp, content, commentImage);
 
-            commentRepository.save(comment);
-            //Comment comment = new Comment(user, timestamp, content);
-
             Comment savedComment = commentRepository.save(comment);
             List<Comment> list = workflow.getComments();
             list.add(comment);
@@ -482,7 +489,7 @@ public class WorkflowController extends Controller {
             }
             workflowRepository.save(workflow);
 
-            return ok("Tags add successfully");
+            return ok("{\"success\":\"Success!\"}");
         } catch (Exception e){
             e.printStackTrace();
             return badRequest("Failed to add Tag!");
@@ -510,7 +517,7 @@ public class WorkflowController extends Controller {
             }
             workflow.setTags(tags);
             workflowRepository.save(workflow);
-            return ok("Tags delete successfully");
+            return ok("{\"success\":\"Success!\"}");
 
         } catch (Exception e){
             e.printStackTrace();
@@ -598,4 +605,52 @@ public class WorkflowController extends Controller {
         String result = new Gson().toJson(topWorkflow);
         return  ok(result);
     }
+
+    public Result getComments(Long workflowId) {
+        try{
+            if(workflowId==null){
+                System.out.println("Expecting workflow id");
+                return badRequest("Expecting workflow id");
+            }
+
+            List<Comment> comments = commentRepository.findByWorkflowId(workflowId);
+
+
+            return ok(new Gson().toJson(comments));
+        } catch (Exception e){
+            e.printStackTrace();
+            return badRequest("Failed to fetch comments");
+        }
+    }
+
+//    public Result uploadCommentImage(Long id) {
+//        Http.MultipartFormData body = request().body().asMultipartFormData();
+//        Http.MultipartFormData.FilePart image = body.getFile("image");
+//
+//        Comment comment = commentRepository.findOne(id);
+//
+//
+//        if (image != null) {
+//            File imgFile = image.getFile();
+//            String imgPathToSave = "public/images/" + "commentImage_" + id + ".jpg";
+//
+//            //save on disk
+//            boolean success = new File("images").mkdirs();
+//            try {
+//                byte[] bytes = IOUtils.toByteArray(new FileInputStream(imgFile));
+//                FileUtils.writeByteArrayToFile(new File(imgPathToSave), bytes);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//            comment.setCommentImage(imgPathToSave);
+//            commentRepository.save(comment);
+//            return ok("File uploaded");
+//        }
+//        else {
+//            flash("error", "Missing file");
+//            return badRequest("Wrong!!!!!!!!");
+//            // return redirect(routes.Application.index());
+//        }
+//
+//    }
 }

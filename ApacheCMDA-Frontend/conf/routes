@@ -63,9 +63,16 @@ GET         /deletefriend/:id                                   controllers.Prof
 GET         /workflow                                           controllers.WorkflowController.main()
 GET         /timeline/:offset                                   controllers.TimelineController.main(offset: Long)
 POST        /workflow/new                                       controllers.WorkflowController.createFlow()
+GET         /workflow/getPublicWorkflow                         controllers.WorkflowController.getPublicWorkflow()
 GET         /workflow/get/:wid                                  controllers.WorkflowController.workflowDetail(wid: Long)
 GET         /workflow/update/:wid                               controllers.WorkflowController.edit(wid: Long)
 POST        /workflow/edit/:wid                                 controllers.WorkflowController.editFlow(wid: Long)
+GET         /workflow/getPublicWorkflow                         controllers.WorkflowController.getPublicWorkflow()
+POST        /workflow/addComment/:wid                           controllers.WorkflowController.addComment(wid: Long)
+POST        /workflow/addReply/:toUserId/:commentId/:wid        controllers.WorkflowController.addReply(toUserId: Long, commentId: Long, wid: Long)
+POST        /workflow/replyReply/:toUserId/:replyId/:wid        controllers.WorkflowController.replyReply(toUserId: Long, replyId: Long, wid: Long)
+GET         /workflow/tags/add/wf/:wid/tag/:tg                  controllers.WorkflowController.addTag(wid: Long, tg: String)
+GET         /workflow/tags/delete/wf/:wid/tag/:tg               controllers.WorkflowController.deleteTag(wid: Long, tg: String)
 
 
 # group
@@ -81,3 +88,4 @@ GET         /friends/accept/:id                                 controllers.Noti
 GET         /friends/reject/:id                                 controllers.NotificationController.rejectFriend(id: Long)
 POST        /mail/sendmail                                      controllers.NotificationController.sendMessage()
 GET         /mail/detail/:id                                    controllers.NotificationController.pmdetailpage(id: Long)
+GET         /notifications/count                                controllers.NotificationController.getNotifications()

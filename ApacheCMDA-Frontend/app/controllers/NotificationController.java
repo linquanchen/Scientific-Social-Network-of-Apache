@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.gson.Gson;
 import models.Group;
 import models.SearchResult;
 import models.Workflow;
@@ -32,27 +33,7 @@ public class NotificationController extends Controller {
 
     public static Result main()
     {
-        JsonNode response = APICall.callAPI(Constants.NEW_BACKEND + "users/getFriendRequests/userId/" + session("id"));
-        if (response == null || !response.has("friendRequestSender"))
-        {
-            flash("error", "No response from server!");
-            List<Workflow> top3Wf = getTop3Workflow();
-            return ok(home.render(session("username"), session("id"), top3Wf));
-        }
-        ArrayList<User> requests = new ArrayList<User>();
-        for (JsonNode ni : response.get("friendRequestSender") )
-        {
-            User obj = new User();
-            JsonNode n = ni.get("User");
-            obj.setUserName(n.get("userName").textValue());
-            try {
-                obj.setEmail(n.get("email").toString());
-            } catch (Exception e){
-                obj.setEmail("");
-            }
-            obj.setId(Long.parseLong(n.get("id").textValue()));
-            requests.add(obj);
-        }
+        List<User> requests = getFriendRequests();
         List<PMessage> inbox = getMail("getInbox");
         List<PMessage> outbox = getMail("getOutbox");
 
@@ -83,11 +64,38 @@ public class NotificationController extends Controller {
         return redirect(routes.NotificationController.main());
     }
 
+    private static List<User> getFriendRequests()
+    {
+        JsonNode response = APICall.callAPI(Constants.NEW_BACKEND + "users/getFriendRequests/userId/" + session("id"));
+        ArrayList<User> requests = new ArrayList<User>();
+        if (response == null || !response.has("friendRequestSender"))
+        {
+            flash("error", "No response from server!");
+            return requests;
+        }
+        for (JsonNode ni : response.get("friendRequestSender") )
+        {
+            User obj = new User();
+            JsonNode n = ni.get("User");
+            obj.setUserName(n.get("userName").textValue());
+            try {
+                obj.setEmail(n.get("email").toString());
+            } catch (Exception e){
+                obj.setEmail("");
+            }
+            obj.setId(Long.parseLong(n.get("id").textValue()));
+            requests.add(obj);
+        }
+        return requests;
+    }
+
     private static List<PMessage> getMail(String type)
     {
         String apiquery = Constants.NEW_BACKEND + "mail/"+ type + "/" + session("id") + "/json";
         JsonNode response = APICall.callAPI(apiquery);
         List<PMessage> mails = new ArrayList<PMessage>();
+        if (response == null)
+            return mails;
         for (JsonNode n : response)
         {
             PMessage msg = new PMessage(n);
@@ -138,14 +146,34 @@ public class NotificationController extends Controller {
         return ok(mail_detail.render(message, session("username"), session("id")));
     }
 
+
     public static List<Workflow> getTop3Workflow() {
         List<Workflow> result = new ArrayList<>();
         JsonNode response = APICall.callAPI(Constants.NEW_BACKEND + "workflow/getTop3WorkFlow");
-        for (JsonNode n: response) {
+        for (JsonNode n : response) {
             Workflow cur = new Workflow(n);
             result.add(cur);
         }
         return result;
+    }
+
+    public static Result getNotifications()
+    {
+        List<User> requests = getFriendRequests();
+        List<PMessage> inbox = getMail("getInbox");
+
+        int mailcount = 0;
+        for (PMessage pm : inbox)
+        {
+            if (pm.isReadstatus() == false)
+                mailcount++;
+        }
+
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode jnode = mapper.createObjectNode();
+        jnode.put("friendRequest", requests.size());
+        jnode.put("mail", mailcount);
+        return ok(jnode.toString());
     }
 
 }

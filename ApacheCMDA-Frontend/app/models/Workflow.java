@@ -33,6 +33,16 @@ public class Workflow {
     private long wfViewCount = 0;
     private String wfUrl = "NaN";
     private String wfDate = "NaN";
+
+    public List<String> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<String> tags) {
+        this.tags = tags;
+    }
+
+    private List<String> tags = new ArrayList<String>();
     private boolean wfEdit = false;
     private List<String> wfInput = new ArrayList<>();
     private List<String> wfOutput = new ArrayList<>();
@@ -73,6 +83,11 @@ public class Workflow {
                 wfOutput.add(in);
             }
         }
+        if (node.get("tags") !=null) {
+            for (JsonNode n : node.get("tags")) {
+                tags.add(n.get("tag").textValue());
+            }
+        }
     }
 
     public static JsonNode create(ObjectNode node) {
@@ -83,6 +98,15 @@ public class Workflow {
     public static JsonNode update(ObjectNode node) {
         JsonNode response = APICall.postAPI(EDIT, node);
         return response;
+    }
+
+    public String getShortWfDesc() {
+        if(wfDesc.length()>15){
+            return wfDesc.substring(0,12)+"...";
+        }
+        else{
+            return wfDesc;
+        }
     }
 
     public long getId() {

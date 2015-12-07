@@ -1,35 +1,48 @@
 @(wf: Workflow, userName: String, userId: Long)
 
-<link href='@routes.Assets.at("css/bootstrap.min.css")'
-rel="stylesheet"/>
-<link href='@routes.Assets.at("css/header.css")'
-rel="stylesheet"/>
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Document</title>
 
-<script src='@routes.Assets.at("js/jquery-1.1.js")'></script>
+        <link href='@routes.Assets.at("css/bootstrap.min.css")'
+        rel="stylesheet"/>
+        <link href='@routes.Assets.at("css/header.css")'
+        rel="stylesheet"/>
 
-<div id="header">
-@fixed.header(userName, userId)
-</div>
-@main("Update Workflow") {
-    <div>
-        <h1>Workflow Information</h1>
-        Title: <p>@wf.getWfTitle</p>
-        id: <p>@wf.getId</p>
-        username: <p>@wf.getUserName</p>
-        Category: <p>@wf.getWfCategory</p>
-        wfImg: <p>@wf.getWfImg</p>
-        Desc: <p>@wf.getWfDesc</p>
-        <img src="/@wf.getWfImg">
-    </div>
-    <div>
-        <h1>Update workflow</h1>
-        <form action="@routes.WorkflowController.editFlow(wf.getId)" method="POST">
-            <input type="hidden" name="userID" value="@userId">
-            Title: <input type="text" name="wfTitle" placeholder="Title" value="@wf.getWfTitle">
-            Category: <input type="text" name="wfCategory" placeholder="Category" value="@wf.getWfCategory">
-            Code: <input type="text" name="wfCode" placeholder="Code" value="@wf.getWfCode">
-            Desc: <input type="text" name="wfDesc" placeholder="Description" value="@wf.getWfDesc">
-            <button type="submit">Edit</button>
-        </form>
-    </div>
-}
+        <script src='@routes.Assets.at("js/jquery-1.1.js")'></script>
+    </head>
+    <body>
+        <div id="header">
+        @fixed.header(userName, userId)
+        </div>
+        <div class="container">
+            <div>
+                <h1>Workflow Information</h1>
+                Title: <p>@wf.getWfTitle</p>
+                id: <p>@wf.getId</p>
+                username: <p>@wf.getUserName</p>
+                Category: <p>@wf.getWfCategory</p>
+                wfImg: <p>@wf.getWfImg</p>
+                Desc: <p>@wf.getWfDesc</p>
+                <img src="/@wf.getWfImg">
+            </div>
+            <div>
+                <h1>Update workflow</h1>
+                <form action="@routes.WorkflowController.editFlow(wf.getId)" method="POST">
+                    <input type="hidden" name="userID" value="@userId">
+                    Title: <input type="text" name="wfTitle" placeholder="Title" value="@wf.getWfTitle">
+                    Category: <input type="text" name="wfCategory" placeholder="Category" value="@wf.getWfCategory">
+                    Code: <input type="text" name="wfCode" placeholder="Code" value="@wf.getWfCode">
+                    Desc: <input type="text" name="wfDesc" placeholder="Description" value="@wf.getWfDesc">
+                    <button type="submit">Edit</button>
+                </form>
+            </div>
+        </div>
+    </body>
+</html>
+
+
+
+

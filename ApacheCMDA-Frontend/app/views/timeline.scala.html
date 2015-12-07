@@ -1,48 +1,51 @@
 @(userName: String, userId: Long, allTimeline: List[Workflow], offset: Long)
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Document</title>
+        <link href='@routes.Assets.at("css/bootstrap.min.css")' rel="stylesheet"/>
+        <link href='@routes.Assets.at("css/header.css")' rel="stylesheet"/>
+        <link rel="stylesheet" href='@routes.Assets.at("css/workflow.css")' rel="stylesheet">
 
-<link href='@routes.Assets.at("css/bootstrap.min.css")'
-rel="stylesheet"/>
-<link href='@routes.Assets.at("css/header.css")'
-rel="stylesheet"/>
+        <script src='@routes.Assets.at("js/jquery-1.1.js")'></script>
+    </head>
+    <body>
+        <div id="header">
+        @fixed.header(userName, userId)
+        </div>
+        <div class="container">
+            @plus(input: Long) = @{
+                input + 1
+            }
+            @minus(input: Long) = @{
+                input - 1
+            }
 
-<script src='@routes.Assets.at("js/jquery-1.1.js")'></script>
+            @if(allTimeline != null) {
+                <h2>Workflows</h2>
+                @for( result <- allTimeline) {
+                        <!-- <tr>
+                            <td> @result.getUserName </td>
+                    <td>@result.getWfTitle</td>
+                    <td>@result.getWfCategory</td>
+                    <td>@result.getWfDesc</td>
+                    <td>@result.getWfViewCount</td>
+                    <td><a href=@result.getWfUrl>@result.getWfUrl</a></td>
+                    <td><a href="/workflow/get/@result.getId">More</a></td>
+                    </tr> -->
+                    @fixed.workflowcard(result)
+                }
+                <form action="/timeline/@plus(offset) ">
+                    <button name="subject" type="submit" value="Next Page">Next Page</button>
+                </form>
+            }
 
-<div id="header">
-@fixed.header(userName, userId)
-</div>
-  @plus(input: Long) = @{
-  input+1
-}
-  @minus(input: Long) = @{
-  input-1
-}
-@main("Timeline") {
-  @if(allTimeline != null) {
-    <p>Your friends' posts</p>
-    <table>
-      <tr><th>User</th><th>Time</th><th>Workflow Title</th><th>Workflow Category</th><th>Workflow Description</th><th>View Count</th><th>Workflow Url</th><th>Workflow Detail</th></tr>
-      @for( result <- allTimeline) {
-        <tr>
-          <td>@result.getWfDate</td>
-          <td>@result.getUserName</td>
-          <td>@result.getWfTitle</td>
-          <td>@result.getWfCategory</td>
-          <td>@result.getWfDesc</td>
-          <td>@result.getWfViewCount</td>
-          <td><a href=@result.getWfUrl>@result.getWfUrl</a></td>
-          <td><a href="/workflow/get/@result.getId">More</a></td>
-        </tr>
-      }
-    </table>
-
-    <form action="/timeline/@plus(offset) ">
-      <button name="subject" type="submit" value="Next Page">Next Page</button>
-    </form>
-  }
-
-  @if(offset>0) {
-    <form action="/timeline/@minus(offset)">
-      <button name="subject" type="submit" value="Back">Back</button>
-    </form>
-  }
-}
+            @if(offset > 0) {
+                <form action="/timeline/@minus(offset)">
+                    <button name="subject" type="submit" value="Back">Back</button>
+                </form>
+            }
+        </div>
+    </body>
+</html>

@@ -1,35 +1,34 @@
 @(username: String, userId: String, top3Wf: List[Workflow])
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Document</title>
+        <link href='@routes.Assets.at("css/bootstrap.min.css")' rel="stylesheet"/>
+        <link href='@routes.Assets.at("css/header.css")' rel="stylesheet"/>
+        <script src='@routes.Assets.at("js/jquery-1.1.js")'></script>
+    </head>
+    <body>
 
-<link href='@routes.Assets.at("css/bootstrap.min.css")'
-      rel="stylesheet"/>
-<link href='@routes.Assets.at("css/header.css")'
-      rel="stylesheet"/>
-
-<script src='@routes.Assets.at("js/jquery-1.1.js")'></script>
-
-<div id="header">
-  @fixed.header(username,Long.parseLong(userId))
-</div>
-
-@plus(input: Long) = {
-    input+1
-}
-@main("Welcome") {
-  <h1>Welcome @username!</h1>
-  <h3>Your id is: <a href="/profile/@userId">@userId</a></h3>
-  <p><a href="/search">SearchUser</a></p>
-    <p><a href="/group/create">Create Group</a></p>
-    <p><a href="/group/join">Join Group</a></p>
-    <p><table>
-    <tr><th>Workflow Title</th><th>Workflow View</th><th>Workflow Detail</th></tr>
-    @for( i <- top3Wf.indices) {
-        <tr>
-            <td>@top3Wf(i).getWfTitle</td>
-          <td>@top3Wf(i).getWfViewCount</td>
-            <td><a href="/workflow/get/@top3Wf(i).getId">Detail</a></td>
-        </tr>
-    }
-</table>
-  <hr>
-  <a href="/logout">Logout</a>
-}
+        <div id="header">@fixed.header(username, Long.parseLong(userId))</div>
+        <div class="container">
+            <h1>Welcome @username!</h1>
+            <h3>Your id is: <a href="/profile/@userId">@userId</a></h3>
+            <p><a href="/search">SearchUser</a></p>
+            <p><a href="/group/create">Create Group</a></p>
+            <p><a href="/group/join">Join Group</a></p>
+            <p><table>
+            <tr><th>Workflow Title</th><th>Workflow View</th><th>Workflow Detail</th></tr>
+            @for( i <- top3Wf.indices) {
+                <tr>
+                    <td>@top3Wf(i).getWfTitle</td>
+                    <td>@top3Wf(i).getWfViewCount</td>
+                    <td><a href="/workflow/get/@top3Wf(i).getId">Detail</a></td>
+                </tr>
+            }
+        </table>
+            <hr>
+            <a href="/logout">Logout</a>
+        </div>
+    </body>
+</html>

@@ -1,5 +1,5 @@
-@(wf: Workflow, userName: String, userId: Long)
-
+@(wf: Workflow, comments: List[Comment], replyRes: List[List[Reply]], userName: String, userId: Long)
+<html>
 <link href='@routes.Assets.at("css/bootstrap.min.css")'
 rel="stylesheet"/>
 <link href='@routes.Assets.at("css/header.css")'
@@ -10,38 +10,56 @@ rel="stylesheet"/>
 <div id="header">
 @fixed.header(userName ,userId)
 </div>
-
-@main("Welcome") {
-    <div>
-        <h1>Workflow Details</h1>
-        Title: <p>@wf.getWfTitle</p>
-        id: <p>@wf.getId</p>
-        username: <p>@wf.getUserName</p>
-        Category: <p>@wf.getWfCategory</p>
-        Input:<p>
-    <table>
-        <tr><th>Input</th></tr>
-        @for( result <- wf.getWfInput) {
-            <tr>
-                <td>@result</td>
-            </tr>
-        }
-    </table>
-        output:<p>
-    <table>
-        <tr><th>Output</th></tr>
-        @for( result <- wf.getWfOutput) {
-            <tr>
-                <td>@result</td>
-            </tr>
-        }
-    </table>
-        Image: <p>@wf.getWfImg</p>
-        Desc: <p>@wf.getWfDesc</p>
-        Url: <p>@wf.getWfUrl</p>
-        <img src="/@wf.getWfImg">
-        @if(wf.isWfEdit) {
-        <a href="/workflow/update/@wf.getId">Edit</a>
-        }
-    </div>
-}
+        <div class="jumbotron">
+            <h1>@wf.getWfTitle</h1>
+        </div>
+        <div>
+            <img src="/@wf.getWfImg" class="img-thumbnail" width="30%">
+            <ul class="list-group workflow-list">
+                <li class="list-group-item"><span class="badge">ID</span>@wf.getId</li>
+                <li class="list-group-item"><span class="badge">Name</span>@wf.getUserName</li>
+                <li class="list-group-item"><span class="badge">Category</span>@wf.getWfCategory</li>
+                <li class="list-group-item"><span class="badge">Detail</span>@wf.getWfDesc</li>
+                <li class="list-group-item"><span class="badge">Code</span>@wf.getWfCode</li>
+                @if(wf.isWfEdit) {
+                    <li class="list-group-item"><span class="badge">Action</span><a href="/workflow/update/@wf.getId">Edit</a></li>
+                }
+            </ul>
+        </div>
+        <ul class="list-group list-view">
+            @for(i <- 0 until comments.size){
+                <li class="list-group-item list-view">
+                    <h4>
+                        @comments(i).getContent
+                    </h4>
+                    <br>
+                    <small>@(new Date(comments(i).getTimestamp).toString)</small>
+                    <form class="form" action="@routes.WorkflowController.addReply(comments(i).getUser, comments(i).getId, wf.getId)" enctype="multipart/form-data" method="POST">
+                        <input class="form-control input-sm" type="text" name="content">
+                        <button class="btn-xs" type="submit">reply</button>
+                    </form>
+                    <ul class="list-group list-view">
+                        @for(j <- 0 until replyRes.get(i).size) {
+                        <li class="list-group-item list-view">
+                            <small>
+                                @(replyRes.get(i).get(j).getContent)
+                            </small>
+                            <form class="form" action="@routes.WorkflowController.replyReply(replyRes.get(i).get(j).getFromUserId, replyRes.get(i).get(j).getId, wf.getId)" enctype="multipart/form-data" method="POST">
+                                <input class="form-control input-sm" type="text" name="content">
+                                <button class="btn-xs">reply</button>
+                            </form>
+                        </li>
+                        }
+                    </ul>
+                </li>
+            }
+        </ul>
+        <form class="form" role="form" action="@routes.WorkflowController.addComment(wf.getId)"
+              enctype="multipart/form-data" method="POST">
+            <div class="form-group">
+                <textarea class="form-control" rows="5" name="content"></textarea>
+                <button type="submit" class="btn btn-primary" >Submit</button>
+            </div>
+        </form>
+    </body>
+</html>
