@@ -11,8 +11,7 @@
             }
             .main-list {
                 display: inline-block;
-                width: 56%;
-                margin-left: 1%;
+                width: 50%;
             }
             .list-view {
                 display: flex;
@@ -20,8 +19,9 @@
             }
             .main-img {
                 display: inline-block;
-                width: 36%;
+                width: 30%;
                 margin-right: 1%;
+                vertical-align: baseline;
             }
         </style>
     </head>
@@ -37,7 +37,7 @@
             </div>
             <div class="row">
                 <img src="/@wf.getWfImg" class="img-thumbnail main-img">
-                <ul class="list-group workflow-list main-list">
+                <ul class="list-group main-list">
                     <li class="list-group-item"><span class="badge">ID</span>@wf.getId</li>
                     <li class="list-group-item"><span class="badge">Name</span>@wf.getUserName</li>
                     <li class="list-group-item"><span class="badge">Category</span>@wf.getWfCategory</li>
