@@ -1,8 +1,17 @@
-<div class="alert-info" role="alert">
-    @if(flash.containsKey("success")) {
+@if(flash.containsKey("error")) {
+
+    <div class="alert-info" role="alert">
+        <strong>Oops!</strong> @flash.get("error")
+        <a class="close" data-dismiss="alert">x</a>
+    </div>
+
+}
+
+@if(flash.containsKey("success")) {
+
+    <div class="alert-info" role="alert">
         @flash.get("success")
-    }
-    @if(flash.containsKey("error")) {
-        @flash.get("error")
-    }
-</div>
+        <a class="close" data-dismiss="alert">x</a>
+    </div>
+
+}
