@@ -48,6 +48,7 @@
                     <h4>
                         @comments(i).getContent
                     </h4>
+                    <span class="badge"></span>
                     <br>
                     <small>@(new Date(comments(i).getTimestamp).toString)</small>
                     <form class="form" action="@routes.WorkflowController.addReply(comments(i).getUser, comments(i).getId, wf.getId)" enctype="multipart/form-data" method="POST">
