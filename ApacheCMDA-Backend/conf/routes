@@ -117,3 +117,6 @@ GET             /workflow/getComments/:workflowId                               
 #Comment
 POST           /Comment/addReply                                                                         @controllers.CommentController.addReply
 GET            /Comment/getReply/:commentId                                                              @controllers.CommentController.getReply(commentId: Long)
+GET            /Comment/getReply/:commentId                                                              @controllers.CommentController.getReply(commentId: Long)
+GET            /Comment/thumbUp/:commentId                                                              @controllers.CommentController.thumbUp(commentId: Long)
+GET            /Comment/thumbDown/:commentId                                                              @controllers.CommentController.thumbDown(commentId: Long)

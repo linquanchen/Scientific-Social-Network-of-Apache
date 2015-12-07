@@ -86,4 +86,36 @@ public class CommentController extends Controller {
             return badRequest("Fail to fetch replies");
         }
     }
+
+    public Result thumbUp(Long commentId) {
+        try{
+            if(commentId==null){
+                System.out.println("Expecting comment id");
+                return badRequest("Expecting comment id");
+            }
+            Comment comment = commentRepository.findOne(commentId);
+            comment.setThumb(comment.getThumb() + 1);
+            commentRepository.save(comment);
+            return ok("{\"success\":\"Success!\"}");
+        }catch (Exception e){
+            e.printStackTrace();
+            return badRequest("Fail to fetch replies");
+        }
+    }
+
+    public Result thumbDown(Long commentId) {
+        try{
+            if(commentId==null){
+                System.out.println("Expecting comment id");
+                return badRequest("Expecting comment id");
+            }
+            Comment comment = commentRepository.findOne(commentId);
+            comment.setThumb(comment.getThumb() - 1);
+            commentRepository.save(comment);
+            return ok("{\"success\":\"Success!\"}");
+        }catch (Exception e){
+            e.printStackTrace();
+            return badRequest("Fail to fetch replies");
+        }   
+    }
 }
