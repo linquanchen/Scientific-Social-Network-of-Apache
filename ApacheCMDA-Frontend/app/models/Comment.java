@@ -24,7 +24,6 @@ public class Comment {
         if (node != null) {
             if (node.get("id") != null) id = node.get("id").asLong();
             if (node.get("user") != null) user = node.get("user").get("id").asLong();
-            System.out.println(node.get("user").get("id"));
             if (node.get("timestamp") != null) timestamp = node.get("timestamp").asLong();
             if (node.get("content") != null) content = node.get("content").asText();
         }

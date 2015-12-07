@@ -117,7 +117,7 @@ public class WorkflowController extends Controller {
             flash("error", "Form value invalid");
         }
 
-        JsonNode replyResponse = Reply.create(jnode);
+        JsonNode replyResponse = Reply.createReply(jnode);
         if (replyResponse == null || replyResponse.has("error")) {
             if (replyResponse == null) flash("error", "Create Reply error.");
             else flash("error", replyResponse.get("error").textValue());
@@ -157,7 +157,7 @@ public class WorkflowController extends Controller {
             Long commentId = comment.getId();
             JsonNode replyList = APICall.callAPI(Constants.NEW_BACKEND + "Comment/getReply/"
                     + commentId.toString());
-            List<Reply> listReply = new ArrayList<Reply>();
+            List<Reply> listReply = new ArrayList<>();
             for (int j = 0; j < replyList.size(); j++) {
                 JsonNode rNode = replyList.get(j);
                 Reply reply = new Reply(rNode);

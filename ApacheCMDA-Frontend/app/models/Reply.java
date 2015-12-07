@@ -10,6 +10,7 @@ import util.Constants;
  */
 public class Reply {
     private final static String CREATE = Constants.NEW_BACKEND + "Comment/addReply";
+    private final static String CREATEREPLY = Constants.NEW_BACKEND + "Comment/replyReply";
 
     private long id;
     private long timestamp;
@@ -37,6 +38,11 @@ public class Reply {
 
     public static JsonNode create(ObjectNode node) {
         JsonNode response = APICall.postAPI(CREATE, node);
+        return response;
+    }
+
+    public static JsonNode createReply(ObjectNode node) {
+        JsonNode response = APICall.postAPI(CREATEREPLY, node);
         return response;
     }
 
