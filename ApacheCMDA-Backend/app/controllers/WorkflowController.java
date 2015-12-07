@@ -135,7 +135,7 @@ public class WorkflowController extends Controller {
 
         //public workflow cannot be edit by others
         long wfGroupId = workflow.getGroupId();
-        if((int) wfGroupId == 0) {
+        if((int) wfGroupId == 0 && (int) workflow.getUserID()!= (int)userID) {
             Map<String, String> map = new HashMap<>();
             map.put("error", "No Access!");
             String error = new Gson().toJson(map);
