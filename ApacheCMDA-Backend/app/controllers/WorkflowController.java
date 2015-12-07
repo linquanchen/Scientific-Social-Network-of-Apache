@@ -19,7 +19,6 @@ package controllers;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import models.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -419,9 +418,6 @@ public class WorkflowController extends Controller {
             }
             Comment comment = new Comment(user, timestamp, content, commentImage);
 
-            commentRepository.save(comment);
-            //Comment comment = new Comment(user, timestamp, content);
-
             Comment savedComment = commentRepository.save(comment);
             List<Comment> list = workflow.getComments();
             list.add(comment);
@@ -590,9 +586,7 @@ public class WorkflowController extends Controller {
                 return badRequest("Expecting workflow id");
             }
 
-            Workflow workflow = workflowRepository.findOne(workflowId);
-
-            List<Comment> comments = workflow.getComments();
+            List<Comment> comments = commentRepository.findByWorkflowId(workflowId);
 
             return ok(new Gson().toJson(comments));
         } catch (Exception e){
