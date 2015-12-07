@@ -158,7 +158,7 @@ public class WorkflowController extends Controller {
             String fileName = image.getFilename();
             String contentType = image.getContentType();
             java.io.File file = image.getFile();
-            String ext = FilenameUtils.getExtension(file.getName());
+            String ext = FilenameUtils.getExtension(fileName);
             imgPathToSave = "public/images/" + "image_" + UUID.randomUUID() + "." + ext;
             boolean success = new File("images").mkdirs();
             try {
