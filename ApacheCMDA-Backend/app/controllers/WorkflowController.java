@@ -593,6 +593,8 @@ public class WorkflowController extends Controller {
             Workflow workflow = workflowRepository.findOne(workflowId);
 
             List<Comment> comments = workflow.getComments();
+            
+            System.out.println("dsdsfdsfsfs" + comments.size());
 
             return ok(new Gson().toJson(comments));
         } catch (Exception e){

@@ -91,6 +91,7 @@ public class WorkflowController extends Controller {
         }catch(Exception e) {
             flash("error", "Form value invalid");
         }
+
         JsonNode replyResponse = Reply.create(jnode);
         if (replyResponse == null || replyResponse.has("error")) {
             System.out.println("Add Reply: Step four");
@@ -112,13 +113,13 @@ public class WorkflowController extends Controller {
             jnode.put("fromUserId", session("id"));
             jnode.put("toUserId", toUserId);
             jnode.put("timestamp", new Date().getTime());
-            jnode.put("Content", form.field("content").value());
+            jnode.put("content", form.field("content").value());
         }catch(Exception e) {
             flash("error", "Form value invalid");
         }
-
         JsonNode replyResponse = Reply.createReply(jnode);
         if (replyResponse == null || replyResponse.has("error")) {
+
             if (replyResponse == null) flash("error", "Create Reply error.");
             else flash("error", replyResponse.get("error").textValue());
             return redirect(routes.WorkflowController.workflowDetail(wid));
