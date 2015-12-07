@@ -70,7 +70,9 @@ POST        /workflow/edit/:wid                                 controllers.Work
 GET         /workflow/getPublicWorkflow                         controllers.WorkflowController.getPublicWorkflow()
 POST        /workflow/addComment/:wid                           controllers.WorkflowController.addComment(wid: Long)
 POST        /workflow/addReply/:toUserId/:commentId/:wid        controllers.WorkflowController.addReply(toUserId: Long, commentId: Long, wid: Long)
-POST        /workflow/replyReply/:toUserId/:replyId/:wid        controllers.WorkflowController.replyReply(toUserId: Long, replyId: Long, wid: Long)
+GET         /workflow/thumbUp/:commentId/:wid                   controllers.WorkflowController.thumbUp(commentId: Long, wid: Long)
+GET         /workflow/thumbDown/:commentId/:wid                 controllers.WorkflowController.thumbDown(commentId: Long, wid: Long)
+
 GET         /workflow/tags/add/wf/:wid/tag/:tg                  controllers.WorkflowController.addTag(wid: Long, tg: String)
 GET         /workflow/tags/delete/wf/:wid/tag/:tg               controllers.WorkflowController.deleteTag(wid: Long, tg: String)
 
