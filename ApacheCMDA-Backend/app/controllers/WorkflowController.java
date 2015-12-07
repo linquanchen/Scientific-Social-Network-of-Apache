@@ -468,7 +468,7 @@ public class WorkflowController extends Controller {
             }
             workflowRepository.save(workflow);
 
-            return ok("Tags add successfully");
+            return ok("{\"success\":\"Success!\"}");
         } catch (Exception e){
             e.printStackTrace();
             return badRequest("Failed to add Tag!");
@@ -496,7 +496,7 @@ public class WorkflowController extends Controller {
             }
             workflow.setTags(tags);
             workflowRepository.save(workflow);
-            return ok("Tags delete successfully");
+            return ok("{\"success\":\"Success!\"}");
 
         } catch (Exception e){
             e.printStackTrace();
