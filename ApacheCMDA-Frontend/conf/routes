@@ -55,6 +55,9 @@ GET         /search                                             controllers.Sear
 GET         /searchResult                                       controllers.SearchController.search(category: String ?= "", keywd: String ?= "")
 GET         /follow/:id                                         controllers.ProfileController.follow(id: Long)
 GET         /unfollow/:id                                       controllers.ProfileController.unfollow(id: Long)
+GET         /befriend/:id                                       controllers.ProfileController.sendRequest(id: Long)
+GET         /deletefriend/:id                                   controllers.ProfileController.deleteFriend(id: Long)
+
 
 # display and show work flow
 GET         /workflow                                           controllers.WorkflowController.main()
@@ -75,3 +78,11 @@ GET         /group/create                                       controllers.Grou
 POST        /group/creategroup                                  controllers.GroupController.createGroup()
 GET         /group/join                                         controllers.GroupController.join()
 POST        /group/joingroup                                    controllers.GroupController.joinGroup()
+
+
+# notifications
+GET         /notifications                                      controllers.NotificationController.main()
+GET         /friends/accept/:id                                 controllers.NotificationController.accpetFriend(id: Long)
+GET         /friends/reject/:id                                 controllers.NotificationController.rejectFriend(id: Long)
+POST        /mail/sendmail                                      controllers.NotificationController.sendMessage()
+GET         /mail/detail/:id                                    controllers.NotificationController.pmdetailpage(id: Long)

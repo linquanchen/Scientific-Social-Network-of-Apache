@@ -50,6 +50,25 @@ public class ProfileController extends Controller {
         return result;
     }
 
+    private static List<User> getFriends(Long id)
+    {
+        String queryApi = Constants.NEW_BACKEND
+                + "users/getFriends/userId/" + id.toString();
+        JsonNode response = APICall.callAPI(queryApi);
+        if (response.has("error"))
+            return new ArrayList<User>();
+        List<User> result = new ArrayList<User>();
+        if (response.get("friends")==null) return result;
+        for (JsonNode entityn: response.get("friends")) {
+            JsonNode entity = entityn.get("User");
+            User u = new User();
+            u.setId(Long.parseLong(entity.get("id").textValue()));
+            u.setUserName(entity.get("userName").textValue());
+            result.add(u);
+        }
+        return result;
+    }
+
     public static Result profile(Long id) {
         if (notpass()) return redirect(routes.Application.login());
         JsonNode response = APICall.callAPI(Constants.NEW_BACKEND + "users/getprofile/" + id.toString() + "/json");
@@ -74,6 +93,13 @@ public class ProfileController extends Controller {
         List<User> followers = ProfileController.getFollow(id, FollowType.FOLLOWER);
         List<User> followees = ProfileController.getFollow(id, FollowType.FOLLOWEE);
 
+        List<User> myfriends = ProfileController.getFriends(Long.parseLong(session("id")));
+        boolean isFriend = false;
+        for (User entry : myfriends)
+        {
+            if (entry.getId() == id)
+                isFriend = true;
+        }
         boolean isFollower = false;
         boolean isFollowee = false;
         Long myId = Long.parseLong(session("id"));
@@ -90,7 +116,7 @@ public class ProfileController extends Controller {
 
         List<Workflow> wf = getMyWorkflows(id);
 
-        return ok(profile.render(user, followers, followees, session("username"), isFollower, isFollowee));
+        return ok(profile.render(user, followers, followees, myfriends, session("username"), isFollower, isFollowee, isFriend));
     }
 
     public static List<Workflow> getMyWorkflows(Long id)
@@ -98,6 +124,40 @@ public class ProfileController extends Controller {
         JsonNode response = APICall.callAPI(Constants.NEW_BACKEND + "workflow/getuser/" + id.toString() + "/json");
         List<Workflow> wf = new ArrayList<Workflow>();
         return wf;
+    }
+
+    public static Result sendRequest(Long id)
+    {
+        if (notpass()) return redirect(routes.Application.login());
+        String query = Constants.NEW_BACKEND
+                + "users/sendFriendRequest/sender/"
+                + session("id")
+                + "/receiver/"
+                + id.toString();
+        JsonNode response = APICall.callAPI(query);
+        if (response == null || response.has("error")) {
+            flash("error", "Cannot send friend request.");
+            return redirect(routes.ProfileController.profile(id));
+        }
+        flash("success", "Friend Request Sent!.");
+        return redirect(routes.ProfileController.profile(id));
+    }
+
+    public static Result deleteFriend(Long id)
+    {
+        if (notpass()) return redirect(routes.Application.login());
+        String query = Constants.NEW_BACKEND
+                + "users/deleteFriend/userId/"
+                + session("id")
+                + "/friendId/"
+                + id.toString();
+        JsonNode response = APICall.callAPI(query);
+        if (response == null || response.has("error")) {
+            flash("error", "Cannot delete friend.");
+            return redirect(routes.ProfileController.profile(id));
+        }
+        flash("success", "Friend deleted!.");
+        return redirect(routes.ProfileController.profile(id));
     }
 
     public static Result follow(Long id) {

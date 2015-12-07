@@ -8,6 +8,7 @@ import models.Group;
 import models.Reply;
 import models.Workflow;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import play.data.Form;
 import play.mvc.Controller;
@@ -132,8 +133,8 @@ public class WorkflowController extends Controller {
         JsonNode wfres = APICall.callAPI(Constants.NEW_BACKEND + "workflow/get/workflowID/"
                 + wid.toString() + "/userID/" + session("id") + "/json");
         System.out.println("wfres is " + wfres);
-        if (wfres == null || wfres.has("error")) {
-            flash("error", wfres.get("error").textValue());
+        if (wfres == null || wfres.has("erro")) {
+            flash("error", wfres.get("erro").textValue());
             return redirect(routes.WorkflowController.main());
         }
         if (wfres.get("status").asText().contains("protected") || wfres.get("status").asText().contains("deleted") )
@@ -222,6 +223,7 @@ public class WorkflowController extends Controller {
             String fileName = image.getFilename();
             String contentType = image.getContentType();
             java.io.File file = image.getFile();
+            String ext = FilenameUtils.getExtension(file.getName());
             imgPathToSave = "public/images/" + "image_" + UUID.randomUUID() + ".jpg";
             boolean success = new File("images").mkdirs();
             try {
@@ -246,6 +248,8 @@ public class WorkflowController extends Controller {
             jnode.put("wfDesc", form.field("wfDesc").value());
             jnode.put("wfGroupId", form.field("wfVisibility").value());
             jnode.put("wfImg", imgPathToSave);
+            jnode.put("wfInput", form.field("wfInput").value());
+            jnode.put("wfOutput", form.field("wfOutput").value());
             jnode.put("wfTags", form.field("wfTag").valueOr(""));
         }catch(Exception e) {
             flash("error", "Form value invalid");

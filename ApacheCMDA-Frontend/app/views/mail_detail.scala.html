@@ -1,0 +1,24 @@
+@(mail: PMessage, username: String, userId: String)
+
+<link href='@routes.Assets.at("css/bootstrap.min.css")'
+rel="stylesheet"/>
+<link href='@routes.Assets.at("css/header.css")'
+rel="stylesheet"/>
+
+<script src='@routes.Assets.at("js/jquery-1.1.js")'></script>
+
+<div id="header">
+@fixed.header(username,Long.parseLong(userId))
+</div>
+
+@main("Mail Detail"){
+    <h1>Mail Detail</h1>
+    <p>From: @mail.getFromUserMail</p>
+    <p>To: @mail.getToUserMail</p>
+    <p>Title: @mail.getMailTitle</p>
+    <p>Content: @mail.getMailContent</p>
+    <p>Date: @mail.getMailDate</p>
+
+    <h2>Reply</h2>
+    @write_message(mail.getFromUserMail)
+}
