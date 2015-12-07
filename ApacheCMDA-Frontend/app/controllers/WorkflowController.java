@@ -101,6 +101,24 @@ public class WorkflowController extends Controller {
         return redirect(routes.WorkflowController.workflowDetail(wid));
     }
 
+    public static Result thumbUp(Long commentId, Long wid) {
+        JsonNode res = APICall.callAPI(Constants.NEW_BACKEND + "Comment/thumbUp/"
+                + commentId);
+        if (res == null || res.has("error")) {
+            flash("error", res.get("error").textValue());
+        }
+        return redirect(routes.WorkflowController.workflowDetail(wid));
+    }
+
+    public static Result thumbDown(Long commentId, Long wid) {
+        JsonNode res = APICall.callAPI(Constants.NEW_BACKEND + "Comment/thumbDown/"
+                + commentId);
+        if (res == null || res.has("error")) {
+            flash("error", res.get("error").textValue());
+        }
+        return redirect(routes.WorkflowController.workflowDetail(wid));
+    }
+
     public static Result workflowDetail(Long wid) {
 
         JsonNode wfres = APICall.callAPI(Constants.NEW_BACKEND + "workflow/get/workflowID/"
@@ -291,6 +309,7 @@ public class WorkflowController extends Controller {
         }
         return ok(forum.render(res, session("username"), Long.parseLong(session("id"))));
     }
+
 
     // TODO: need a timeline page displaying the posts of followees.
     // TODO: POST and DISPLAY comment on workflow. user can reply to comments.
