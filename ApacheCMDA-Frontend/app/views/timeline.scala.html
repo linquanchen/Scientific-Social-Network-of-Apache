@@ -26,15 +26,6 @@
             @if(allTimeline != null) {
                 <h2>Workflows</h2>
                 @for( result <- allTimeline) {
-                        <!-- <tr>
-                            <td> @result.getUserName </td>
-                    <td>@result.getWfTitle</td>
-                    <td>@result.getWfCategory</td>
-                    <td>@result.getWfDesc</td>
-                    <td>@result.getWfViewCount</td>
-                    <td><a href=@result.getWfUrl>@result.getWfUrl</a></td>
-                    <td><a href="/workflow/get/@result.getId">More</a></td>
-                    </tr> -->
                     @fixed.workflowcard(result)
                 }
 

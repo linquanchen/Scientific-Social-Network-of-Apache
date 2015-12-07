@@ -4,7 +4,7 @@
     <div class="row">
         <div class="col-md-2">
             <div class="category">@wf.getWfCategory</div>
-            <p class="card-label">Auth:</p>
+            <p class="card-label">Author:</p>
             <p class="user">@wf.getUserName</p>
         </div>
         <div class="col-md-10">
@@ -15,8 +15,10 @@
                 <div class="clear"></div>
             </div>
             <ul class="tags">
-                <li>good</li>
-                <li>man</li>
+                @for(tag <- wf.getTags){
+                    <li>@tag</li>
+                }
+
             </ul>
         </div>
     </div>

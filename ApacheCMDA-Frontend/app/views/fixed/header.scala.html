@@ -1,6 +1,7 @@
 @(username: String, userId: Long)
 
 <script src='@routes.Assets.at("js/bootstrap.min.js")'></script>
+<script src='@routes.Assets.at("js/header.js")'></script>
 
 <nav class="navbar navbar-default header">
   <div class="container-fluid">
@@ -22,6 +23,10 @@
         <li class="title_lable"><a href="/search">Search</a></li>
         <li class="title_lable"><a href="/workflow">Workflow</a></li>
         <li class="title_lable"><a href="/timeline/0">Timeline</a></li>
+        <li class="title_lable">
+            <a href="/notifications">Notification</a>
+            <div class="reddot hide"></div>
+        </li>
     }
       </ul>
       <ul class="nav navbar-nav navbar-right">

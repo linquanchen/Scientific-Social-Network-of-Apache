@@ -31,6 +31,7 @@ public class Workflow {
     private long [] wfRelated = {-1};
     private long wfViewCount = 0;
     private String wfUrl = "NaN";
+    private List<String> tags = new ArrayList<String>();
 
     public List<String> getTags() {
         return tags;
@@ -39,8 +40,6 @@ public class Workflow {
     public void setTags(List<String> tags) {
         this.tags = tags;
     }
-
-    private List<String> tags = new ArrayList<String>();
 
     public boolean isWfEdit() {
         return wfEdit;
