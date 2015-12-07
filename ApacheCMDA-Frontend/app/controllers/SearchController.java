@@ -36,6 +36,10 @@ public class SearchController extends Controller{
             case "user":
                 path = "users";
                 JsonNode response = APICall.callAPI(Constants.NEW_BACKEND + path + "/search/" + keywd + "/json");
+                if (response == null || response.has("error")) {
+                    flash("error", response.get("error").textValue());
+                    return ok(search.render(session("username"), session("id"), null, null, null));
+                }
                 for (JsonNode n: response) {
                     User obj = new User();
                     obj.setUserName(n.get("userName").textValue());
@@ -44,7 +48,7 @@ public class SearchController extends Controller{
                     } catch (Exception e){
                         obj.setEmail("");
                     }
-                    obj.setId(Long.parseLong(n.get("id").toString()));
+                    obj.setUserName(n.get("userName").textValue()); obj.setId(Long.parseLong(n.get("id").toString()));
 
                     userArr.add(obj);
                 }

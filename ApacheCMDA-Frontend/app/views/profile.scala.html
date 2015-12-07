@@ -1,4 +1,4 @@
-@(user: User, follows: List[User], followees: List[User], self_name: String, isFollower: Boolean, isFollowee: Boolean)
+@(user: User, follows: List[User], followees: List[User], myFriends: List[User], self_name: String, isFollower: Boolean, isFollowee: Boolean, isFriend: Boolean)
 
 <link href='@routes.Assets.at("css/bootstrap.min.css")'
         rel="stylesheet"/>
@@ -18,12 +18,25 @@
     @if(self_name!=user.getUserName) {
       @if(!isFollower) {
         <p><a href="/follow/@user.getId">Follow</a></p>
-        <p><a href="/">BackHome</a></p>
       }
       @if(isFollower) {
         <p><a href="/unfollow/@user.getId">Unfollow</a></p>
-        <p><a href="/">BackHome</a></p>
       }
+      @if(!isFriend) {
+        <p><a href="/befriend/@user.getId">Send Friend Request</a></p>
+      } else {
+        <p>We are friends.</p>
+        <p><a href="/deletefriend/@user.getId">Delete Friend</a></p>
+      }
+      <p><a href="/">BackHome</a></p>
+    } else {
+      <h3>Friends</h3>
+      <table>
+        <tr><th>Friends</th><th>Email</th></tr>
+        @for(friend <- myFriends){
+          <tr><td>@friend.getUserName</td><td>@friend.getEmail</td></tr>
+        }
+      </table>
     }
     <h3>Followers</h3>
     <table>

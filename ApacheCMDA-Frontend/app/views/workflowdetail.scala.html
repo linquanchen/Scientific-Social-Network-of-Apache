@@ -1,5 +1,4 @@
 @(wf: Workflow, comments: List[Comment], replyRes: List[List[Reply]], userName: String, userId: Long)
-
 <html>
     <head>
         <link href='@routes.Assets.at("css/bootstrap.min.css")'
@@ -8,16 +7,16 @@
               rel="stylesheet"/>
         <style type="text/css">
             h1 {
-            text-align: center;
+                text-align: center;
             }
             ul {
-            display: inline-block;
-            width: 67%;
-            margin-left: 1%;
+                float: left;
+                width: 67%;
+                margin-left: 1%;
             }
             img {
-            margin-left: 1%;
-            display: inline-block;
+                margin-left: 1%;
+                float: left;
             }
         </style>
     </head>
@@ -47,19 +46,18 @@
                     </h4>
                     <br>
                     <small>@(new Date(comments(i).getTimestamp).toString)</small>
-                    <form class="form" action="" enctype="multipart/form-data" method="POST">
-                        <input class="form-control input-sm" type="text">
-                        <button class="btn-xs">reply</button>
+                    <form class="form" action="@routes.WorkflowController.addReply(comments(i).getUser, comments(i).getId, wf.getId)" enctype="multipart/form-data" method="POST">
+                        <input class="form-control input-sm" type="text" name="content">
+                        <button class="btn-xs" type="submit">reply</button>
                     </form>
                     <ul class="list-group">
                         @for(j <- 0 until replyRes.get(i).size) {
                         <li class="list-group-item">
                             <small>
-                                @(replyRes.get(i).get(j).getFromUserName+"@"+replyRes.get(i).get(j).getToUserName+": "+
-                                replyRes.get(i).get(j).getContent)
+                                @(replyRes.get(i).get(j).getContent)
                             </small>
                             <form class="form" action="" enctype="multipart/form-data" method="POST">
-                                <input class="form-control input-sm" type="text">
+                                <input class="form-control input-sm" type="text" name="content">
                                 <button class="btn-xs">reply</button>
                             </form>
                         </li>

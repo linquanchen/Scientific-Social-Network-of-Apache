@@ -8,6 +8,7 @@ import models.Group;
 import models.Reply;
 import models.Workflow;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import play.data.Form;
 import play.mvc.Controller;
@@ -31,6 +32,7 @@ import java.util.UUID;
 public class WorkflowController extends Controller {
     final static Form<Workflow> f_wf = Form.form(Workflow.class);
     final static Form<Comment> f_comment = Form.form(Comment.class);
+    final static Form<Reply> f_reply = Form.form(Reply.class);
 
     public static boolean notpass() {
         if (session("id") == null) {
@@ -52,9 +54,9 @@ public class WorkflowController extends Controller {
 
     public static Result addComment(Long wid) {
         Form<Comment> form = f_comment.bindFromRequest();
+
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode jnode = mapper.createObjectNode();
-
         try {
             jnode.put("userID", session("id"));
             jnode.put("timestamp", new Date().getTime());
@@ -67,13 +69,64 @@ public class WorkflowController extends Controller {
         JsonNode commentResponse = Comment.create(jnode);
         if (commentResponse == null || commentResponse.has("error")) {
             //Logger.debug("Create Failed!");
-            if (commentResponse == null) flash("error", "Create workflow error.");
+            if (commentResponse == null) flash("error", "Create Comment error.");
             else flash("error", commentResponse.get("error").textValue());
-            return redirect(routes.WorkflowController.main());
+            return redirect(routes.WorkflowController.workflowDetail(wid));
         }
-        flash("success", "Create workflow successfully.");
-        return redirect(routes.WorkflowController.main());
+        flash("success", "Create Comment successfully.");
+        return redirect(routes.WorkflowController.workflowDetail(wid));
     }
+
+    public static Result addReply(long toUserId, long commentId, long wid) {
+        Form<Reply> form = f_reply.bindFromRequest();
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode jnode = mapper.createObjectNode();
+        try {
+            jnode.put("commentId", commentId);
+            jnode.put("fromUserId", session("id"));
+            jnode.put("toUserId", toUserId);
+            jnode.put("timestamp", new Date().getTime());
+            jnode.put("content", form.field("content").value());
+            System.out.println(form.field("content").value());
+        }catch(Exception e) {
+            flash("error", "Form value invalid");
+        }
+        JsonNode replyResponse = Reply.create(jnode);
+        if (replyResponse == null || replyResponse.has("error")) {
+            System.out.println("Add Reply: Step four");
+            if (replyResponse == null) flash("error", "Create Reply error.");
+            else flash("error", replyResponse.get("error").textValue());
+            return redirect(routes.WorkflowController.workflowDetail(wid));
+        }
+        flash("success", "Create Reply successfully.");
+        return redirect(routes.WorkflowController.workflowDetail(wid));
+    }
+
+    public static Result replyReply(long toUserId, long replyId, long wid) {
+        Form<Reply> form = f_reply.bindFromRequest();
+
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode jnode = mapper.createObjectNode();
+        try {
+            jnode.put("replyId", replyId);
+            jnode.put("fromUserId", session("id"));
+            jnode.put("toUserId", toUserId);
+            jnode.put("timestamp", new Date().getTime());
+            jnode.put("Content", form.field("content").value());
+        }catch(Exception e) {
+            flash("error", "Form value invalid");
+        }
+
+        JsonNode replyResponse = Reply.create(jnode);
+        if (replyResponse == null || replyResponse.has("error")) {
+            if (replyResponse == null) flash("error", "Create Reply error.");
+            else flash("error", replyResponse.get("error").textValue());
+            return redirect(routes.WorkflowController.workflowDetail(wid));
+        }
+        flash("success", "Create Reply successfully.");
+        return redirect(routes.WorkflowController.workflowDetail(wid));
+    }
+
 
     public static Result workflowDetail(Long wid) {
 
@@ -93,6 +146,7 @@ public class WorkflowController extends Controller {
 
         JsonNode commentList = APICall.callAPI(Constants.NEW_BACKEND + "workflow/getComments/"
                 + wid.toString());
+
         List<Comment> commentRes = new ArrayList<>();
         List<List<Reply>> replyRes = new ArrayList<>();
 
@@ -111,7 +165,6 @@ public class WorkflowController extends Controller {
             }
             replyRes.add(listReply);
         }
-        //return ok(workflowdetail.render(wf, session("username"), Long.parseLong(session("id"))));
 
         return ok(workflowdetail.render(wf, commentRes, replyRes, session("username"), Long.parseLong(session("id"))));
     }
@@ -171,6 +224,7 @@ public class WorkflowController extends Controller {
             String fileName = image.getFilename();
             String contentType = image.getContentType();
             java.io.File file = image.getFile();
+            String ext = FilenameUtils.getExtension(file.getName());
             imgPathToSave = "public/images/" + "image_" + UUID.randomUUID() + ".jpg";
             boolean success = new File("images").mkdirs();
             try {
@@ -195,6 +249,8 @@ public class WorkflowController extends Controller {
             jnode.put("wfDesc", form.field("wfDesc").value());
             jnode.put("wfGroupId", form.field("wfVisibility").value());
             jnode.put("wfImg", imgPathToSave);
+            jnode.put("wfInput", form.field("wfInput").value());
+            jnode.put("wfOutput", form.field("wfOutput").value());
             jnode.put("wfTags", form.field("wfTag").valueOr(""));
         }catch(Exception e) {
             flash("error", "Form value invalid");
