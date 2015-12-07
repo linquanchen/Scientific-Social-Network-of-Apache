@@ -66,6 +66,8 @@ POST        /workflow/new                                       controllers.Work
 GET         /workflow/get/:wid                                  controllers.WorkflowController.workflowDetail(wid: Long)
 GET         /workflow/update/:wid                               controllers.WorkflowController.edit(wid: Long)
 POST        /workflow/edit/:wid                                 controllers.WorkflowController.editFlow(wid: Long)
+GET         /workflow/tags/add/wf/:wid/tag/:tg                  controllers.WorkflowController.addTag(wid: Long, tg: String)
+GET         /workflow/tags/delete/wf/:wid/tag/:tg               controllers.WorkflowController.deleteTag(wid: Long, tg: String)
 
 
 # group

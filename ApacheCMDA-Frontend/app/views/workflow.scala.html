@@ -4,11 +4,8 @@
     <head>
         <meta charset="UTF-8">
         <title>Document</title>
-        <link href='@routes.Assets.at("css/bootstrap.min.css")'
-        rel="stylesheet"/>
-        <link href='@routes.Assets.at("css/header.css")'
-        rel="stylesheet"/>
-
+        <link href='@routes.Assets.at("css/bootstrap.min.css")' rel="stylesheet"/>
+        <link href='@routes.Assets.at("css/header.css")' rel="stylesheet"/>
         <script src='@routes.Assets.at("js/jquery-1.1.js")'></script>
     </head>
     <body>
@@ -17,24 +14,79 @@
         </div>
         <div class="container">
             <h3>Create new workflow</h3>
-            <form action="@routes.WorkflowController.createFlow()" enctype="multipart/form-data" method="POST">
+            <hr>
+            <form class="form-horizontal" action="@routes.WorkflowController.createFlow()" enctype="multipart/form-data" method="POST">
                 <input type="hidden" name="userID" value="@userId">
-                <input type="text" name="wfTitle" placeholder="Title">
-                <input type="text" name="wfCategory" placeholder="Category">
-                <input type="text" name="wfCode" placeholder="Code">
-                <input type="text" name="wfDesc" placeholder="Description">
-                <input type="text" name="wfTag" placeholder="Tags">
-                <select name="wfVisibility">
-                    <option value="0">public</option>
-                    @if(groups != null) {
-                        @for( group <- groups) {
-                            <option value="@group.getId">@group.getGroupName</option>
-                        }
-                    }
-                </select>
-                <input type="file" name="image"/>
-                <button type="submit">Create</button>
+                <div class="form-group">
+                    <label for="in-Title" class="col-sm-2 control-label">Title</label>
+                    <div class="col-sm-10">
+                        <input type="text" name="wfTitle" class="form-control" id="in-Title" placeholder="Title">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="in-Category" class="col-sm-2 control-label">Category</label>
+                    <div class="col-sm-10">
+                        <input type="text" name="wfCategory" class="form-control" id="in-Category" placeholder="Category">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="in-Code" class="col-sm-2 control-label">Code</label>
+                    <div class="col-sm-10">
+                        <input type="text" name="wfCode" class="form-control" id="in-Code" placeholder="Code">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="in-Desc" class="col-sm-2 control-label">Description</label>
+                    <div class="col-sm-10">
+                        <input type="text" name="wfDesc" class="form-control" id="in-Desc" placeholder="Description">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="in-Input" class="col-sm-2 control-label">Input</label>
+                    <div class="col-sm-10">
+                        <input type="text" name="wfInput" class="form-control" id="in-Input" placeholder="Input">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="in-Output" class="col-sm-2 control-label">Output</label>
+                    <div class="col-sm-10">
+                        <input type="text" name="wfOutput" class="form-control" id="in-Output" placeholder="Output">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="in-Tag" class="col-sm-2 control-label">Tags</label>
+                    <div class="col-sm-10">
+                        <input type="text" name="wfTag" class="form-control" id="in-Tag" placeholder="Tags">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="in-File" class="col-sm-2 control-label">Image</label>
+                    <div class="col-sm-10">
+                        <input type="file" name="image" class="form-control" id="in-File">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="in-Select" class="col-sm-2 control-label">Group</label>
+                    <div class="col-sm-10">
+                        <select name="wfVisibility" id="in-Select" class="form-control">
+                            <option value="0">public</option>
+                            @if(groups != null) {
+                                @for( group <- groups) {
+                                    <option value="@group.getId">@group.getGroupName</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button type="submit" class="btn btn-default">Submit</button>
+                    </div>
+                </div>
             </form>
         </div>
     </body>
 </html>
+
+
+

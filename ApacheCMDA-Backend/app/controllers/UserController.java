@@ -16,6 +16,10 @@
  */
 package controllers;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.*;
 
 import models.User;
@@ -229,6 +233,10 @@ public class UserController extends Controller {
 		List<User> users = userRepository.getUserByDisplayName(display_name);
 		for (User user: users) {
 			user.setPassword("****");
+			for (User u: user.getFriends()) {
+				Set<User> empty = new HashSet<>();
+				u.setFriends(empty);
+			}
 		}
 
 

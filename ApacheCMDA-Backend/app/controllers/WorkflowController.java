@@ -80,6 +80,8 @@ public class WorkflowController extends Controller {
         String wfTags = json.path("wfTags").asText();
         long wfGroupId = json.path("wfGroupId").asLong();
         String wfUrl = json.path("wfUrl").asText();
+        String wfInput = json.path("wfInput").asText();
+        String wfOutput = json.path("wfOutput").asText();
 
         User user = userRepository.findOne(userID);
 
@@ -97,7 +99,7 @@ public class WorkflowController extends Controller {
 
         //groupId would be 0 if it is public
         Workflow workflow = new Workflow(userID, wfTitle, wfCategory, wfCode, wfDesc, wfImg,
-                wfVisibility, user, wfContributors, wfRelated, "norm", wfGroupId, user.getUserName(), wfUrl);
+                wfVisibility, user, wfContributors, wfRelated, "norm", wfGroupId, user.getUserName(), wfUrl, wfInput, wfOutput);
         Workflow savedWorkflow = workflowRepository.save(workflow);
         Workflow newWorkflow = workflowRepository.findById(savedWorkflow.getId());
 
@@ -142,17 +144,17 @@ public class WorkflowController extends Controller {
         long wfGroupId = workflow.getGroupId();
         if((int) wfGroupId == 0) {
             Map<String, String> map = new HashMap<>();
-            map.put("erro", "No Access!");
-            String erro = new Gson().toJson(map);
-            return ok(erro);
+            map.put("error", "No Access!");
+            String error = new Gson().toJson(map);
+            return ok(error);
         }
         GroupUsers group = groupUsersRepository.findOne(wfGroupId);
         //only the admin of the group or the user himself could edit the workflow
         if((int)group.getCreatorUser() != userID && (int)workflow.getUserID() != userID) {
             Map<String, String> map = new HashMap<>();
-            map.put("erro", "No Access!");
-            String erro = new Gson().toJson(map);
-            return ok(erro);
+            map.put("error", "No Access!");
+            String error = new Gson().toJson(map);
+            return ok(error);
         }
         String wfTitle = json.path("wfTitle").asText();
         String wfCategory = json.path("wfCategory").asText();
@@ -161,6 +163,8 @@ public class WorkflowController extends Controller {
         //img
         String wfVisibility = json.path("wfVisibility").asText();
         String wfStatus = json.path("wfStatus").asText();
+        String wfInput = json.path("wfInput").asText();
+        String wfOutput = json.path("wfOutput").asText();
 
 
         if(!workflow.getWfContributors().contains(user)) {
@@ -172,6 +176,8 @@ public class WorkflowController extends Controller {
         workflow.setWfVisibility(wfVisibility);
         workflow.setWfDesc(wfDesc);
         workflow.setStatus(wfStatus);
+        workflow.setWfInput(wfInput);
+        workflow.setWfOutput(wfOutput);
 
         workflowRepository.save(workflow);
 
@@ -260,9 +266,9 @@ public class WorkflowController extends Controller {
                 }
                 if(!groupListParse.contains((int) workflow.getGroupId())) {
                     Map<String, String> map = new HashMap<>();
-                    map.put("erro", "No Access!");
-                    String erro = new Gson().toJson(map);
-                    return ok(erro);
+                    map.put("error", "No Access!");
+                    String error = new Gson().toJson(map);
+                    return ok(error);
                 }
             }
         }
@@ -454,7 +460,7 @@ public class WorkflowController extends Controller {
             }
             workflowRepository.save(workflow);
 
-            return ok("Tags add successfully");
+            return ok("{\"success\":\"Success!\"}");
         } catch (Exception e){
             e.printStackTrace();
             return badRequest("Failed to add Tag!");
@@ -482,7 +488,7 @@ public class WorkflowController extends Controller {
             }
             workflow.setTags(tags);
             workflowRepository.save(workflow);
-            return ok("Tags delete successfully");
+            return ok("{\"success\":\"Success!\"}");
 
         } catch (Exception e){
             e.printStackTrace();

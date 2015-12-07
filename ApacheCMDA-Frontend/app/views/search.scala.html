@@ -29,7 +29,7 @@
                             </ul>
                         </div> <!-- /btn-group -->
                         <input type="hidden" value="user" name="category" id="input-category">
-                        <input type="text" class="form-control" name="keywd" aria-label="...">
+                        <input type="text" class="form-control" placeholder="Search for..." name="keywd" aria-label="...">
                         <span class="input-group-btn">
                             <input class="btn btn-default" type="submit">Search</input>
                         </span>
@@ -62,8 +62,6 @@
                 } else {
                     @if(category != null) {
                         <h3>We haven't find any matches.</h3>
-                    }else{
-                        <p>Search please.</p>
                     }
                 }
             </div>

@@ -3,15 +3,15 @@
 <div class="card well">
     <div class="row">
         <div class="col-md-2">
-            <div class="category">cato</div>
+            <div class="category">@wf.getWfCategory</div>
             <p class="card-label">Auth:</p>
-            <p class="user">Gavin Han</p>
+            <p class="user">@wf.getUserName</p>
         </div>
         <div class="col-md-10">
-            <h4 class="title">This is the title of a workflow</h4>
+            <h4 class="title">@wf.getWfTitle</h4>
             <div class="description">
-                <img width="100" height="120" src="http://localhost:9234/assets/images/image_e45a56ab-d09d-47af-9d29-b1949cf962b7.jpg" alt="small-img">
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. A ad adipisci asperiores cupiditate distinctio enim fugit harum, in inventore laborum minima provident quam quasi quidem quis quo ratione similique unde!</p>
+                <img width="100" height="120" src="@wf.getWfImg" alt="small-img">
+                <p>@wf.getWfDesc</p>
                 <div class="clear"></div>
             </div>
             <ul class="tags">
