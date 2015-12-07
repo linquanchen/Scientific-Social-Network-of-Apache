@@ -48,7 +48,7 @@
                     <h4>
                         @comments(i).getContent
                     </h4>
-                    <span class="badge"></span>
+                    <span class="badge">@("Author: "+comments(i).getUserName)</span>
                     <br>
                     <small>@(new Date(comments(i).getTimestamp).toString)</small>
                     <form class="form" action="@routes.WorkflowController.addReply(comments(i).getUser, comments(i).getId, wf.getId)" enctype="multipart/form-data" method="POST">
@@ -59,9 +59,9 @@
                         @for(j <- 0 until replyRes.get(i).size) {
                         <li class="list-group-item list-view">
                             <small>
-                                @(replyRes.get(i).get(j).getFromUserId
+                                @(replyRes.get(i).get(j).getFromUserName
                                 +"@"
-                                +replyRes.get(i).get(j).getToUserId
+                                +replyRes.get(i).get(j).getToUserName
                                 +":  "
                                 +replyRes.get(i).get(j).getContent)
                             </small>
