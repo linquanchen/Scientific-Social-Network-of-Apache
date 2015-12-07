@@ -87,14 +87,12 @@ public class WorkflowController extends Controller {
             jnode.put("toUserId", toUserId);
             jnode.put("timestamp", new Date().getTime());
             jnode.put("content", form.field("content").value());
-            System.out.println(form.field("content").value());
         }catch(Exception e) {
             flash("error", "Form value invalid");
         }
 
         JsonNode replyResponse = Reply.create(jnode);
         if (replyResponse == null || replyResponse.has("error")) {
-            System.out.println("Add Reply: Step four");
             if (replyResponse == null) flash("error", "Create Reply error.");
             else flash("error", replyResponse.get("error").textValue());
             return redirect(routes.WorkflowController.workflowDetail(wid));
@@ -102,32 +100,6 @@ public class WorkflowController extends Controller {
         flash("success", "Create Reply successfully.");
         return redirect(routes.WorkflowController.workflowDetail(wid));
     }
-
-    public static Result replyReply(long toUserId, long replyId, long wid) {
-        Form<Reply> form = f_reply.bindFromRequest();
-
-        ObjectMapper mapper = new ObjectMapper();
-        ObjectNode jnode = mapper.createObjectNode();
-        try {
-            jnode.put("replyId", replyId);
-            jnode.put("fromUserId", session("id"));
-            jnode.put("toUserId", toUserId);
-            jnode.put("timestamp", new Date().getTime());
-            jnode.put("content", form.field("content").value());
-        }catch(Exception e) {
-            flash("error", "Form value invalid");
-        }
-        JsonNode replyResponse = Reply.createReply(jnode);
-        if (replyResponse == null || replyResponse.has("error")) {
-
-            if (replyResponse == null) flash("error", "Create Reply error.");
-            else flash("error", replyResponse.get("error").textValue());
-            return redirect(routes.WorkflowController.workflowDetail(wid));
-        }
-        flash("success", "Create Reply successfully.");
-        return redirect(routes.WorkflowController.workflowDetail(wid));
-    }
-
 
     public static Result workflowDetail(Long wid) {
 
