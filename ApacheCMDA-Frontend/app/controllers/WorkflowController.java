@@ -156,7 +156,7 @@ public class WorkflowController extends Controller {
             Long commentId = comment.getId();
             JsonNode replyList = APICall.callAPI(Constants.NEW_BACKEND + "Comment/getReply/"
                     + commentId.toString());
-            List<Reply> listReply = new ArrayList<Reply>();
+            List<Reply> listReply = new ArrayList<>();
             for (int j = 0; j < replyList.size(); j++) {
                 JsonNode rNode = replyList.get(j);
                 Reply reply = new Reply(rNode);
