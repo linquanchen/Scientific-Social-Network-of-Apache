@@ -10,7 +10,7 @@ import util.Constants;
  */
 public class Reply {
     private final static String CREATE = Constants.NEW_BACKEND + "Comment/addReply";
-    private final static String CREATEREPLY = Constants.NEW_BACKEND + "Comment/replyReply";
+    private final static String CREATE_REPLY = Constants.NEW_BACKEND + "Comment/replyReply";
 
     private long id;
     private long timestamp;
@@ -28,8 +28,8 @@ public class Reply {
         if (node != null) {
             if (node.get("id") != null) id = node.get("id").asLong();
             if (node.get("timestamp") != null) timestamp = node.get("timestamp").asLong();
-            if (node.get("fromUserId") != null) fromUserId = node.get("fromUserId").asLong();
-            if (node.get("toUserId") != null) toUserId = node.get("toUserId").asLong();
+            if (node.get("fromUser") != null) fromUserId = node.get("fromUser").get("id").asLong();
+            if (node.get("toUser") != null) toUserId = node.get("toUser").get("id").asLong();
             if (node.get("content") != null) content = node.get("content").asText();
 //            if (node.get("fromUserName")!=null) fromUserName = node.get("fromUserName").asText();
 //            if (node.get("toUserName")!=null) toUserName = node.get("toUserName").asText();
@@ -42,7 +42,7 @@ public class Reply {
     }
 
     public static JsonNode createReply(ObjectNode node) {
-        JsonNode response = APICall.postAPI(CREATEREPLY, node);
+        JsonNode response = APICall.postAPI(CREATE_REPLY, node);
         return response;
     }
 

@@ -91,6 +91,7 @@ public class WorkflowController extends Controller {
         }catch(Exception e) {
             flash("error", "Form value invalid");
         }
+
         JsonNode replyResponse = Reply.create(jnode);
         if (replyResponse == null || replyResponse.has("error")) {
             System.out.println("Add Reply: Step four");
@@ -112,13 +113,13 @@ public class WorkflowController extends Controller {
             jnode.put("fromUserId", session("id"));
             jnode.put("toUserId", toUserId);
             jnode.put("timestamp", new Date().getTime());
-            jnode.put("Content", form.field("content").value());
+            jnode.put("content", form.field("content").value());
         }catch(Exception e) {
             flash("error", "Form value invalid");
         }
-
         JsonNode replyResponse = Reply.createReply(jnode);
         if (replyResponse == null || replyResponse.has("error")) {
+
             if (replyResponse == null) flash("error", "Create Reply error.");
             else flash("error", replyResponse.get("error").textValue());
             return redirect(routes.WorkflowController.workflowDetail(wid));
@@ -186,6 +187,42 @@ public class WorkflowController extends Controller {
         return ok(workflow_edit.render(wf, session("username"), Long.parseLong(session("id"))));
     }
 
+    public static Result addTag(Long wid, String tag)
+    {
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode jnode = mapper.createObjectNode();
+        try {
+            jnode.put("workflowID", wid.toString());
+            jnode.put("tags", tag);
+        }catch(Exception e) {
+            flash("error", "Form value invalid");
+        }
+        String addTag = Constants.NEW_BACKEND + "workflow/setTag";
+        JsonNode response = APICall.postAPI(addTag, jnode);
+
+        if (response == null || response.has("error")) {
+            if (response == null) flash("error", "add tag error.");
+            else flash("error", response.get("error").textValue());
+            return redirect(routes.WorkflowController.workflowDetail(wid));
+        }
+        flash("success", "Add workflow tag successfully.");
+        return redirect(routes.WorkflowController.workflowDetail(wid));
+    }
+
+    public static Result deleteTag(Long wid, String tag)
+    {
+        String query = Constants.NEW_BACKEND + "workflow/deleteTag/workflowId/" + wid.toString() + "/tag/" + tag;
+        JsonNode response = APICall.callAPI(query);
+
+        if (response == null || response.has("error")) {
+            if (response == null) flash("error", "delete tag error.");
+            else flash("error", response.get("error").textValue());
+            return redirect(routes.WorkflowController.workflowDetail(wid));
+        }
+        flash("success", "Delete workflow tag successfully.");
+        return redirect(routes.WorkflowController.workflowDetail(wid));
+    }
+
 
     public static Result editFlow(Long wid) {
         Form<Workflow> form = f_wf.bindFromRequest();
@@ -224,17 +261,17 @@ public class WorkflowController extends Controller {
             String fileName = image.getFilename();
             String contentType = image.getContentType();
             java.io.File file = image.getFile();
-            String ext = FilenameUtils.getExtension(file.getName());
-            imgPathToSave = "public/images/" + "image_" + UUID.randomUUID() + ".jpg";
+            String ext = FilenameUtils.getExtension(fileName);
+            imgPathToSave = "public/images/" + "image_" + UUID.randomUUID() + "." + ext;
             boolean success = new File("images").mkdirs();
             try {
                 byte[] bytes = IOUtils.toByteArray(new FileInputStream(file));
                 FileUtils.writeByteArrayToFile(new File(imgPathToSave), bytes);
             } catch (IOException e) {
-                e.printStackTrace();
+                imgPathToSave = "public/images/service.jpeg";
             }
         } else {
-            imgPathToSave = "";
+            imgPathToSave = "public/images/service.jpeg";
         }
         imgPathToSave = imgPathToSave.replaceFirst("public", "assets");
 

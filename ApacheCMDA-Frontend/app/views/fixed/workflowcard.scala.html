@@ -1,0 +1,23 @@
+@(wf: Workflow)
+
+<div class="card well">
+    <div class="row">
+        <div class="col-md-2">
+            <div class="category">@wf.getWfCategory</div>
+            <p class="card-label">Auth:</p>
+            <p class="user">@wf.getUserName</p>
+        </div>
+        <div class="col-md-10">
+            <h4 class="title">@wf.getWfTitle</h4>
+            <div class="description">
+                <img width="100" height="120" src="/@wf.getWfImg" alt="small-img">
+                <p>@wf.getWfDesc</p>
+                <div class="clear"></div>
+            </div>
+            <ul class="tags">
+                <li>good</li>
+                <li>man</li>
+            </ul>
+        </div>
+    </div>
+</div>
