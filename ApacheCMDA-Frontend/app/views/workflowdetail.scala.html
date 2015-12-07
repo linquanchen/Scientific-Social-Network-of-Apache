@@ -1,85 +1,78 @@
 @(wf: Workflow, comments: List[Comment], replyRes: List[List[Reply]], userName: String, userId: Long)
-
-<link href='@routes.Assets.at("css/bootstrap.min.css")'
-      rel="stylesheet"/>
-<link href='@routes.Assets.at("css/header.css")'
-      rel="stylesheet"/>
-<script src='@routes.Assets.at("js/jquery-1.1.js")'></script>
-<style type="text/css">
-    h1 {
-    text-align: center;
-    }
-    ul {
-    float: left;
-    width: 67%;
-    margin-left: 1%;
-    }
-    img {
-    margin-left: 1%;
-    float: left;
-    }
-</style>
-<div id="header">
-    @fixed.header(userName ,userId)
-</div>
-@main("Welcome") {
-    <div class="jumbotron">
-        <h1>@wf.getWfTitle</h1>
-    <div>
-        <h1>Workflow Details</h1>
-        Title: <p>@wf.getWfTitle</p>
-        id: <p>@wf.getId</p>
-        username: <p>@wf.getUserName</p>
-        Category: <p>@wf.getWfCategory</p>
-        Input:<p>
-    <table>
-        <tr><th>Input</th></tr>
-        @for( result <- wf.getWfInput) {
-            <tr>
-                <td>@result</td>
-            </tr>
-        }
-    </table>
-        output:<p>
-    <table>
-        <tr><th>Output</th></tr>
-        @for( result <- wf.getWfOutput) {
-            <tr>
-                <td>@result</td>
-            </tr>
-        }
-    </table>
-        Image: <p>@wf.getWfImg</p>
-        Desc: <p>@wf.getWfDesc</p>
-        <img src="/@wf.getWfImg">
-        @if(wf.isWfEdit) {
-        <a href="/workflow/update/@wf.getId">Edit</a>
-        }
-    </div>
-    <img src="/@wf.getWfImg" class="img-thumbnail" width="30%">
-    <ul class="list-group">
-        <li class="list-group-item"><span class="badge">ID</span>@wf.getId</li>
-        <li class="list-group-item"><span class="badge">Name</span>@wf.getUserName</li>
-        <li class="list-group-item"><span class="badge">Category</span>@wf.getWfCategory</li>
-        <li class="list-group-item"><span class="badge">Detail</span>@wf.getWfDesc</li>
-        <li class="list-group-item"><span class="badge">Code</span>@wf.getWfCode</li>
-    </ul>
-
-    <table class="table forum table-striped">
-        <tbody>
-            @for(i <- 0 until comments.size){
-                <tr>
-                    <h4><a>@comments(i).getContent</a><br><small>@comments(i).getTimestamp</small></h4>
-                </tr>
+<html>
+    <head>
+        <link href='@routes.Assets.at("css/bootstrap.min.css")'
+              rel="stylesheet"/>
+        <link href='@routes.Assets.at("css/header.css")'
+              rel="stylesheet"/>
+        <style type="text/css">
+            h1 {
+                text-align: center;
             }
-        </tbody>
-    </table>
-    <form class="form-horizontal" role="form" action="@routes.WorkflowController.addComment(wf.getId)"
-          enctype="multipart/form-data" method="POST">
-        <div class="form-group">
-            <label for="comment">Comment:</label>
-            <textarea class="form-control" rows="5" id="comment" name="content"></textarea>
-            <button type="submit" class="btn btn-primary" >Submit</button>
+            ul {
+                float: left;
+                width: 67%;
+                margin-left: 1%;
+            }
+            img {
+                margin-left: 1%;
+                float: left;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="header">
+            @fixed.header(userName ,userId)
         </div>
-    </form>
-}
+
+        <div class="jumbotron">
+            <h1>@wf.getWfTitle</h1>
+        </div>
+        <div>
+            <img src="/@wf.getWfImg" class="img-thumbnail" width="30%">
+            <ul class="list-group workflow-list">
+                <li class="list-group-item"><span class="badge">ID</span>@wf.getId</li>
+                <li class="list-group-item"><span class="badge">Name</span>@wf.getUserName</li>
+                <li class="list-group-item"><span class="badge">Category</span>@wf.getWfCategory</li>
+                <li class="list-group-item"><span class="badge">Detail</span>@wf.getWfDesc</li>
+                <li class="list-group-item"><span class="badge">Code</span>@wf.getWfCode</li>
+            </ul>
+        </div>
+        <ul class="list-group">
+            @for(i <- 0 until comments.size){
+                <li class="list-group-item">
+                    <h4>
+                        @comments(i).getContent
+                    </h4>
+                    <br>
+                    <small>@(new Date(comments(i).getTimestamp).toString)</small>
+                    <form class="form" action="@routes.WorkflowController.addReply(comments(i).getUser, comments(i).getId, wf.getId)" enctype="multipart/form-data" method="POST">
+                        <input class="form-control input-sm" type="text" name="content">
+                        <button class="btn-xs" type="submit">reply</button>
+                    </form>
+                    <ul class="list-group">
+                        @for(j <- 0 until replyRes.get(i).size) {
+                        <li class="list-group-item">
+                            <small>
+                                @(replyRes.get(i).get(j).getContent)
+                            </small>
+                            <form class="form" action="" enctype="multipart/form-data" method="POST">
+                                <input class="form-control input-sm" type="text" name="content">
+                                <button class="btn-xs">reply</button>
+                            </form>
+                        </li>
+                        }
+                    </ul>
+                </li>
+            }
+        </ul>
+        <form class="form" role="form" action="@routes.WorkflowController.addComment(wf.getId)"
+              enctype="multipart/form-data" method="POST">
+            <div class="form-group">
+                <label for="comment">Comment:</label>
+                <textarea class="form-control" rows="5" id="comment" name="content"></textarea>
+                <button type="submit" class="btn btn-primary" >Submit</button>
+            </div>
+        </form>
+    </body>
+</html>

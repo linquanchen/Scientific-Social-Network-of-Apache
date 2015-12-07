@@ -79,7 +79,6 @@ public class WorkflowController extends Controller {
 
     public static Result addReply(long toUserId, long commentId, long wid) {
         Form<Reply> form = f_reply.bindFromRequest();
-
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode jnode = mapper.createObjectNode();
         try {
@@ -87,13 +86,14 @@ public class WorkflowController extends Controller {
             jnode.put("fromUserId", session("id"));
             jnode.put("toUserId", toUserId);
             jnode.put("timestamp", new Date().getTime());
-            jnode.put("Content", form.field("content").value());
+            jnode.put("content", form.field("content").value());
+            System.out.println(form.field("content").value());
         }catch(Exception e) {
             flash("error", "Form value invalid");
         }
-
         JsonNode replyResponse = Reply.create(jnode);
         if (replyResponse == null || replyResponse.has("error")) {
+            System.out.println("Add Reply: Step four");
             if (replyResponse == null) flash("error", "Create Reply error.");
             else flash("error", replyResponse.get("error").textValue());
             return redirect(routes.WorkflowController.workflowDetail(wid));
@@ -117,7 +117,7 @@ public class WorkflowController extends Controller {
             flash("error", "Form value invalid");
         }
 
-        JsonNode replyResponse = Reply.create(jnode);
+        JsonNode replyResponse = Reply.createReply(jnode);
         if (replyResponse == null || replyResponse.has("error")) {
             if (replyResponse == null) flash("error", "Create Reply error.");
             else flash("error", replyResponse.get("error").textValue());
@@ -132,9 +132,9 @@ public class WorkflowController extends Controller {
 
         JsonNode wfres = APICall.callAPI(Constants.NEW_BACKEND + "workflow/get/workflowID/"
                 + wid.toString() + "/userID/" + session("id") + "/json");
-        System.out.println("wfres is " + wfres);
-        if (wfres == null || wfres.has("erro")) {
-            flash("error", wfres.get("erro").textValue());
+
+        if (wfres == null || wfres.has("error")) {
+            flash("error", wfres.get("error").textValue());
             return redirect(routes.WorkflowController.main());
         }
         if (wfres.get("status").asText().contains("protected") || wfres.get("status").asText().contains("deleted") )
@@ -146,6 +146,7 @@ public class WorkflowController extends Controller {
 
         JsonNode commentList = APICall.callAPI(Constants.NEW_BACKEND + "workflow/getComments/"
                 + wid.toString());
+
         List<Comment> commentRes = new ArrayList<>();
         List<List<Reply>> replyRes = new ArrayList<>();
 

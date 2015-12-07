@@ -23,7 +23,7 @@ public class Comment {
     public Comment(JsonNode node) {
         if (node != null) {
             if (node.get("id") != null) id = node.get("id").asLong();
-            if (node.get("user") != null) user = node.get("user").asLong();
+            if (node.get("user") != null) user = node.get("user").get("id").asLong();
             if (node.get("timestamp") != null) timestamp = node.get("timestamp").asLong();
             if (node.get("content") != null) content = node.get("content").asText();
         }
@@ -33,6 +33,8 @@ public class Comment {
         JsonNode response = APICall.postAPI(CREATE, node);
         return response;
     }
+
+    public long getUser() { return user; }
 
     public long getId() {
         return id;

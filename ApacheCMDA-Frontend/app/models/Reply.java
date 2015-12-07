@@ -10,11 +10,14 @@ import util.Constants;
  */
 public class Reply {
     private final static String CREATE = Constants.NEW_BACKEND + "Comment/addReply";
+    private final static String CREATEREPLY = Constants.NEW_BACKEND + "Comment/replyReply";
 
     private long id;
     private long timestamp;
     private long fromUserId;
+    private String fromUserName;
     private long toUserId;
+    private String toUserName;
     private String content;
 
     public Reply() {
@@ -28,11 +31,18 @@ public class Reply {
             if (node.get("fromUserId") != null) fromUserId = node.get("fromUserId").asLong();
             if (node.get("toUserId") != null) toUserId = node.get("toUserId").asLong();
             if (node.get("content") != null) content = node.get("content").asText();
+//            if (node.get("fromUserName")!=null) fromUserName = node.get("fromUserName").asText();
+//            if (node.get("toUserName")!=null) toUserName = node.get("toUserName").asText();
         }
     }
 
     public static JsonNode create(ObjectNode node) {
         JsonNode response = APICall.postAPI(CREATE, node);
+        return response;
+    }
+
+    public static JsonNode createReply(ObjectNode node) {
+        JsonNode response = APICall.postAPI(CREATEREPLY, node);
         return response;
     }
 
@@ -62,5 +72,29 @@ public class Reply {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public String getFromUserName() {
+        return fromUserName;
+    }
+
+    public void setFromUserName(String fromUserName) {
+        this.fromUserName = fromUserName;
+    }
+
+    public String getToUserName() {
+        return toUserName;
+    }
+
+    public void setToUserName(String toUserName) {
+        this.toUserName = toUserName;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
     }
 }
