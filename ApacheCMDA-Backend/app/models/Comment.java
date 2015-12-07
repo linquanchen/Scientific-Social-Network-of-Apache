@@ -20,6 +20,9 @@ public class Comment {
     private long timestamp;
     private String content;
 
+    private int thumbUp;
+    private int thumbDown;
+
     private String commentImage;
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "ReplyId", referencedColumnName = "id")
@@ -36,6 +39,24 @@ public class Comment {
         this.content = content;
         this.commentImage = commentImage;
         this.replies = new ArrayList<>();
+        this.thumbUp = 0;
+        this.thumbDown = 0;
+    }
+
+    public void setThumbUp(int thumbUp) {
+        this.thumbUp = thumbUp;
+    }
+
+    public int getThumbUp() {
+        return thumbUp;
+    }
+
+    public void setThumbDown(int thumbDown) {
+        this.thumbDown = thumbDown;
+    }
+
+    public int getThumbDown() {
+        return thumbDown;
     }
 
     public List<Reply> getReplies(){ return this.replies; }
@@ -88,6 +109,7 @@ public class Comment {
 
     @Override
     public String toString() {
-        return "Comments [id="+id+", user="+user.getId()+", timestamp="+timestamp+", content="+content+"]";
+        return "Comments [id="+id+", user="+user.getId()+", timestamp="+timestamp+", content="+content
+        +", thumbUp=" + thumbUp + ", thumbDown=" + thumbDown + "]";
     }
 }
