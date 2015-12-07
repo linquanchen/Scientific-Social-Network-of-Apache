@@ -14,6 +14,7 @@ ApacheCMDA-Frontend/logs/
 .idea/
 ApacheCMDA-Backend/runner.sh
 ApacheCMDA-Backend/public/images/
+ApacheCMDA-Frontend/public/images/
 
 *.class
 *.cache
