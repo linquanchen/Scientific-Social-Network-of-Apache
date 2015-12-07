@@ -57,13 +57,13 @@ public class Workflow {
         if (node.get("wfUrl")!=null) wfUrl = node.get("wfUrl").asText();
         if (node.get("edit")!=null) wfEdit = node.get("edit").asBoolean();
         if (node.get("wfInput") != null) {
-            String inputs[] = node.get("wfInput").asText().split("|");
+            String inputs[] = node.get("wfInput").asText().split("\\|");
             for (String in: inputs) {
                 wfInput.add(in);
             }
         }
         if (node.get("wfOutput") != null) {
-            String outputs[] = node.get("wfOutput").asText().split("|");
+            String outputs[] = node.get("wfOutput").asText().split("\\|");
             for (String in: outputs) {
                 wfOutput.add(in);
             }
