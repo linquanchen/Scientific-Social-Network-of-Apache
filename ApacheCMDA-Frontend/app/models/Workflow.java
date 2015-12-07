@@ -32,6 +32,16 @@ public class Workflow {
     private long wfViewCount = 0;
     private String wfUrl = "NaN";
 
+    public List<String> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<String> tags) {
+        this.tags = tags;
+    }
+
+    private List<String> tags = new ArrayList<String>();
+
     public boolean isWfEdit() {
         return wfEdit;
     }
@@ -76,6 +86,11 @@ public class Workflow {
             String outputs[] = node.get("wfOutput").asText().split("|");
             for (String in: outputs) {
                 wfOutput.add(in);
+            }
+        }
+        if (node.get("tags") !=null) {
+            for (JsonNode n : node.get("tags")) {
+                tags.add(n.get("tag").textValue());
             }
         }
     }
