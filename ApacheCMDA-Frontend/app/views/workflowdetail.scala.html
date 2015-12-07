@@ -14,6 +14,13 @@
                 width: 67%;
                 margin-left: 1%;
             }
+            .list-view {
+                display: -webkit-box;
+                display: -moz-box;
+                display: -webkit-flex;
+                display: -ms-flexbox;
+                display: flex;
+            }
             img {
                 margin-left: 1%;
                 float: left;
@@ -38,9 +45,9 @@
                 <li class="list-group-item"><span class="badge">Code</span>@wf.getWfCode</li>
             </ul>
         </div>
-        <ul class="list-group">
+        <ul class="list-group list-view">
             @for(i <- 0 until comments.size){
-                <li class="list-group-item">
+                <li class="list-group-item list-view">
                     <h4>
                         @comments(i).getContent
                     </h4>
@@ -50,13 +57,13 @@
                         <input class="form-control input-sm" type="text" name="content">
                         <button class="btn-xs" type="submit">reply</button>
                     </form>
-                    <ul class="list-group">
+                    <ul class="list-group list-view">
                         @for(j <- 0 until replyRes.get(i).size) {
-                        <li class="list-group-item">
+                        <li class="list-group-item list-view">
                             <small>
                                 @(replyRes.get(i).get(j).getContent)
                             </small>
-                            <form class="form" action="" enctype="multipart/form-data" method="POST">
+                            <form class="form" action="@routes.WorkflowController.replyReply(replyRes.get(i).getFromUserId, replyRes.get(i).getId, wf.getId)" enctype="multipart/form-data" method="POST">
                                 <input class="form-control input-sm" type="text" name="content">
                                 <button class="btn-xs">reply</button>
                             </form>
