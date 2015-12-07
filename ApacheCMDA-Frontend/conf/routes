@@ -83,3 +83,4 @@ GET         /friends/accept/:id                                 controllers.Noti
 GET         /friends/reject/:id                                 controllers.NotificationController.rejectFriend(id: Long)
 POST        /mail/sendmail                                      controllers.NotificationController.sendMessage()
 GET         /mail/detail/:id                                    controllers.NotificationController.pmdetailpage(id: Long)
+GET         /notifications/count                                controllers.NotificationController.getNotifications()

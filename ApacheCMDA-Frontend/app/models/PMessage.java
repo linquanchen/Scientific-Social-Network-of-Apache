@@ -81,7 +81,7 @@ public class PMessage
         if (node.get("mailTitle")!=null) mailTitle = node.get("mailTitle").asText();
         if (node.get("mailContent")!=null) mailContent = node.get("mailContent").asText();
         if (node.get("mailDate")!=null) mailDate = node.get("mailDate").asText();
-        if (node.get("readstatus")!=null) readstatus = node.get("readstatus").asBoolean();
+        if (node.get("readStatus")!=null) readstatus = node.get("readStatus").asBoolean();
     }
 
 }
