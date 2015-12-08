@@ -71,6 +71,7 @@ POST        /workflow/addComment/:wid                           controllers.Work
 POST        /workflow/addReply/:toUserId/:commentId/:wid        controllers.WorkflowController.addReply(toUserId: Long, commentId: Long, wid: Long)
 GET         /workflow/thumbUp/:commentId/:wid                   controllers.WorkflowController.thumbUp(commentId: Long, wid: Long)
 GET         /workflow/thumbDown/:commentId/:wid                 controllers.WorkflowController.thumbDown(commentId: Long, wid: Long)
+GET         /workflow/delete/:wid                               controllers.WorkflowController.deleteWorkflow(wid: Long)
 
 GET         /workflow/tags/add/wf/:wid/tag/:tg                  controllers.WorkflowController.addTag(wid: Long, tg: String)
 GET         /workflow/tags/delete/wf/:wid/tag/:tg               controllers.WorkflowController.deleteTag(wid: Long, tg: String)
