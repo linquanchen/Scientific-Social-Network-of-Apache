@@ -101,6 +101,7 @@ public class WorkflowController extends Controller {
         workflow.setWfRelated(wfRelated);
         workflow.setUserName(user.getUserName());
         workflow.setStatus("norm");
+        workflow.setUser(user);
         Workflow savedWorkflow = workflowRepository.save(workflow);
         Workflow newWorkflow = workflowRepository.findById(savedWorkflow.getId());
 
