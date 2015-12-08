@@ -26,7 +26,9 @@
                 <h1>Workflows</h1>
                 <hr>
                 @for( result <- allTimeline) {
-                    @fixed.workflowcard(result)
+                    @if(result.getWfStatus == "norm") {
+                        @fixed.workflowcard(result)
+                    }
                 }
                 <form action="/timeline/@plus(offset) ">
                     <button name="subject" type="submit" value="Next Page">Next Page</button>
