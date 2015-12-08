@@ -58,6 +58,7 @@ public class User {
 	private String faxNumber;
 	private String researchFields;
 	private String highestDegree;
+	private String avatar;
 
 	// @OneToMany(mappedBy = "user", cascade={CascadeType.ALL})
 	// private Set<ClimateService> climateServices = new
@@ -203,6 +204,15 @@ public class User {
 	public void setHighestDegree(String highestDegree) {
 		this.highestDegree = highestDegree;
 	}
+
+	public String getAvatar() {
+		return avatar;
+	}
+
+	public void setAvatar(String avatar) {
+		this.avatar = avatar;
+	}
+
 
 	@Override
 	public String toString() {

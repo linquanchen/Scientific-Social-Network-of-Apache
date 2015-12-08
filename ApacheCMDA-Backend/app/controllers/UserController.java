@@ -184,6 +184,7 @@ public class UserController extends Controller {
 			jsonObject.addProperty("id", user.getId());
 			jsonObject.addProperty("userName", user.getUserName());
 			jsonObject.addProperty("email", user.getEmail());
+			jsonObject.addProperty("avatar", user.getAvatar());
 			result = new Gson().toJson(jsonObject);
 		}
 
