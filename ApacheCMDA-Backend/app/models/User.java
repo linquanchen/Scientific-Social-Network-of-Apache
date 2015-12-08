@@ -143,7 +143,8 @@ public class User {
 
 	public String toJson() {
 		return "{\"User\":{\"id\":\"" + id + "\", \"userName\":\"" + userName
-				+ "\", \"password\":\"" + password + "\", \"email\":\"" + email
+				+ "\", \"password\":\"" + password + "\", \"email\":\"" + email + "\", \"avatar\":\"" + avatar
+
 				+ "\", \"phoneNumber\":\"" + phoneNumber + "\"}}";
 	}
 	
