@@ -66,6 +66,7 @@ public class UserController extends Controller {
 		String name = json.path("username").asText();
 		String email = json.path("email").asText();
 		String password = json.path("password").asText();
+		String avatar = json.path("avatar").asText();
 
 		try {
 			if (userRepository.findByEmail(email) != null) {
@@ -73,6 +74,7 @@ public class UserController extends Controller {
 				return Common.badRequestWrapper("Email has been used");
 			}
 			User user = new User(name, email, MD5Hashing(password));
+			user.setAvatar(avatar);
 			userRepository.save(user);
 			System.out.println("User saved: " + user.getId());
 			return created(new Gson().toJson(user.getId()));

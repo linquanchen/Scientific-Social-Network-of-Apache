@@ -33,6 +33,7 @@ public class User {
 	private String password;
 	private String email;
 	private String phoneNumber;
+	private String avatar;
 
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(	name = "Followers",
@@ -147,6 +148,14 @@ public class User {
 	}
 	
 	public void setStatus(boolean status){ this.status = status; }
+
+	public String getAvatar() {
+		return avatar;
+	}
+
+	public void setAvatar(String avatar) {
+		this.avatar = avatar;
+	}
 
 /*	public String getMiddleInitial() {
 		return middleInitial;
