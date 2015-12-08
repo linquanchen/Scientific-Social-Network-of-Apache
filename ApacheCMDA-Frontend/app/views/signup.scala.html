@@ -16,8 +16,7 @@
   <div id="header">
     @fixed.header("undefined",-1)
   </div>
-    @flashmsg()
-  <form action="@routes.SignupController.register()" method="post">
+  <form class="form-horizontal" action="@routes.SignupController.register()" method="post">
     <div class="container-fluid row">
       <div class="col-xs-10 col-xs-offset-1 col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4">
         <div class="login-box">
@@ -25,6 +24,7 @@
             <h1><a href='/login' class="title_lable ">Log in</a> / <a href='/signup' class="title_lable active">Sign
               up</a></h1>
           </div>
+          @flashmsg()
           <div class="form-group">
             <label for="inputUname" class="col-sm-2 control-label">Username</label>
 
