@@ -203,11 +203,11 @@ public class WorkflowController extends Controller {
             groupList.add((int)g.getId());
         }
         if(!groupList.contains((int)workflow.getGroupId()) && (int)userID != (int)workflow.getUserID()) {
-            return badRequest("No access!");
+            return Common.badRequestWrapper("No access!");
         }
         workflow.setStatus("deleted");
         workflowRepository.save(workflow);
-        return created(new Gson().toJson("success"));
+        return ok("{\"success\":\"Success!\"}");
     }
 
     public Result uploadImage(Long id) {
