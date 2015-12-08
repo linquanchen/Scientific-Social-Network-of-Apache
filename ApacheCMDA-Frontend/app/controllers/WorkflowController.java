@@ -221,6 +221,7 @@ public class WorkflowController extends Controller {
 
         try {
             jnode.put("wfID", wid.toString());
+            jnode.put("userID", session("id"));
             jnode.put("uid", session("id"));
             jnode.put("wfTitle", form.field("wfTitle").value());
             jnode.put("wfCategory", form.field("wfCategory").value());
@@ -277,6 +278,7 @@ public class WorkflowController extends Controller {
             jnode.put("wfGroupId", form.field("wfVisibility").value());
             jnode.put("wfImg", imgPathToSave);
             jnode.put("wfInput", form.field("wfInput").value());
+            jnode.put("wfUrl", form.field("wfUrl").value());
             jnode.put("wfOutput", form.field("wfOutput").value());
             jnode.put("wfTags", form.field("wfTag").valueOr(""));
         }catch(Exception e) {

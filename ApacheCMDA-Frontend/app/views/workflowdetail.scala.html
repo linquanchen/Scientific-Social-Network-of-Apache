@@ -47,6 +47,9 @@
                     <li class="list-group-item"><span class="badge">Category</span>@wf.getWfCategory</li>
                     <li class="list-group-item"><span class="badge">Detail</span>@wf.getWfDesc</li>
                     <li class="list-group-item"><span class="badge">Code</span>@wf.getWfCode</li>
+                    @if(wf.isWfEdit) {
+                        <li class="list-group-item"><span class="badge">Action</span><a href="/workflow/update/@wf.getId">Edit</a></li>
+                    }
                 </ul>
             </div>
             <div class="row">
