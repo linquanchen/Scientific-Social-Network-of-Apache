@@ -12,6 +12,7 @@
     border: 1px solid #E2E0E0;
     background-color: #FFFFCC;
     text-align: center;
+    margin-bottom: 15px;
 }
 
 .card ul.tags{
@@ -28,12 +29,18 @@
     margin-right: 6px;
 }
 
-
-
-.card .category{
-    margin-bottom: 15px;
-}
-
 .card p.card-label {
     margin-bottom:0px;
+}
+.card p.card-content {
+    text-indent:22px;
+}
+
+.well {padding:8px}
+
+.card h4 {margin-top:0px;margin-left:11px}
+
+.card.well .well {
+    background-color: #ffffff;
+    margin-left: 10px;
 }

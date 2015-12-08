@@ -60,6 +60,9 @@ public class Workflow {
             if (nameNode.get("userName") != null) {
                 userName = nameNode.get("userName").asText();
             }
+            if (nameNode.get("id") != null) {
+                UserId = nameNode.get("id").asLong();
+            }
         }
         if (node.get("UserId")!=null) UserId = node.get("UserId").asLong();
         if (node.get("wfTitle")!=null) wfTitle = node.get("wfTitle").asText();

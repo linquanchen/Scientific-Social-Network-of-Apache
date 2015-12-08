@@ -4,8 +4,10 @@
         <link href='@routes.Assets.at("css/bootstrap.min.css")' rel="stylesheet"/>
         <link href='@routes.Assets.at("css/header.css")' rel="stylesheet"/>
         <link rel="stylesheet" href='@routes.Assets.at("css/forum.css")' rel="stylesheet">
+        <link rel="stylesheet" href='@routes.Assets.at("css/prism.css")'>
         <script src='@routes.Assets.at("js/jquery-1.1.js")'></script>
         <script src='@routes.Assets.at("js/forum.js")'></script>
+        <script src='@routes.Assets.at("js/prism.js")'></script>
     </head>
     <body>
         <div id="header">
@@ -25,7 +27,7 @@
                         <li class="list-group-item"><span class="badge">Name</span> @wf.getUserName</li>
                         <li class="list-group-item"><span class="badge">Category</span> @wf.getWfCategory</li>
                         <li class="list-group-item"><span class="badge">Detail</span> @wf.getWfDesc</li>
-                        <li class="list-group-item"><span class="badge">Code</span> @wf.getWfCode</li>
+                        <li class="list-group-item"><span class="badge">Code</span><br><pre><code class="language-css">@wf.getWfCode</code></pre></li>
                         @if(wf.isWfEdit) {
                             <li class="list-group-item"><span class="badge">
                                 Action</span><a href="/workflow/update/@wf.getId">Edit</a></li>
