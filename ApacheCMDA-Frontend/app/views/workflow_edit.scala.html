@@ -18,18 +18,29 @@
         @fixed.header(userName, userId)
         </div>
         <div class="container">
+            <h2>Update Workflow</h2>
+            <hr>
+            <div class="row">
+                <div class="col-md-6">
+                    <h4>Immutable</h4>
+                    <table class="table">
+                        <tr><td>Title</td><td>@wf.getWfTitle</td></tr>
+                        <tr><td>Author</td><td>@wf.getUserName</td></tr>
+                        <tr><td>Group</td><td>@wf.</td></tr>
+                    </table>
+                </div>
+                <div class="col-md-6">
+                    <img src="/@wf.getWfImg">
+                </div>
+            </div>
+
             <div>
-                <h1>Workflow Information</h1>
-                Title: <p>@wf.getWfTitle</p>
-                id: <p>@wf.getId</p>
                 username: <p>@wf.getUserName</p>
                 Category: <p>@wf.getWfCategory</p>
                 wfImg: <p>@wf.getWfImg</p>
                 Desc: <p>@wf.getWfDesc</p>
-                <img src="/@wf.getWfImg">
             </div>
             <div>
-                <h1>Update workflow</h1>
                 <form action="@routes.WorkflowController.editFlow(wf.getId)" method="POST">
                     <input type="hidden" name="userID" value="@userId">
                     Title: <input type="text" name="wfTitle" placeholder="Title" value="@wf.getWfTitle">

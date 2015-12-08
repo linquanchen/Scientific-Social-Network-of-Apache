@@ -21,6 +21,7 @@ import java.util.List;
 
 public class TimelineController extends Controller {
     final static Form<Workflow> f_wf = Form.form(Workflow.class);
+    static int timelineSize = 0;
 
     public static boolean notpass() {
         if (session("id") == null) {
@@ -46,7 +47,9 @@ public class TimelineController extends Controller {
         }
 
         List<Workflow> timelines = new ArrayList<>();
-        for (JsonNode n: response) {
+        timelineSize = response.get("size").asInt();
+        JsonNode timeline = response.get("timeline");
+        for (JsonNode n: timeline) {
             Workflow workflow = new Workflow(n);
             timelines.add(workflow);
         }

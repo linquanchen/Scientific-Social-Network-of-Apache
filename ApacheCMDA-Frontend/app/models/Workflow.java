@@ -6,6 +6,7 @@ import util.APICall;
 import util.Constants;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -32,6 +33,7 @@ public class Workflow {
     private long wfViewCount = 0;
     private String wfUrl = "NaN";
     private List<String> tags = new ArrayList<String>();
+    private String wfDate = "NaN";
 
     public List<String> getTags() {
         return tags;
@@ -41,14 +43,9 @@ public class Workflow {
         this.tags = tags;
     }
 
-    public boolean isWfEdit() {
-        return wfEdit;
-    }
-
     public void setWfEdit(boolean wfEdit) {
         this.wfEdit = wfEdit;
     }
-
     private boolean wfEdit = false;
     private List<String> wfInput = new ArrayList<>();
     private List<String> wfOutput = new ArrayList<>();
@@ -71,18 +68,20 @@ public class Workflow {
         if (node.get("wfImg")!=null) wfImg = node.get("wfImg").asText();
         if (node.get("wfCategory")!=null) wfCategory = node.get("wfCategory").asText();
         if (node.get("wfVisibility")!=null) wfVisibility = node.get("wfVisibility").asText();
-        if (node.get("wfViewCount")!=null) wfViewCount = node.get("wfViewCount").asLong();
+        if (node.get("viewCount")!=null) wfViewCount = node.get("viewCount").asLong();
         if (node.get("wfTag")!=null) wfTag = node.get("wfTag").asText();
         if (node.get("wfUrl")!=null) wfUrl = node.get("wfUrl").asText();
         if (node.get("edit")!=null) wfEdit = node.get("edit").asBoolean();
+        if (node.get("wfDate")!=null) wfDate = node.get("wfDate").asText();
+
         if (node.get("wfInput") != null) {
-            String inputs[] = node.get("wfInput").asText().split("|");
+            String inputs[] = node.get("wfInput").asText().split("\\|");
             for (String in: inputs) {
                 wfInput.add(in);
             }
         }
         if (node.get("wfOutput") != null) {
-            String outputs[] = node.get("wfOutput").asText().split("|");
+            String outputs[] = node.get("wfOutput").asText().split("\\|");
             for (String in: outputs) {
                 wfOutput.add(in);
             }
@@ -102,6 +101,15 @@ public class Workflow {
     public static JsonNode update(ObjectNode node) {
         JsonNode response = APICall.postAPI(EDIT, node);
         return response;
+    }
+
+    public String getShortWfDesc() {
+        if(wfDesc.length()>15){
+            return wfDesc.substring(0,12)+"...";
+        }
+        else{
+            return wfDesc;
+        }
     }
 
     public long getId() {
@@ -220,7 +228,16 @@ public class Workflow {
         this.wfOutput = wfOutput;
     }
 
-    public boolean getWfEdit() {
+    public boolean isWfEdit() {
         return wfEdit;
     }
+
+    public String getWfDate() {
+        return wfDate;
+    }
+
+    public void setWfDate(String wfDate) {
+        this.wfDate = wfDate;
+    }
+
 }

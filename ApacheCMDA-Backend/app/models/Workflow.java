@@ -16,8 +16,11 @@
  */
 package models;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -43,6 +46,7 @@ public class Workflow {
     private String wfUrl;
 	private String wfInput;
 	private String wfOutput;
+	private Date wfDate;
 
 	@OneToMany(fetch = FetchType.EAGER)
 	@JoinColumn(name = "CommentId", referencedColumnName = "id")
@@ -70,7 +74,7 @@ public class Workflow {
 	public Workflow(long userID, String wfTitle, String wfCategory, String wfCode,
 					String wfDesc, String wfImg, String wfVisibility,
 					User user, List<User> wfContributors, List<Workflow> wfRelated,
-					String status, long groupId, String userName, String wfUrl, String wfInput, String wfOutput) {
+					String status, long groupId, String userName, String wfUrl, String wfInput, String wfOutput, Date wfDate) {
 		super();
 		this.userID = userID;
 		this.wfTitle = wfTitle;
@@ -91,7 +95,24 @@ public class Workflow {
         this.wfUrl = wfUrl;
 		this.wfInput = wfInput;
 		this.wfOutput = wfOutput;
+		this.wfDate = wfDate;
 	}
+
+	public Workflow(JsonNode node) {
+		if (node.get("userID")!=null) userID = node.get("userID").asLong();
+		if (node.get("wfTitle")!=null) wfTitle = node.get("wfTitle").asText();
+		if (node.get("wfCode")!=null) wfCode = node.get("wfCode").asText();
+		if (node.get("wfDesc")!=null) wfDesc = node.get("wfDesc").asText();
+		if (node.get("wfImg")!=null) wfImg = node.get("wfImg").asText();
+		if (node.get("wfCategory")!=null) wfCategory = node.get("wfCategory").asText();
+		if (node.get("wfVisibility")!=null) wfVisibility = node.get("wfVisibility").asText();
+		if (node.get("wfUrl")!=null) wfUrl = node.get("wfUrl").asText();
+		if (node.get("wfGroupId")!=null) groupId = node.get("wfGroupId").asLong();
+		if (node.get("wfInput")!=null) wfInput = node.get("wfInput").asText();
+		if (node.get("wfOutput")!=null) wfOutput = node.get("wfOutput").asText();
+		wfDate = new Date();
+	}
+
 
 	public Set<Tag> getTags() {return this.tags;}
 
@@ -237,7 +258,13 @@ public class Workflow {
 		this.wfOutput = wfOutput;
 	}
 
+	public Date getWfDate() {
+		return wfDate;
+	}
 
+	public void setWfDate(Date wfDate) {
+		this.wfDate = wfDate;
+	}
 
 	@Override
 	public String toString() {
@@ -246,7 +273,7 @@ public class Workflow {
 				+ ", wfDesc=" + wfDesc + ", wfImg=" + wfImg + ", wfVisibility" + wfVisibility
 				+ ", user=" + user + ", wfContributors=" + wfContributors + ", wfRelated=" + wfRelated + ", viewCount="
                 + viewCount + ", groupId=" + groupId + ", userName=" + userName + ", edit=" + edit + ", wfUrl=" + wfUrl
-				+ ", wfInput=" + wfInput  + ", wfOutput=" + wfOutput+"]";
+				+ ", wfInput=" + wfInput  + ", wfOutput=" + wfOutput + "]";
 
 	}
 

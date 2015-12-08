@@ -1,0 +1,27 @@
+.main-list {
+    width: 100% ;
+}
+.list-view {
+    display: flex ;
+    flex-direction: column ;
+}
+.main-img {
+    width: 100% ;
+}
+
+.red {
+    color:#F1812C;
+}
+
+.right {
+    position: absolute;
+    right:10px;
+}
+
+.ninja {display:none}
+
+.mt-btn{margin-top:5px}
+.toggle{margin-bottom: 5px;display:block;}
+.list-group-item p {padding:10px;border:1px silver solid;background-color: #EFEEEE;}
+.shy {color:#cccccc;}
+.shy:hover {color:#333333;}

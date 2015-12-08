@@ -17,11 +17,14 @@
 
 package controllers;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map.Entry;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import models.Workflow;
 import play.api.mvc.Request;
 import play.mvc.*;
 import views.html.*;
@@ -44,7 +47,8 @@ public class Application extends Controller {
 
     public static Result index() {
         if (notpass()) return redirect(routes.Application.login());
-        return ok(home.render(session("username"), session("id")));
+        List<Workflow> top3Wf = getTop3Workflow();
+        return ok(home.render(session("username"), session("id"), top3Wf));
     }
 
     public static class Login {
@@ -72,8 +76,19 @@ public class Application extends Controller {
 
     public static Result home() {
         if (notpass()) return redirect(routes.Application.login());
+        List<Workflow> top3Wf = getTop3Workflow();
+        return ok(home.render(session("username"), session("id"), top3Wf));
+    }
 
-        return ok(home.render(session("username"), session("id")));
+    public static List<Workflow> getTop3Workflow() {
+        List<Workflow> result = new ArrayList<>();
+        JsonNode response = APICall.callAPI(Constants.NEW_BACKEND + "workflow/getTop3WorkFlow");
+        System.out.println("response is " + response);
+        for (JsonNode n: response) {
+            Workflow cur = new Workflow(n);
+            result.add(cur);
+        }
+        return result;
     }
 
     public static Result authenticate() {
