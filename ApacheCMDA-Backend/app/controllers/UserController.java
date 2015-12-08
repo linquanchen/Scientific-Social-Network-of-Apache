@@ -37,6 +37,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+import util.Common;
+
 /**
  * The main set of web services.
  */
@@ -57,7 +59,7 @@ public class UserController extends Controller {
 		JsonNode json = request().body().asJson();
 		if (json == null) {
 			System.out.println("User not created, expecting Json data");
-			return badRequest("User not created, expecting Json data");
+			return Common.badRequestWrapper("User not created, expecting Json data");
 		}
 
 		// Parse JSON file
@@ -68,7 +70,7 @@ public class UserController extends Controller {
 		try {
 			if (userRepository.findByEmail(email) != null) {
 				System.out.println("Email has been used: " + email);
-				return badRequest("Email has been used");
+				return Common.badRequestWrapper("Email has been used");
 			}
 			User user = new User(name, email, MD5Hashing(password));
 			userRepository.save(user);
@@ -77,7 +79,7 @@ public class UserController extends Controller {
 		} catch (PersistenceException pe) {
 			pe.printStackTrace();
 			System.out.println("User not saved: " + name);
-			return badRequest("User not saved: " + name);
+			return Common.badRequestWrapper("User not saved: " + name);
 		}
 	}
 
@@ -85,7 +87,7 @@ public class UserController extends Controller {
 		JsonNode json = request().body().asJson();
 		if (json == null) {
 			System.out.println("Cannot check user, expecting Json data");
-			return badRequest("Cannot check user, expecting Json data");
+			return Common.badRequestWrapper("Cannot check user, expecting Json data");
 		}
 		String email = json.path("email").asText();
 		String password = json.path("password").asText();
@@ -98,7 +100,7 @@ public class UserController extends Controller {
             return ok(new Gson().toJson(jsonObject));
 		} else {
 			System.out.println("User is not valid");
-			return badRequest("User is not valid");
+			return Common.badRequestWrapper("User is not valid");
 		}
 	}
 
@@ -140,7 +142,7 @@ public class UserController extends Controller {
 		JsonNode json = request().body().asJson();
 		if (json == null) {
 			System.out.println("User not saved, expecting Json data");
-			return badRequest("User not saved, expecting Json data");
+			return Common.badRequestWrapper("User not saved, expecting Json data");
 		}
 
 		// Parse JSON file
@@ -158,14 +160,14 @@ public class UserController extends Controller {
 		} catch (PersistenceException pe) {
 			pe.printStackTrace();
 			System.out.println("User not updated: " + email);
-			return badRequest("User not updated: " + email);
+			return Common.badRequestWrapper("User not updated: " + email);
 		}
 	}
 
 	public Result getProfile(Long id, String format) {
 		if (id == null) {
 			System.out.println("User id is null or empty!");
-			return badRequest("User id is null or empty!");
+			return Common.badRequestWrapper("User id is null or empty!");
 		}
 
 		User user = userRepository.findOne(id);
@@ -204,7 +206,7 @@ public class UserController extends Controller {
 			List<User> users = userRepository.findByUserName(userName);
 			if (users.size()==0) {
 				System.out.println("User is not existed");
-				return badRequest("User is not existed");
+				return Common.badRequestWrapper("User is not existed");
 			}
 			User user = users.get(0);
 			if (user.getPassword().equals(password)) {
@@ -214,20 +216,20 @@ public class UserController extends Controller {
 			}
 			else {
 				System.out.println("User is not deleted for wrong password");
-				return badRequest("User is not deleted for wrong password");
+				return Common.badRequestWrapper("User is not deleted for wrong password");
 			}
 		}
 		catch (PersistenceException pe) {
 			pe.printStackTrace();
 			System.out.println("User is not deleted");
-			return badRequest("User is not deleted");
+			return Common.badRequestWrapper("User is not deleted");
 		}
 	}
 
 	public Result userSearch(String display_name, String format) {
 		if (display_name == null) {
 			System.out.println("Display name is null or empty!");
-			return badRequest("Display name is null or empty!");
+			return Common.badRequestWrapper("Display name is null or empty!");
 		}
 
 		List<User> users = userRepository.getUserByDisplayName(display_name);

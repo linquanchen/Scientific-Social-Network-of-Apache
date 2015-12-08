@@ -31,6 +31,7 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.List;
+import util.Common;
 
 @Named
 @Singleton
@@ -52,7 +53,7 @@ public class GroupUsersController extends Controller {
         JsonNode json = request().body().asJson();
         if (json == null) {
             System.out.println("group not created, expecting Json data");
-            return badRequest("group not created, expecting Json data");
+            return Common.badRequestWrapper("group not created, expecting Json data");
         }
 
         long userID = json.path("userID").asLong();
@@ -76,7 +77,7 @@ public class GroupUsersController extends Controller {
         JsonNode json = request().body().asJson();
         if (json == null) {
             System.out.println("group not created, expecting Json data");
-            return badRequest("group not created, expecting Json data");
+            return Common.badRequestWrapper("group not created, expecting Json data");
         }
 
         String groupUrl = json.path("groupUrl").asText();
@@ -85,7 +86,7 @@ public class GroupUsersController extends Controller {
         User user = userRepository.findOne(userID);
         List<GroupUsers> groups = groupUsersRepository.findByGroupUrl(groupUrl);
         if(groups.size() == 0) {
-            return badRequest("Failed to add member!");
+            return Common.badRequestWrapper("Failed to add member!");
         }
         else {
             GroupUsers group = groups.get(0);
@@ -100,13 +101,13 @@ public class GroupUsersController extends Controller {
     public Result getGroupList(Long userID, String format) {
         if (userID == null) {
             System.out.println("user id is null or empty!");
-            return badRequest("user id is null or empty!");
+            return Common.badRequestWrapper("user id is null or empty!");
         }
 
         List<GroupUsers> groups = groupUsersRepository.findByUserId(userID);
         if (groups == null) {
             System.out.println("The group does not exist!");
-            return badRequest("The group does not exist!");
+            return Common.badRequestWrapper("The group does not exist!");
         }
 
         String result = new String();
@@ -121,7 +122,7 @@ public class GroupUsersController extends Controller {
     public Result getGroupMember(Long groupId, String format) {
         if(groupId == null) {
             System.out.println("Id not created, please enter valid user");
-            return badRequest("Id not created, please enter valid user");
+            return Common.badRequestWrapper("Id not created, please enter valid user");
         }
 
         GroupUsers group = groupUsersRepository.findById(groupId);
