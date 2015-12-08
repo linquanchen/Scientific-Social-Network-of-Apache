@@ -30,6 +30,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import util.Common;
 
 @Named
 @Singleton
@@ -50,7 +51,7 @@ public class MailController extends Controller {
     public Result sendMail() {
         JsonNode json = request().body().asJson();
         if (json == null) {
-            return badRequest("mail not sent, expecting Json data");
+            return Common.badRequestWrapper("mail not sent, expecting Json data");
         }
 
         String fromUserMail = json.path("fromUserMail").asText();
@@ -99,7 +100,7 @@ public class MailController extends Controller {
     //get: get inbox
     public Result getInbox(Long userID, String format) {
         if (userID == null) {
-            return badRequest("user id is null or empty!");
+            return Common.badRequestWrapper("user id is null or empty!");
         }
 
         User user = userRepository.findOne(userID);
@@ -107,7 +108,7 @@ public class MailController extends Controller {
         List<Mail> inbox = mailRepository.findByToUserMail(userEmail);
 
         if (inbox == null) {
-            return badRequest("The inbox does not exist!");
+            return Common.badRequestWrapper("The inbox does not exist!");
         }
 
         String result = new String();
@@ -121,7 +122,7 @@ public class MailController extends Controller {
     //get: get outbox
     public Result getOutbox(Long userID, String format) {
         if (userID == null) {
-            return badRequest("user id is null or empty!");
+            return Common.badRequestWrapper("user id is null or empty!");
         }
 
         User user = userRepository.findOne(userID);
@@ -129,7 +130,7 @@ public class MailController extends Controller {
         List<Mail> outbox = mailRepository.findByFromUserMail(userEmail);
 
         if (outbox == null) {
-            return badRequest("The outbox does not exist!");
+            return Common.badRequestWrapper("The outbox does not exist!");
         }
 
         String result = new String();

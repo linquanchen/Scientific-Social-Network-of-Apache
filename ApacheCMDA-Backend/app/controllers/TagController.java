@@ -12,6 +12,7 @@ import models.TagRepository;
 
 import play.mvc.Controller;
 import play.mvc.Result;
+import util.Common;
 
 @Named
 @Singleton
@@ -28,7 +29,7 @@ public class TagController extends Controller {
         JsonNode json = request().body().asJson();
         if (json == null) {
             System.out.println("Tag not created, expecting Json data");
-            return badRequest("Tag not created, expecting Json data");
+            return Common.badRequestWrapper("Tag not created, expecting Json data");
         }
 
         // Parse JSON file
@@ -37,7 +38,7 @@ public class TagController extends Controller {
         try {
             if (tagRepository.findByTag(tagString) != null) {
                 System.out.println("Tag already exists: " + tagString);
-                return badRequest("Tag already exists");
+                return Common.badRequestWrapper("Tag already exists");
             }
             //add Tag into DB
             Tag tag = new Tag(tagString);
@@ -48,7 +49,7 @@ public class TagController extends Controller {
         } catch (PersistenceException pe) {
             pe.printStackTrace();
             System.out.println("Tag not saved: " + tagString);
-            return badRequest("Tag not saved: " + tagString);
+            return Common.badRequestWrapper("Tag not saved: " + tagString);
         }
     }
 
@@ -56,7 +57,7 @@ public class TagController extends Controller {
         JsonNode json = request().body().asJson();
         if (json == null) {
             System.out.println("Tag not created, expecting Json data");
-            return badRequest("Tag not created, expecting Json data");
+            return Common.badRequestWrapper("Tag not created, expecting Json data");
         }
         // Parse JSON file
         String tagString = json.path("tag").asText();
@@ -76,7 +77,7 @@ public class TagController extends Controller {
         } catch (PersistenceException pe) {
             pe.printStackTrace();
             System.out.println("Tag not deleted: " + tagString);
-            return badRequest("Tag not deleted: " + tagString);
+            return Common.badRequestWrapper("Tag not deleted: " + tagString);
         }
     }
 

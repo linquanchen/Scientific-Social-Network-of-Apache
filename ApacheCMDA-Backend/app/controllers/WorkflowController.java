@@ -25,6 +25,7 @@ import org.apache.commons.io.IOUtils;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
+import util.Common;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -60,7 +61,7 @@ public class WorkflowController extends Controller {
         JsonNode json = request().body().asJson();
         if (json == null) {
             System.out.println("Workflow not created, expecting Json data");
-            return badRequest("Workflow not created, expecting Json data");
+            return Common.badRequestWrapper("Workflow not created, expecting Json data");
         }
 
 //        long userID = json.path("userID").asLong();
@@ -80,7 +81,7 @@ public class WorkflowController extends Controller {
         String wfTags = json.path("wfTags").asText();
         User user = userRepository.findOne(userID);
         if(user == null) {
-            return badRequest("User doesn't exist!");
+            return Common.badRequestWrapper("User doesn't exist!");
         }
 
         JsonNode contributorsID = json.path("wfContributors");
@@ -134,7 +135,7 @@ public class WorkflowController extends Controller {
         JsonNode json = request().body().asJson();
         if (json == null) {
             System.out.println("Workflow not created, expecting Json data");
-            return badRequest("Workflow not created, expecting Json data");
+            return Common.badRequestWrapper("Workflow not created, expecting Json data");
         }
 
         long wfID = json.path("wfID").asLong();
@@ -142,7 +143,7 @@ public class WorkflowController extends Controller {
         Workflow workflow = workflowRepository.findOne(wfID);
         User user = userRepository.findOne(userID);
         if (workflow == null) {
-            return badRequest("Workflow doesn't exist.");
+            return Common.badRequestWrapper("Workflow doesn't exist.");
         }
 
         //public workflow cannot be edit by others
@@ -186,14 +187,14 @@ public class WorkflowController extends Controller {
         JsonNode json = request().body().asJson();
         if (json == null) {
             System.out.println("Workflow not created, expecting Json data");
-            return badRequest("Workflow not created, expecting Json data");
+            return Common.badRequestWrapper("Workflow not created, expecting Json data");
         }
 
         long wfID = json.path("wfID").asLong();
         long userID = json.path("userID").asLong();
         Workflow workflow = workflowRepository.findOne(wfID);
         if(workflow == null) {
-            return badRequest("Workflow doesn't exist!");
+            return Common.badRequestWrapper("Workflow doesn't exist!");
         }
 
         List<GroupUsers> groups = groupUsersRepository.findByCreatorUser(userID);
@@ -231,7 +232,7 @@ public class WorkflowController extends Controller {
             return ok("File uploaded");
         } else {
             flash("error", "Missing file");
-            return badRequest("Wrong!!!!!!!!");
+            return Common.badRequestWrapper("Wrong!!!!!!!!");
             // return redirect(routes.Application.index());
         }
     }
@@ -239,18 +240,18 @@ public class WorkflowController extends Controller {
     public Result get(Long wfID, Long userID, String format) {
         if (wfID == null) {
             System.out.println("Workflow id is null or empty!");
-            return badRequest("Workflow id is null or empty!");
+            return Common.badRequestWrapper("Workflow id is null or empty!");
         }
 
         Workflow workflow = workflowRepository.findOne(wfID);
 
         if (workflow == null) {
             System.out.println("The workflow does not exist!");
-            return badRequest("The workflow does not exist!");
+            return Common.badRequestWrapper("The workflow does not exist!");
         }
         else {
             if (workflow.getStatus().equals("deleted")) {
-                return badRequest("This workflow has been deleted");
+                return Common.badRequestWrapper("This workflow has been deleted");
             }
             else if((int) workflow.getGroupId() != 0 && (int)workflow.getUserID() != userID.intValue()) {
                 List<GroupUsers> groupList = groupUsersRepository.findByUserId(userID);
@@ -299,7 +300,7 @@ public class WorkflowController extends Controller {
     public Result getWorkflowList(Long userID, String format) {
         if (userID == null) {
             System.out.println("user id is null or empty!");
-            return badRequest("user id is null or empty!");
+            return Common.badRequestWrapper("user id is null or empty!");
         }
 
         List<Workflow> workflowList = workflowRepository.findByUserID(userID);
@@ -336,7 +337,7 @@ public class WorkflowController extends Controller {
     public Result getTimeLine(Long id, Long offset, String format) {
         if(id == null) {
             System.out.println("Id not created, please enter valid user");
-            return badRequest("Id not created, please enter valid user");
+            return Common.badRequestWrapper("Id not created, please enter valid user");
         }
 
         List<GroupUsers> groups = groupUsersRepository.findByUserId(id);
@@ -416,7 +417,7 @@ public class WorkflowController extends Controller {
             JsonNode json = request().body().asJson();
             if(json==null){
                 System.out.println("Comment not created, expecting Json data");
-                return badRequest("Comment not created, expecting Json data");
+                return Common.badRequestWrapper("Comment not created, expecting Json data");
             }
 
             long userId = json.path("userID").asLong();
@@ -428,12 +429,12 @@ public class WorkflowController extends Controller {
             User user = userRepository.findOne(userId);
             if(user==null){
                 System.out.println("Cannot find user with given user id");
-                return badRequest("Cannot find user with given user id");
+                return Common.badRequestWrapper("Cannot find user with given user id");
             }
             Workflow workflow = workflowRepository.findOne(workflowId);
             if(workflow==null){
                 System.out.println("Cannot find workflow with given workflow id");
-                return badRequest("Cannot find workflow with given workflow id");
+                return Common.badRequestWrapper("Cannot find workflow with given workflow id");
             }
             Comment comment = new Comment(user, timestamp, content, commentImage);
 
@@ -445,7 +446,7 @@ public class WorkflowController extends Controller {
             return ok(new Gson().toJson(savedComment.getId()));
         } catch (Exception e){
             e.printStackTrace();
-            return badRequest("Failed to add comment!");
+            return Common.badRequestWrapper("Failed to add comment!");
         }
     }
     
@@ -454,7 +455,7 @@ public class WorkflowController extends Controller {
             JsonNode json = request().body().asJson();
             if(json==null){
                 System.out.println("Tag not created, expecting Json data");
-                return badRequest("Tag not created, expecting Json data");
+                return Common.badRequestWrapper("Tag not created, expecting Json data");
             }
 
             long workflowId = json.path("workflowID").asLong();
@@ -466,13 +467,13 @@ public class WorkflowController extends Controller {
 
             if(tagStrings.length<1) {
                 System.out.println("Please input tag");
-                return badRequest("Please input tag");
+                return Common.badRequestWrapper("Please input tag");
             }
 
             Workflow workflow = workflowRepository.findOne(workflowId);
             if(workflow==null){
                 System.out.println("Cannot find workflow with given workflow id");
-                return badRequest("Cannot find workflow with given workflow id");
+                return Common.badRequestWrapper("Cannot find workflow with given workflow id");
             }
 
             for(String t: tagStrings) {
@@ -490,7 +491,7 @@ public class WorkflowController extends Controller {
             return ok("{\"success\":\"Success!\"}");
         } catch (Exception e){
             e.printStackTrace();
-            return badRequest("Failed to add Tag!");
+            return Common.badRequestWrapper("Failed to add Tag!");
         }
     }
 
@@ -499,13 +500,13 @@ public class WorkflowController extends Controller {
             Workflow workflow = workflowRepository.findOne(workflowId);
             if(workflow==null){
                 System.out.println("Cannot find workflow with given workflow id");
-                return badRequest("Cannot find workflow with given workflow id");
+                return Common.badRequestWrapper("Cannot find workflow with given workflow id");
             }
 
             Tag tag = tagRepository.findByTag(tagString);
             if(tag==null){
                 System.out.println("Cannot find tag with given tagString");
-                return badRequest("Cannot find tag with given tagString");
+                return Common.badRequestWrapper("Cannot find tag with given tagString");
             }
             Set<Tag> tags = workflow.getTags();
             for(Tag tt : tags) {
@@ -519,7 +520,7 @@ public class WorkflowController extends Controller {
 
         } catch (Exception e){
             e.printStackTrace();
-            return badRequest("Failed to delete Tag!");
+            return Common.badRequestWrapper("Failed to delete Tag!");
         }
     }
 
@@ -528,7 +529,7 @@ public class WorkflowController extends Controller {
             Workflow workflow = workflowRepository.findOne(workflowId);
             if(workflow==null){
                 System.out.println("Cannot find workflow with given workflow id");
-                return badRequest("Cannot find workflow with given workflow id");
+                return Common.badRequestWrapper("Cannot find workflow with given workflow id");
             }
 
             Set<Tag> tags = workflow.getTags();
@@ -550,7 +551,7 @@ public class WorkflowController extends Controller {
             return ok(sb.toString());
         } catch (Exception e){
             e.printStackTrace();
-            return badRequest("Failed to get Tags!");
+            return Common.badRequestWrapper("Failed to get Tags!");
         }
     }
 
@@ -558,7 +559,7 @@ public class WorkflowController extends Controller {
         try {
             if(tagString==null || tagString.equals("")) {
                 System.out.println("tag is null or empty!");
-                return badRequest("tag is null or empty!");
+                return Common.badRequestWrapper("tag is null or empty!");
             }
 
             Tag tag = tagRepository.findByTag(tagString);
@@ -576,7 +577,7 @@ public class WorkflowController extends Controller {
 
         } catch (Exception e){
             e.printStackTrace();
-            return badRequest("Failed to get workflow by Tag!");
+            return Common.badRequestWrapper("Failed to get workflow by Tag!");
         }
     }
     
@@ -584,7 +585,7 @@ public class WorkflowController extends Controller {
         try {
             if(title==null || title.equals("")) {
                 System.out.println("title is null or empty!");
-                return badRequest("title is null or empty!");
+                return Common.badRequestWrapper("title is null or empty!");
             }
             
             List<Workflow> workflowList = workflowRepository.findByTitle("%" + title + "%");
@@ -594,7 +595,7 @@ public class WorkflowController extends Controller {
 
         } catch (Exception e){
             e.printStackTrace();
-            return badRequest("Failed to get workflow by Title!");
+            return Common.badRequestWrapper("Failed to get workflow by Title!");
         }
     }
 
@@ -608,7 +609,7 @@ public class WorkflowController extends Controller {
         try{
             if(workflowId==null){
                 System.out.println("Expecting workflow id");
-                return badRequest("Expecting workflow id");
+                return Common.badRequestWrapper("Expecting workflow id");
             }
 
             List<Comment> comments = commentRepository.findByWorkflowId(workflowId);
@@ -617,7 +618,7 @@ public class WorkflowController extends Controller {
             return ok(new Gson().toJson(comments));
         } catch (Exception e){
             e.printStackTrace();
-            return badRequest("Failed to fetch comments");
+            return Common.badRequestWrapper("Failed to fetch comments");
         }
     }
 
@@ -646,7 +647,7 @@ public class WorkflowController extends Controller {
 //        }
 //        else {
 //            flash("error", "Missing file");
-//            return badRequest("Wrong!!!!!!!!");
+//            return Common.badRequestWrapper("Wrong!!!!!!!!");
 //            // return redirect(routes.Application.index());
 //        }
 //

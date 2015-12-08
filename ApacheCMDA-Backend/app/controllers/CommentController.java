@@ -11,6 +11,7 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 import java.util.Collections;
 import java.util.List;
+import util.Common;
 
 /**
  * Created by baishi on 11/24/15.
@@ -35,7 +36,7 @@ public class CommentController extends Controller {
         JsonNode jsonNode = request().body().asJson();
         if (jsonNode == null){
             System.out.println("Reply not added, expecting Json data");
-            return badRequest("Reply not added, expecting Json data");
+            return Common.badRequestWrapper("Reply not added, expecting Json data");
         }
 
         long commentId = jsonNode.path("commentId").asLong();
@@ -46,17 +47,17 @@ public class CommentController extends Controller {
         Comment comment = commentRepository.findOne(commentId);
         if(comment==null){
             System.out.println("Cannot find comment!");
-            return badRequest("Cannot find comment!");
+            return Common.badRequestWrapper("Cannot find comment!");
         }
         User fromUser = userRepository.findOne(fromUserId);
         if(fromUser==null){
             System.out.println("Cannot find fromUser!");
-            return badRequest("Cannot find fromUser!");
+            return Common.badRequestWrapper("Cannot find fromUser!");
         }
         User toUser = userRepository.findOne(toUserId);
         if(toUser==null){
             System.out.println("Cannot find toUser!");
-            return badRequest("Cannot find toUser!");
+            return Common.badRequestWrapper("Cannot find toUser!");
         }
 
         Reply reply = new Reply(fromUser, toUser, timestamp, content);
@@ -73,7 +74,7 @@ public class CommentController extends Controller {
         try{
             if(commentId==null){
                 System.out.println("Expecting comment id");
-                return badRequest("Expecting comment id");
+                return Common.badRequestWrapper("Expecting comment id");
             }
 
             List<Reply> replies = replyRepository.findByCommentId(commentId);
@@ -83,7 +84,7 @@ public class CommentController extends Controller {
             return ok(new Gson().toJson(replies));
         } catch (Exception e){
             e.printStackTrace();
-            return badRequest("Fail to fetch replies");
+            return Common.badRequestWrapper("Fail to fetch replies");
         }
     }
 
@@ -91,7 +92,7 @@ public class CommentController extends Controller {
         try{
             if(commentId==null){
                 System.out.println("Expecting comment id");
-                return badRequest("Expecting comment id");
+                return Common.badRequestWrapper("Expecting comment id");
             }
             Comment comment = commentRepository.findOne(commentId);
             comment.setThumb(comment.getThumb() + 1);
@@ -99,7 +100,7 @@ public class CommentController extends Controller {
             return ok("{\"success\":\"Success!\"}");
         }catch (Exception e){
             e.printStackTrace();
-            return badRequest("Fail to fetch replies");
+            return Common.badRequestWrapper("Fail to fetch replies");
         }
     }
 
@@ -107,7 +108,7 @@ public class CommentController extends Controller {
         try{
             if(commentId==null){
                 System.out.println("Expecting comment id");
-                return badRequest("Expecting comment id");
+                return Common.badRequestWrapper("Expecting comment id");
             }
             Comment comment = commentRepository.findOne(commentId);
             comment.setThumb(comment.getThumb() - 1);
@@ -115,7 +116,7 @@ public class CommentController extends Controller {
             return ok("{\"success\":\"Success!\"}");
         }catch (Exception e){
             e.printStackTrace();
-            return badRequest("Fail to fetch replies");
+            return Common.badRequestWrapper("Fail to fetch replies");
         }   
     }
 }
