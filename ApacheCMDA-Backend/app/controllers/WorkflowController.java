@@ -252,9 +252,6 @@ public class WorkflowController extends Controller {
             if (workflow.getStatus().equals("deleted")) {
                 return badRequest("This workflow has been deleted");
             }
-            else if (workflow.getWfVisibility().equals("private")){
-                return badRequest("This workflow has is private");
-            }
             else if((int) workflow.getGroupId() != 0 && (int)workflow.getUserID() != userID.intValue()) {
                 List<GroupUsers> groupList = groupUsersRepository.findByUserId(userID);
                 List<Integer> groupListParse = new ArrayList<>();
