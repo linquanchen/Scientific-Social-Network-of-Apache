@@ -17,7 +17,7 @@
     @fixed.header("undefined",-1)
   </div>
     @flashmsg()
-  <form action="@routes.SignupController.register()" method="post">
+  <form action="@routes.SignupController.register()" enctype="multipart/form-data" method="post">
     <div class="container-fluid row">
       <div class="col-xs-10 col-xs-offset-1 col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4">
         <div class="login-box">
@@ -47,6 +47,19 @@
               <input type="password" class="form-control" id="inputPassword" name="password"
               placeholder="Password">
             </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="in-File" class="col-sm-2 control-label">Avatar</label>
+          <div class="col-sm-10">
+            <input type="file" name="avatar" class="form-control" id="in-File" onchange="loadFile(event)">
+            <img id="output"/>
+            <script>
+                var loadFile = function(event) {
+                var output = document.getElementById('output');
+                output.src = URL.createObjectURL(event.target.files[0]);
+                };
+            </script>
           </div>
         </div>
         <div class="form-group">
