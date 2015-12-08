@@ -18,6 +18,8 @@ public class Comment {
 
     private String userName;
 
+    private int thumb;
+
     public Comment() {
 
     }
@@ -31,6 +33,7 @@ public class Comment {
             }
             if (node.get("timestamp") != null) timestamp = node.get("timestamp").asLong();
             if (node.get("content") != null) content = node.get("content").asText();
+            if (node.get("thumb") != null) thumb = node.get("thumb").asInt();
 
         }
     }
@@ -40,6 +43,14 @@ public class Comment {
         return response;
     }
 
+
+    public int getThumb() {
+        return thumb;
+    }
+
+    public void setThumb(int thumb) {
+        this.thumb = thumb;
+    }
 
     public String getUserName() {
         return userName;
