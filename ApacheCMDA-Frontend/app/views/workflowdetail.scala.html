@@ -23,6 +23,10 @@
                 margin-right: 1%;
                 vertical-align: baseline;
             }
+            .vote {
+                width: 35px;
+                display: inline-block;
+            }
         </style>
     </head>
     <body>
@@ -49,15 +53,28 @@
                 <ul class="list-group list-view">
                     @for(i <- 0 until comments.size){
                     <li class="list-group-item list-view">
-                        <h3>
-                            @comments(i).getContent
-                        </h3>
-                        <h5>
-                            @("Commenter: "+comments(i).getUserName)
-                        </h5>
-                        <small>
-                            @(new Date(comments(i).getTimestamp).toString)
-                        </small>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h3>
+                                    @comments(i).getContent
+                                </h3>
+                                <h5>
+                                    @("Commenter: "+comments(i).getUserName)
+                                </h5>
+                                <small>
+                                    @(new Date(comments(i).getTimestamp).toString)
+                                </small>
+                            </div>
+                            <div class="col-md-1 vote">
+                                <a href="@routes.WorkflowController.thumbUp(comments(i).getId,wf.getId)">
+                                    <img src='@routes.Assets.at("images/thumb-up.jpeg")' height="35px" width="35px"/>
+                                </a>
+                                <span>@comments(i).getThumb</span>
+                                <a href="@routes.WorkflowController.thumbDown(comments(i).getId,wf.getId)">
+                                    <img src='@routes.Assets.at("images/thumb-down.jpeg")' height="35px" width="35px"/>
+                                </a>
+                            </div>
+                        </div>
                         <form class="form" action="@routes.WorkflowController.addReply(comments(i).getUser, comments(i).getId, wf.getId)" enctype="multipart/form-data" method="POST">
                             <input class="form-control input-sm" type="text" name="content">
                             <button class="btn-xs" type="submit">reply</button>
