@@ -1,4 +1,4 @@
-@(wf: Workflow, comments: List[Comment], replyRes: List[List[Reply]], userName: String, userId: Long)
+@(wf: Workflow, comments: List[Comment], replyRes: List[List[Reply]],suggestions: List[Suggestion], userName: String, userId: Long)
 <html>
     <head>
         <link href='@routes.Assets.at("css/bootstrap.min.css")' rel="stylesheet"/>
@@ -73,6 +73,20 @@
                 }
                 </ul>
             </div>
+
+            <table>
+                @for(suggestion <- suggestions){
+                    <tr>
+                        <td>suggestion.getContent</td>
+                        <td>suggestion.getsVote</td>
+                        @for(tag <- suggestion.getsTag()) {
+                            <td>tag</td>
+                        }
+                        <td>50</td>
+                    </tr>
+                }
+            </table>
+
             <div class="row">
                 <form class="form" role="form" action="@routes.WorkflowController.addComment(wf.getId)"
                 enctype="multipart/form-data" method="POST">
