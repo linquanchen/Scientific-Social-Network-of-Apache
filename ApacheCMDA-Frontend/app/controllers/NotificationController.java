@@ -83,6 +83,7 @@ public class NotificationController extends Controller {
             } catch (Exception e){
                 obj.setEmail("");
             }
+            obj.setAvatar(n.get("avatar").textValue());
             obj.setId(Long.parseLong(n.get("id").textValue()));
             requests.add(obj);
         }
@@ -144,6 +145,17 @@ public class NotificationController extends Controller {
         JsonNode response = APICall.callAPI(apiquery);
         PMessage message = new PMessage(response);
         return ok(mail_detail.render(message, session("username"), session("id")));
+    }
+
+
+    public static List<Workflow> getTop3Workflow() {
+        List<Workflow> result = new ArrayList<>();
+        JsonNode response = APICall.callAPI(Constants.NEW_BACKEND + "workflow/getTop3WorkFlow");
+        for (JsonNode n : response) {
+            Workflow cur = new Workflow(n);
+            result.add(cur);
+        }
+        return result;
     }
 
     public static Result getNotifications()

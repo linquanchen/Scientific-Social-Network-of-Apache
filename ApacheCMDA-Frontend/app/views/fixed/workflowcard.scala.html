@@ -1,22 +1,29 @@
 @(wf: Workflow)
 
 <div class="card well">
+    <h4 class="title"><a href="/workflow/get/@wf.getId">@wf.getWfTitle</a></h4>
     <div class="row">
         <div class="col-md-2">
-            <div class="category">@wf.getWfCategory</div>
-            <p class="card-label">Auth:</p>
-            <p class="user">@wf.getUserName</p>
+            <div class="well">
+                <p class="card-label">Author:</p>
+                <p class="card-content"><a href="/profile/@wf.getUserId">@wf.getUserName</a></p>
+                <p class="card-label">Category:</p>
+                <p class="card-content">@wf.getWfCategory</p>
+            </div>
         </div>
         <div class="col-md-10">
-            <h4 class="title">@wf.getWfTitle</h4>
             <div class="description">
+                <a href="/workflow/get/@wf.getId">
                 <img width="100" height="120" src="/@wf.getWfImg" alt="small-img">
+                </a>
                 <p>@wf.getWfDesc</p>
                 <div class="clear"></div>
             </div>
             <ul class="tags">
-                <li>good</li>
-                <li>man</li>
+            @for( tag <- wf.getTags) {
+                <li>@tag</li>
+            }
+
             </ul>
         </div>
     </div>

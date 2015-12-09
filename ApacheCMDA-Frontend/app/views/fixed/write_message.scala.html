@@ -1,0 +1,10 @@
+@(toAddress: String)
+
+<form action="@routes.NotificationController.sendMessage()" method="POST">
+    <p>
+        To: <input type="text" name="toUserMail" placeholder="toUserMail" value="@toAddress">
+        Title: <input type="text" name="mailTitle" placeholder="mailTitle">
+    </p>
+    <textarea type="text" name="mailContent" placeholder="mailContent" rows="5" cols="100"></textarea>
+    <p><button type="submit">Send</button></p>
+</form>

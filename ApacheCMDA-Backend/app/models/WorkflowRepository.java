@@ -39,4 +39,7 @@ public interface WorkflowRepository extends CrudRepository<Workflow, Long> {
     List<Workflow> findByTitle(String title);
 
     List<Workflow> findByGroupId(Long id);
+
+    @Query(value = "select w.* from Workflow w order by w.viewCount desc LIMIT 3", nativeQuery = true)
+    List<Workflow> findTop3Workflow();
 }

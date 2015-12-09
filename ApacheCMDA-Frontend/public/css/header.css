@@ -10,3 +10,14 @@
     color: #333333;
     background-color: #E4E3E3;
 }
+
+.reddot{
+    width: 10px;
+    height: 10px;
+    border-radius: 8px;
+    border: 1px #F7C0C0 solid;
+    position: absolute;
+    top: 14px;
+    right: 5px;
+    background-color: #F71313;
+}

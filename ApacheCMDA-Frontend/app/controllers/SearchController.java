@@ -49,6 +49,7 @@ public class SearchController extends Controller{
                         obj.setEmail("");
                     }
                     obj.setUserName(n.get("userName").textValue()); obj.setId(Long.parseLong(n.get("id").toString()));
+                    obj.setAvatar(n.get("avatar").textValue());
 
                     userArr.add(obj);
                 }

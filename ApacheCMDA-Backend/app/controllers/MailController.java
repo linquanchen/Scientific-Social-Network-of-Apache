@@ -29,9 +29,8 @@ import javax.inject.Singleton;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import util.Common;
 
 @Named
 @Singleton
@@ -52,11 +51,20 @@ public class MailController extends Controller {
     public Result sendMail() {
         JsonNode json = request().body().asJson();
         if (json == null) {
-            return badRequest("mail not sent, expecting Json data");
+            return Common.badRequestWrapper("mail not sent, expecting Json data");
         }
 
         String fromUserMail = json.path("fromUserMail").asText();
         String toUserMail = json.path("toUserMail").asText();
+        User fromUser = userRepository.findByEmail(fromUserMail);
+        User toUser = userRepository.findByEmail(toUserMail);
+        if (fromUser == null || toUser == null) {
+            Map<String, String> map = new HashMap<>();
+            map.put("error", "No Access!");
+            String error = new Gson().toJson(map);
+            return ok(error);
+        }
+
         String mailTitle = json.path("mailTitle").asText();
         String mailContent = json.path("mailContent").asText();
         String dateString = json.path("mailDate").asText();
@@ -70,13 +78,19 @@ public class MailController extends Controller {
 
         Mail mail = new Mail(fromUserMail, toUserMail, mailTitle, mailContent, mailDate);
         mailRepository.save(mail);
-        return created(new Gson().toJson(mail.getId()));
+        return created(new Gson().toJson("success"));
     }
 
     //get: read mail
     public Result readMail(Long mailId) {
 
         Mail mail = mailRepository.findById(mailId);
+        if (mail == null) {
+            Map<String, String> map = new HashMap<>();
+            map.put("error", "No Access!");
+            String error = new Gson().toJson(map);
+            return ok(error);
+        }
         mail.setReadStatus(true);
         mailRepository.save(mail);
 
@@ -86,7 +100,7 @@ public class MailController extends Controller {
     //get: get inbox
     public Result getInbox(Long userID, String format) {
         if (userID == null) {
-            return badRequest("user id is null or empty!");
+            return Common.badRequestWrapper("user id is null or empty!");
         }
 
         User user = userRepository.findOne(userID);
@@ -94,7 +108,7 @@ public class MailController extends Controller {
         List<Mail> inbox = mailRepository.findByToUserMail(userEmail);
 
         if (inbox == null) {
-            return badRequest("The inbox does not exist!");
+            return Common.badRequestWrapper("The inbox does not exist!");
         }
 
         String result = new String();
@@ -108,7 +122,7 @@ public class MailController extends Controller {
     //get: get outbox
     public Result getOutbox(Long userID, String format) {
         if (userID == null) {
-            return badRequest("user id is null or empty!");
+            return Common.badRequestWrapper("user id is null or empty!");
         }
 
         User user = userRepository.findOne(userID);
@@ -116,7 +130,7 @@ public class MailController extends Controller {
         List<Mail> outbox = mailRepository.findByFromUserMail(userEmail);
 
         if (outbox == null) {
-            return badRequest("The outbox does not exist!");
+            return Common.badRequestWrapper("The outbox does not exist!");
         }
 
         String result = new String();

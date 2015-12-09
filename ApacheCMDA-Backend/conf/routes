@@ -86,6 +86,7 @@ POST           /workflow/setTag                                                 
 GET            /workflow/deleteTag/workflowId/:wfId/tag/:tag                                             @controllers.WorkflowController.deleteTag(wfId: Long, tag: String)
 GET            /workflow/getByTag/tag/:tag                                                               @controllers.WorkflowController.getByTag(tag: String)
 GET            /workflow/getByTitle/title/:title                                                         @controllers.WorkflowController.getByTitle(title: String)
+GET            /workflow/getTop3WorkFlow                                                                 @controllers.WorkflowController.getTop3WorkFlow()
 
 # Mail
 POST           /mail/sendMail                                                                            @controllers.MailController.sendMail

@@ -119,6 +119,23 @@ public class WorkflowController extends Controller {
         return redirect(routes.WorkflowController.workflowDetail(wid));
     }
 
+    public static Result deleteWorkflow(Long wid) {
+        String api = Constants.NEW_BACKEND + "workflow/deleteWorkflow";
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode jnode = mapper.createObjectNode();
+        jnode.put("wfID", wid.toString());
+        jnode.put("userID", session("id"));
+        JsonNode response = APICall.postAPI(api, jnode);
+
+        if (response == null || response.has("error")) {
+            if (response == null) flash("error", "Delete Error.");
+            else flash("error", response.get("error").textValue());
+            return redirect(routes.WorkflowController.workflowDetail(wid));
+        }
+        flash("success", "Workflow Deleted!");
+        return redirect(routes.WorkflowController.workflowDetail(wid));
+    }
+
     public static Result workflowDetail(Long wid) {
 
         JsonNode wfres = APICall.callAPI(Constants.NEW_BACKEND + "workflow/get/workflowID/"
@@ -221,6 +238,7 @@ public class WorkflowController extends Controller {
 
         try {
             jnode.put("wfID", wid.toString());
+            jnode.put("userID", session("id"));
             jnode.put("uid", session("id"));
             jnode.put("wfTitle", form.field("wfTitle").value());
             jnode.put("wfCategory", form.field("wfCategory").value());
@@ -277,6 +295,7 @@ public class WorkflowController extends Controller {
             jnode.put("wfGroupId", form.field("wfVisibility").value());
             jnode.put("wfImg", imgPathToSave);
             jnode.put("wfInput", form.field("wfInput").value());
+            jnode.put("wfUrl", form.field("wfUrl").value());
             jnode.put("wfOutput", form.field("wfOutput").value());
             jnode.put("wfTags", form.field("wfTag").valueOr(""));
         }catch(Exception e) {
