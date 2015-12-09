@@ -174,11 +174,10 @@ public class WorkflowController extends Controller {
         if (json.get("wfOutput")!=null) workflow.setWfOutput(json.get("wfOutput").asText());
         if (json.get("wfStatus")!=null) workflow.setStatus(json.get("wfStatus").asText());
         workflow.setWfDate(new Date());
-        if(!workflow.getWfContributors().contains(user)) {
-            workflow.getWfContributors().add(user);
-        }
+        //if(!workflow.getWfContributors().contains(user)) {
+        //    workflow.getWfContributors().add(user);
+        //}
         workflowRepository.save(workflow);
-
         return created(new Gson().toJson("success"));
     }
 

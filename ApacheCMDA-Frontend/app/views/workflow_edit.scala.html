@@ -30,15 +30,43 @@
                     <img src="/@wf.getWfImg">
                 </div>
             </div>
-            <div class="editor">
-                <form action="@routes.WorkflowController.editFlow(wf.getId)" method="POST">
-                    <input type="hidden" name="userID" value="@userId">
-                    Title: <input type="text" name="wfTitle" placeholder="Title" value="@wf.getWfTitle">
-                    Category: <input type="text" name="wfCategory" placeholder="Category" value="@wf.getWfCategory">
-                    Code: <input type="text" name="wfCode" placeholder="Code" value="@wf.getWfCode">
-                    Desc: <input type="text" name="wfDesc" placeholder="Description" value="@wf.getWfDesc">
-                    <button type="submit">Edit</button>
-                </form>
+            <hr>
+            <div class="editor row">
+                <div class="col-md-6">
+                    <form class="form-horizontal" action="@routes.WorkflowController.editFlow(wf.getId)" method="POST">
+                        <input type="hidden" name="userID" value="@userId">
+                        <input type="hidden" name="wfID" value="@wf.getId">
+                        <div class="form-group">
+                            <label for="in-Title" class="col-sm-2 control-label">Title</label>
+                            <div class="col-sm-10">
+                                <input type="text" name="wfTitle" class="form-control" id="in-Title" placeholder="Title" value="@wf.getWfTitle">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="in-Category" class="col-sm-2 control-label">Category</label>
+                            <div class="col-sm-10">
+                                <input type="text" name="wfCategory" class="form-control" id="in-Category" placeholder="Category" value="@wf.getWfCategory">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="in-Code" class="col-sm-2 control-label">Code</label>
+                            <div class="col-sm-10">
+                                <textarea type="text" name="wfCode" class="form-control" id="in-Code" placeholder="Code">@wf.getWfCode</textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="in-Desc" class="col-sm-2 control-label">Description</label>
+                            <div class="col-sm-10">
+                                <input type="text" name="wfDesc" class="form-control" id="in-Desc" placeholder="Description" value="@wf.getWfDesc">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <button type="submit" class="btn btn-primary">Update</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </body>
