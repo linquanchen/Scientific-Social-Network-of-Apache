@@ -248,6 +248,7 @@ public class WorkflowController extends Controller {
             flash("error", "Form value invalid");
         }
         JsonNode wfresponse = Workflow.update(jnode);
+        System.out.println("response is "+ wfresponse.path("error"));
 
         if (wfresponse == null || wfresponse.has("error")) {
             if (wfresponse == null) flash("error", "Create workflow error.");
