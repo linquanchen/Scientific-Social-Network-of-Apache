@@ -54,11 +54,11 @@ public class Workflow {
 
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "creatorId", referencedColumnName = "id")
-	private transient User user;
+	private User user;
 
 	@ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE})
 	@JoinTable(name = "WorkflowAndContributors", joinColumns = { @JoinColumn(name ="workflowId", referencedColumnName = "id")}, inverseJoinColumns = { @JoinColumn(name = "contributorId", referencedColumnName = "id") })
-	private transient List<User> wfContributors;
+	private List<User> wfContributors;
 
 	@ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE})
 	@JoinTable(name = "WorkflowAndRelated", joinColumns = { @JoinColumn(name ="workflowId", referencedColumnName = "id")}, inverseJoinColumns = { @JoinColumn(name = "relatedId", referencedColumnName = "id") })

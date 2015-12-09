@@ -38,19 +38,19 @@ public class User {
 	@JoinTable(	name = "Followers",
 				joinColumns = { @JoinColumn(name ="userId", referencedColumnName = "id")},
 				inverseJoinColumns = { @JoinColumn(name = "followerId", referencedColumnName = "id") })
-	private transient Set<User> followers;
+	private Set<User> followers;
 
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(	name = "friendRequests",
 			joinColumns = { @JoinColumn(name ="userId", referencedColumnName = "id")},
 			inverseJoinColumns = { @JoinColumn(name = "senderId", referencedColumnName = "id") })
-	private transient Set<User> friendRequestSender;
+	private Set<User> friendRequestSender;
 
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(	name = "friendship",
 			joinColumns = { @JoinColumn(name ="userAId", referencedColumnName = "id")},
 			inverseJoinColumns = { @JoinColumn(name = "userBId", referencedColumnName = "id") })
-	private transient Set<User> friends;
+	private Set<User> friends;
 
 //	private String middleInitial;
 //	private String affiliation;
