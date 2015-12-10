@@ -236,6 +236,8 @@ public class Workflow {
         return concatWithCommas(wfInput);
     }
 
+    public String getTagsString() {return concatWithCommas(tags);}
+
     public void setWfInput(List<String> wfInput) {
         this.wfInput = wfInput;
     }

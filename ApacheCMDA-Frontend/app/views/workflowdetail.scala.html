@@ -1,4 +1,4 @@
-@(wf: Workflow, comments: List[Comment], replyRes: List[List[Reply]],suggestions: List[Suggestion], userName: String, userId: Long)
+@(wf: Workflow, comments: List[Comment], replyRes: List[List[Reply]], suggestions: List[Suggestion], userName: String, userId: Long)
 <html>
     <head>
         <link href='@routes.Assets.at("css/bootstrap.min.css")' rel="stylesheet"/>
@@ -30,7 +30,15 @@
                         <li class="list-group-item"><span class="badge">Detail</span> @wf.getWfDesc</li>
                         <li class="list-group-item"><span class="badge">Input</span> @wf.getInputString</li>
                         <li class="list-group-item"><span class="badge">Output</span> @wf.getOutputString</li>
-                        <li class="list-group-item"><span class="badge">Code</span><br><pre><code class="language-css">@wf.getWfCode</code></pre></li>
+                        <li class="list-group-item"><span class="badge">
+                            Code</span><br><pre><code class="language-css">@wf.getWfCode</code></pre></li>
+                        <li class="list-group-item"><span class="badge">Tags</span>
+                            <ul class="tags">
+                            @for( tag <- wf.getTags) {
+                                <li class="detail_tag">@tag</li>
+                            }
+                            </ul>
+                        </li>
                         @if(wf.isWfEdit) {
                             <li class="list-group-item">
                                 <span class="badge">Action</span>
@@ -38,13 +46,7 @@
                                 <a class="btn-sm btn-danger" href="/workflow/delete/@wf.getId">Delete</a>
                             </li>
                         }
-                        <li class="list-group-item"><span class="badge">Tags</span>
-                        <ul class="tags">
-                        @for( tag <- wf.getTags) {
-                            <li class="detail_tag">@tag</li>
-                        }
-                        </ul>
-                        </li>
+
                     </ul>
                 </div>
             </div>
@@ -59,9 +61,18 @@
                                 <p>@suggestions(i).getsContent()</p>
                             </div>
                             <div class="col-md-1">
-                                <p class="suggestion-like"><a href="javascript:void(0)" data-sugId="@suggestions(i).getId" class="like"></a><span>@suggestions(i).getsVote</span></p>
+                                <p class="suggestion-like"><a href="javascript:void(0)" data-sugId="@suggestions(i).getId" class="like"></a> <span>@suggestions(i).getsVote</span></p>
                             </div>
                         </div>
+                        @if(suggestions(i).getsTag().length > 0){
+                            <ul class="list-group list-view">
+                                <li class="list-group-item list-view">
+                                @for( tag <- suggestions(i).getsTag()) {
+                                    #@tag
+                                }
+                                </li>
+                            </ul>
+                        }
                         <form class="form" action="@routes.WorkflowController.addSuggestionTag(suggestions(i).getId)" enctype="multipart/form-data" method="POST">
                             <a href="javascript:void(0)" class="toggle">addTag</a>
                             <div class="ninja hide-hood">
@@ -69,13 +80,7 @@
                                 <button class="btn-xs btn-primary mt-btn" type="submit">Submit</button>
                             </div>
                         </form>
-                        <ul class="list-group list-view">
-                            <li class="list-group-item list-view">
-                            @for(tag <- suggestions(i).getsTag()) {
-                                #@tag
-                            }
-                            </li>
-                        </ul>
+
                     </li>
                 }
                 </ul>
@@ -118,7 +123,7 @@
                         <ul class="list-group list-view">
                         @for( j <- 0 until replyRes.get(i).size) {
                             <li class="list-group-item list-view">
-                                <h5>@(replyRes.get(i).get(j).getFromUserName)<span class="shy"> &rarr; @(replyRes.get(i).get(j).getToUserName)</span>
+                                <h5>@(replyRes.get(i).get(j).getFromUserName) <span class="shy"> &rarr; @(replyRes.get(i).get(j).getToUserName)</span>
                                 <small class="right">@(new Date(replyRes.get(i).get(j).getTimestamp).toString)</small>
                                 </h5>
                                 <p>@("\t" + replyRes.get(i).get(j).getContent)</p>
@@ -138,7 +143,6 @@
                 }
                 </ul>
             </div>
-
 
 
             <div class="row">
