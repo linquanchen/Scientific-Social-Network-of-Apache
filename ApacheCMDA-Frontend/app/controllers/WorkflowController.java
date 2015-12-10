@@ -463,7 +463,7 @@ public class WorkflowController extends Controller {
         try {
             jnode.put("userID", session("id"));
             jnode.put("wfTitle", wfTitle);
-            jnode.put("wfCategory", "MyExperiments");
+            jnode.put("wfCategory", "MyExperiment");
             jnode.put("wfCode", code);
             jnode.put("wfDesc", desc);
             jnode.put("wfGroupId", 0);
