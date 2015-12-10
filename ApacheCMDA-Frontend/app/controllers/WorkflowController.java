@@ -295,11 +295,12 @@ public class WorkflowController extends Controller {
             try {
                 byte[] bytes = IOUtils.toByteArray(new FileInputStream(file));
                 FileUtils.writeByteArrayToFile(new File(imgPathToSave), bytes);
+                imgPathToSave = "/" + imgPathToSave;
             } catch (IOException e) {
-                imgPathToSave = "public/images/service.jpeg";
+                imgPathToSave = "/public/images/service.jpeg";
             }
         } else {
-            imgPathToSave = "public/images/service.jpeg";
+            imgPathToSave = "/public/images/service.jpeg";
         }
         imgPathToSave = imgPathToSave.replaceFirst("public", "assets");
 
@@ -414,7 +415,7 @@ public class WorkflowController extends Controller {
         String desc= "";
         String tagstr = "";
         String code = "";
-        String imgPath = "public/images/service.jpeg";
+        String imgPath = "/public/images/service.jpeg";
         try {
             URL url = new URL("http://www.myexperiment.org/workflow.xml?id=" + id.toString());
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -435,13 +436,8 @@ public class WorkflowController extends Controller {
                         case "title": wfTitle = (oneArticle.getTextContent()); break;
                         case "description":desc = (oneArticle.getTextContent()); break;
                         case "content-uri": code = (oneArticle.getTextContent()); break;
-                        case "previeweeeeee":
-                            URL website = new URL(oneArticle.getTextContent());
-                            ReadableByteChannel rbc = Channels.newChannel(website.openStream());
-                            String ext = FilenameUtils.getExtension(oneArticle.getTextContent());
-                            imgPath = "public/images/" + "image_" + UUID.randomUUID() + "." + ext;
-                            FileOutputStream fos = new FileOutputStream(imgPath);
-                            fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+                        case "preview":
+                            imgPath = (oneArticle.getTextContent()); break;
                         case "tags":
                             ArrayList<String> tags = new ArrayList<>();
                             NodeList childArt = oneArticle.getChildNodes();
