@@ -6,6 +6,7 @@ import util.APICall;
 import util.Constants;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -219,8 +220,20 @@ public class Workflow {
 
     public void setWfUrl(String wfUrl) {this.wfUrl = wfUrl;}
 
+    private static String concatWithCommas(Collection<String> words) {
+        StringBuilder wordList = new StringBuilder();
+        for (String word : words) {
+            wordList.append(word + ",");
+        }
+        return new String(wordList.deleteCharAt(wordList.length() - 1));
+    }
+
     public List<String> getWfInput() {
         return wfInput;
+    }
+
+    public String getInputString() {
+        return concatWithCommas(wfInput);
     }
 
     public void setWfInput(List<String> wfInput) {
@@ -229,6 +242,10 @@ public class Workflow {
 
     public List<String> getWfOutput() {
         return wfOutput;
+    }
+
+    public String getOutputString() {
+        return concatWithCommas(wfOutput);
     }
 
     public void setWfOutput(List<String> wfOutput) {
