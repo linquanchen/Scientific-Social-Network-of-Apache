@@ -27,10 +27,15 @@
                         <li class="list-group-item"><span class="badge">Name</span> @wf.getUserName</li>
                         <li class="list-group-item"><span class="badge">Category</span> @wf.getWfCategory</li>
                         <li class="list-group-item"><span class="badge">Detail</span> @wf.getWfDesc</li>
+                        <li class="list-group-item"><span class="badge">Input</span> @wf.getWfInput</li>
+                        <li class="list-group-item"><span class="badge">Output</span> @wf.getWfOutput</li>
                         <li class="list-group-item"><span class="badge">Code</span><br><pre><code class="language-css">@wf.getWfCode</code></pre></li>
                         @if(wf.isWfEdit) {
-                            <li class="list-group-item"><span class="badge">
-                                Action</span><a href="/workflow/update/@wf.getId">Edit</a></li>
+                            <li class="list-group-item">
+                                <span class="badge">Action</span>
+                                <a class="btn-sm btn-primary" href="/workflow/update/@wf.getId">Edit</a>
+                                <a class="btn-sm btn-danger" href="/workflow/delete/@wf.getId">Delete</a>
+                            </li>
                         }
                     </ul>
                 </div>

@@ -16,28 +16,24 @@
  */
 package controllers;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.*;
-
+import com.fasterxml.jackson.databind.JsonNode;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import models.User;
 import models.UserRepository;
-import play.mvc.*;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import play.mvc.Controller;
+import play.mvc.Result;
+import util.Common;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.persistence.PersistenceException;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-
-import util.Common;
+import java.lang.reflect.Modifier;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.*;
 
 /**
  * The main set of web services.
@@ -199,7 +195,7 @@ public class UserController extends Controller {
 		}
 		String result = new String();
 		if (format.equals("json")) {
-			result = new Gson().toJson(userList);
+			result = new GsonBuilder().excludeFieldsWithModifiers(Modifier.PROTECTED).create().toJson(userList);
 		}
 		return ok(result);
 	}
@@ -251,7 +247,7 @@ public class UserController extends Controller {
 		}
 		String result = new String();
 		if (format.equals("json")) {
-			result = new Gson().toJson(users);
+			result = new GsonBuilder().excludeFieldsWithModifiers(Modifier.PROTECTED).create().toJson(users);
 		}
 
 		return ok(result);

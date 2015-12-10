@@ -17,9 +17,6 @@
 package models;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -39,19 +36,19 @@ public class User {
 	@JoinTable(	name = "Followers",
 				joinColumns = { @JoinColumn(name ="userId", referencedColumnName = "id")},
 				inverseJoinColumns = { @JoinColumn(name = "followerId", referencedColumnName = "id") })
-	private Set<User> followers;
+	protected Set<User> followers;
 
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(	name = "friendRequests",
 			joinColumns = { @JoinColumn(name ="userId", referencedColumnName = "id")},
 			inverseJoinColumns = { @JoinColumn(name = "senderId", referencedColumnName = "id") })
-	private Set<User> friendRequestSender;
+	protected Set<User> friendRequestSender;
 
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(	name = "friendship",
 			joinColumns = { @JoinColumn(name ="userAId", referencedColumnName = "id")},
 			inverseJoinColumns = { @JoinColumn(name = "userBId", referencedColumnName = "id") })
-	private Set<User> friends;
+	protected Set<User> friends;
 
 //	private String middleInitial;
 //	private String affiliation;

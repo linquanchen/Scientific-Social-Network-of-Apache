@@ -25,7 +25,7 @@
             <h1>Notification Center</h1>
             <hr>
             @if(req.isEmpty & inbox.isEmpty & outbox.isEmpty) {
-                <p>You have no new messages</p>
+                <p>You don't have new messages.</p>
             } else {
                 @if(!req.isEmpty) {
                     <h2>Friend Requests</h2>
@@ -74,7 +74,9 @@
                     </table>
                 }
             }
-            @write_message("")
+        <hr>
+            <h3>Private Mail</h3>
+            @fixed.write_message("")
         </div>
     </body>
 </html>

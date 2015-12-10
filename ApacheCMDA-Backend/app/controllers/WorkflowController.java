@@ -19,6 +19,7 @@ package controllers;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import models.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -33,6 +34,7 @@ import javax.inject.Singleton;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.lang.reflect.Modifier;
 import java.util.*;
 
 @Named
@@ -174,11 +176,10 @@ public class WorkflowController extends Controller {
         if (json.get("wfOutput")!=null) workflow.setWfOutput(json.get("wfOutput").asText());
         if (json.get("wfStatus")!=null) workflow.setStatus(json.get("wfStatus").asText());
         workflow.setWfDate(new Date());
-        if(!workflow.getWfContributors().contains(user)) {
-            workflow.getWfContributors().add(user);
-        }
+        //if(!workflow.getWfContributors().contains(user)) {
+        //    workflow.getWfContributors().add(user);
+        //}
         workflowRepository.save(workflow);
-
         return created(new Gson().toJson("success"));
     }
 
@@ -282,7 +283,7 @@ public class WorkflowController extends Controller {
 
         String result = new String();
         if (format.equals("json")) {
-            result = new Gson().toJson(workflow);
+            result = new GsonBuilder().excludeFieldsWithModifiers(Modifier.PROTECTED).create().toJson(workflow);
         }
 
 //        Map<String, Object> map = new HashMap<>();
@@ -310,7 +311,7 @@ public class WorkflowController extends Controller {
 
         String result = new String();
         if (format.equals("json")) {
-            result = new Gson().toJson(workflowList);
+            result = new GsonBuilder().excludeFieldsWithModifiers(Modifier.PROTECTED).create().toJson(workflowList);
         }
 
         return ok(result);
@@ -326,7 +327,7 @@ public class WorkflowController extends Controller {
 
         String result = new String();
         if (format.equals("json")) {
-            result = new Gson().toJson(workflowList);
+            result = new GsonBuilder().excludeFieldsWithModifiers(Modifier.PROTECTED).create().toJson(workflowList);
         }
 
         return ok(result);
@@ -405,7 +406,7 @@ public class WorkflowController extends Controller {
         String result = new String();
         if (format.equals("json")) {
             map.put("timeline", workflowWithOffset);
-            result = new Gson().toJson(map);
+            result = new GsonBuilder().excludeFieldsWithModifiers(Modifier.PROTECTED).create().toJson(map);
         }
 
         return ok(result);
@@ -572,7 +573,7 @@ public class WorkflowController extends Controller {
 
             List<Workflow> workflowList = workflowRepository.findByTagId(tagId);
 
-            String result = new Gson().toJson(workflowList);
+            String result = new GsonBuilder().excludeFieldsWithModifiers(Modifier.PROTECTED).create().toJson(workflowList);
             return  ok(result);
 
         } catch (Exception e){
@@ -590,7 +591,7 @@ public class WorkflowController extends Controller {
             
             List<Workflow> workflowList = workflowRepository.findByTitle("%" + title + "%");
 
-            String result = new Gson().toJson(workflowList);
+            String result = new GsonBuilder().excludeFieldsWithModifiers(Modifier.PROTECTED).create().toJson(workflowList);
             return  ok(result);
 
         } catch (Exception e){
@@ -601,7 +602,7 @@ public class WorkflowController extends Controller {
 
     public Result getTop3WorkFlow() {
         List<Workflow> topWorkflow = workflowRepository.findTop3Workflow();
-        String result = new Gson().toJson(topWorkflow);
+        String result = new GsonBuilder().excludeFieldsWithModifiers(Modifier.PROTECTED).create().toJson(topWorkflow);
         return  ok(result);
     }
 
@@ -615,7 +616,7 @@ public class WorkflowController extends Controller {
             List<Comment> comments = commentRepository.findByWorkflowId(workflowId);
 
 
-            return ok(new Gson().toJson(comments));
+            return ok(new GsonBuilder().excludeFieldsWithModifiers(Modifier.PROTECTED).create().toJson(comments));
         } catch (Exception e){
             e.printStackTrace();
             return Common.badRequestWrapper("Failed to fetch comments");
