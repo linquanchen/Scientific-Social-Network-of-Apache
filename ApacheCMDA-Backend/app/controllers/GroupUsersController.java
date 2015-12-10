@@ -33,7 +33,10 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
 
 @Named
 @Singleton
@@ -112,6 +115,13 @@ public class GroupUsersController extends Controller {
             return Common.badRequestWrapper("The group does not exist!");
         }
 
+        for (GroupUsers group: groups) {
+            for (int i=0; i<group.getGroupMembers().size(); i++) {
+                Set<User> empty = new HashSet<>();
+                group.getGroupMembers().get(i).setFollowers(empty);
+                group.getGroupMembers().get(i).setFriends(empty);
+            }
+        }
         String result = new String();
         if (format.equals("json")) {
             result = new GsonBuilder().excludeFieldsWithModifiers(Modifier.PROTECTED).create().toJson(groups);

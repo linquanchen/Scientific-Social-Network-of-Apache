@@ -94,6 +94,12 @@ GET            /mail/getMailDetail/mailId/:mailId                               
 GET           /mail/getInbox/:id/json                                                                    @controllers.MailController.getInbox(id: Long, format: String="json")
 GET           /mail/getOutbox/:id/json                                                                   @controllers.MailController.getOutbox(id: Long, format: String="json")
 
+#Suggestion
+POST          /suggestion/publishSuggestion                                                              @controllers.SuggestionsController.publishSuggestion
+POST          /suggestion/addTag                                                                        @controllers.SuggestionsController.addTag
+GET           /suggestion/voteToSuggestion/:suggestionId                                                @controllers.SuggestionsController.voteToSuggestion(suggestionId: Long)
+GET           /suggestion/getSuggestionForWorkflow/:workflowId                                          @controllers.SuggestionsController.getSuggestionForWorkflow(workflowId: Long)
+
 # Tag
 #input:String tag
 POST           /tag/createTag                                                                            @controllers.TagController.createTag

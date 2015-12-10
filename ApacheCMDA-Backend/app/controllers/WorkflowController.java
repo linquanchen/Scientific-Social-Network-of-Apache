@@ -136,8 +136,8 @@ public class WorkflowController extends Controller {
     public Result updateWorkflow() {
         JsonNode json = request().body().asJson();
         if (json == null) {
-            System.out.println("Workflow not created, expecting Json data");
-            return Common.badRequestWrapper("Workflow not created, expecting Json data");
+            System.out.println("Workflow not updated, expecting Json data");
+            return Common.badRequestWrapper("Workflow not updated, expecting Json data");
         }
 
         long wfID = json.path("wfID").asLong();
@@ -147,6 +147,9 @@ public class WorkflowController extends Controller {
         if (workflow == null) {
             return Common.badRequestWrapper("Workflow doesn't exist.");
         }
+
+        System.out.println("wfID is " + wfID);
+        System.out.println("userID is " + userID);
 
         //public workflow cannot be edit by others
         long wfGroupId = workflow.getGroupId();
@@ -165,6 +168,7 @@ public class WorkflowController extends Controller {
             return ok(error);
         }
 
+        System.out.println("have access");
         if (json.get("wfTitle")!=null) workflow.setWfTitle(json.get("wfTitle").asText());
         if (json.get("wfCode")!=null) workflow.setWfCode(json.get("wfCode").asText());
         if (json.get("wfDesc")!=null)  workflow.setWfDesc(json.get("wfDesc").asText());
@@ -175,10 +179,11 @@ public class WorkflowController extends Controller {
         if (json.get("wfInput")!=null) workflow.setWfInput(json.get("wfInput").asText());
         if (json.get("wfOutput")!=null) workflow.setWfOutput(json.get("wfOutput").asText());
         if (json.get("wfStatus")!=null) workflow.setStatus(json.get("wfStatus").asText());
-        workflow.setWfDate(new Date());
-        //if(!workflow.getWfContributors().contains(user)) {
-        //    workflow.getWfContributors().add(user);
-        //}
+        Date cur = new Date();
+        workflow.setWfDate(cur);
+        if(!workflow.getWfContributors().contains(user)) {
+            workflow.getWfContributors().add(user);
+        }
         workflowRepository.save(workflow);
         return created(new Gson().toJson("success"));
     }
@@ -245,6 +250,9 @@ public class WorkflowController extends Controller {
         }
 
         Workflow workflow = workflowRepository.findOne(wfID);
+        Set<User> empty = new HashSet<>();
+        workflow.getUser().setFollowers(empty);
+        workflow.getUser().setFriends(empty);
 
         if (workflow == null) {
             System.out.println("The workflow does not exist!");
@@ -317,12 +325,15 @@ public class WorkflowController extends Controller {
         return ok(result);
     }
 
-    //get user's own workflow list.
+    //get public workflow list.
     public Result getPublicWorkflow(String format) {
 
         List<Workflow> workflowList = workflowRepository.findPubicWorkflow();
         for(Workflow workflow: workflowList) {
             workflow.setEdit(true);
+            Set<User> empty = new HashSet<>();
+            workflow.getUser().setFollowers(empty);
+            workflow.getUser().setFriends(empty);
         }
 
         String result = new String();
@@ -378,9 +389,12 @@ public class WorkflowController extends Controller {
         List<Workflow> workflows = workflowRepository.findByUserID(id);
 
         for(Workflow w: workflows) {
-            if(allWorkflows.contains(w)) {
-                int index = allWorkflows.indexOf(w);
-                allWorkflows.get(index).setEdit(true);
+            if(w.getGroupId() != 0) {
+                for (int i=0; i<allWorkflows.size(); i++) {
+                    if ((int)w.getGroupId() == (int)allWorkflows.get(i).getGroupId()) {
+                        allWorkflows.get(i).setEdit(true);
+                    }
+                }
             }
             else {
                 w.setEdit(true);
@@ -396,6 +410,11 @@ public class WorkflowController extends Controller {
         };
 
         Collections.sort(allWorkflows, cmp);
+        for(Workflow wf: allWorkflows) {
+            Set<User> empty = new HashSet<>();
+            wf.getUser().setFollowers(empty);
+            wf.getUser().setFriends(empty);
+        }
         Map<String, Object> map = new HashMap<>();
         map.put("size", allWorkflows.size());
         List<Workflow> workflowWithOffset = new ArrayList<>();
@@ -572,6 +591,11 @@ public class WorkflowController extends Controller {
             Long tagId = tag.getId();
 
             List<Workflow> workflowList = workflowRepository.findByTagId(tagId);
+            for (Workflow wf: workflowList) {
+                Set<User> empty = new HashSet<>();
+                wf.getUser().setFollowers(empty);
+                wf.getUser().setFriends(empty);
+            }
 
             String result = new GsonBuilder().excludeFieldsWithModifiers(Modifier.PROTECTED).create().toJson(workflowList);
             return  ok(result);
@@ -590,6 +614,11 @@ public class WorkflowController extends Controller {
             }
             
             List<Workflow> workflowList = workflowRepository.findByTitle("%" + title + "%");
+            for (Workflow wf: workflowList) {
+                Set<User> empty = new HashSet<>();
+                wf.getUser().setFollowers(empty);
+                wf.getUser().setFriends(empty);
+            }
 
             String result = new GsonBuilder().excludeFieldsWithModifiers(Modifier.PROTECTED).create().toJson(workflowList);
             return  ok(result);
@@ -614,6 +643,11 @@ public class WorkflowController extends Controller {
             }
 
             List<Comment> comments = commentRepository.findByWorkflowId(workflowId);
+            for (Comment comment: comments) {
+                Set<User> empty = new HashSet<>();
+                comment.getUser().setFollowers(empty);
+                comment.getUser().setFriends(empty);
+            }
 
 
             return ok(new GsonBuilder().excludeFieldsWithModifiers(Modifier.PROTECTED).create().toJson(comments));

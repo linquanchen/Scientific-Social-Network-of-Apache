@@ -91,3 +91,8 @@ GET         /friends/reject/:id                                 controllers.Noti
 POST        /mail/sendmail                                      controllers.NotificationController.sendMessage()
 GET         /mail/detail/:id                                    controllers.NotificationController.pmdetailpage(id: Long)
 GET         /notifications/count                                controllers.NotificationController.getNotifications()
+
+# suggestion
+POST        /suggestion/addSuggestion/:wid                      controllers.WorkflowController.addSuggestion(wid: Long)
+POST        /suggestion/addSuggestionTag/:suggestionID          controllers.WorkflowController.addSuggestionTag(suggestionID: Long)
+GET         /suggestion/voteToSuggestion/:suggestionID          controllers.WorkflowController.voteToSuggestion(suggestionID: Long)

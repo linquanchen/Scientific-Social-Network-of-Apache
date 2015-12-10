@@ -1,4 +1,4 @@
-@(wf: Workflow, comments: List[Comment], replyRes: List[List[Reply]], userName: String, userId: Long)
+@(wf: Workflow, comments: List[Comment], replyRes: List[List[Reply]],suggestions: List[Suggestion], userName: String, userId: Long)
 <html>
     <head>
         <link href='@routes.Assets.at("css/bootstrap.min.css")' rel="stylesheet"/>
@@ -40,6 +40,47 @@
                     </ul>
                 </div>
             </div>
+
+            <div class="row">
+                <h3>Suggestions:</h3>
+                <ul class="list-group list-view">
+                @for( i <- 0 until suggestions.size) {
+                    <li class="list-group-item list-view outer-list">
+                        <h4><span class="red">&#35; @(i + 1)</span></h4>
+                        <p>@suggestions(i).getsContent()</p>
+                        <div>
+                            <button class="btn-xs btn-primary mt-btn" type="submit" action="@routes.WorkflowController.voteToSuggestion(suggestions(i).getId)">Vote</button>
+                            <a>@suggestions(i).getsVote</a>
+                        </div>
+
+                        <form class="form" action="@routes.WorkflowController.addSuggestionTag(suggestions(i).getId)" enctype="multipart/form-data" method="POST">
+                            <a href="javascript:void(0)" class="toggle">addTag</a>
+                            <div class="ninja hide-hood">
+                                <input class="form-control input-sm" type="text" name="sTag">
+                                <button class="btn-xs btn-primary mt-btn" type="submit">submit</button>
+                            </div>
+                        </form>
+                        <ul class="list-group list-view">
+                            <li class="list-group-item list-view">
+                            @for(tag <- suggestions(i).getsTag()) {
+                                <td>@tag</td>
+                            }
+                            </li>
+                        </ul>
+                    </li>
+                }
+                </ul>
+            </div>
+            <div class="row">
+                <form class="form" role="form" action="@routes.WorkflowController.addSuggestion(wf.getId)"
+                enctype="multipart/form-data" method="POST">
+                    <div class="form-group">
+                        <textarea class="form-control" rows="5" name="sContent"></textarea>
+                        <button type="submit" class="btn btn-primary mt-btn" >Suggest</button>
+                    </div>
+                </form>
+            </div>
+
             <div class="row">
                 <h3>Comments:</h3>
                 <ul class="list-group list-view">
@@ -78,6 +119,9 @@
                 }
                 </ul>
             </div>
+
+
+
             <div class="row">
                 <form class="form" role="form" action="@routes.WorkflowController.addComment(wf.getId)"
                 enctype="multipart/form-data" method="POST">

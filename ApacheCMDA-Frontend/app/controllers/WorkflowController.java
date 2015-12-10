@@ -3,13 +3,11 @@ package controllers;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import models.Comment;
-import models.Group;
-import models.Reply;
-import models.Workflow;
+import models.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.http.impl.conn.SystemDefaultDnsResolver;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Http;
@@ -174,7 +172,14 @@ public class WorkflowController extends Controller {
             replyRes.add(listReply);
         }
 
-        return ok(workflowdetail.render(wf, commentRes, replyRes, session("username"), Long.parseLong(session("id"))));
+        JsonNode suggetionNode = APICall.callAPI(Constants.NEW_BACKEND + "suggestion/getSuggestionForWorkflow/" + wid.toString());
+        List<Suggestion> suggestionList = new ArrayList<>();
+        for (JsonNode n: suggetionNode) {
+            Suggestion cur = new Suggestion(n);
+            suggestionList.add(cur);
+        }
+
+        return ok(workflowdetail.render(wf, commentRes, replyRes,  suggestionList, session("username"), Long.parseLong(session("id"))));
     }
 
     public static Result edit(Long wid)
@@ -248,6 +253,7 @@ public class WorkflowController extends Controller {
             flash("error", "Form value invalid");
         }
         JsonNode wfresponse = Workflow.update(jnode);
+        System.out.println("response is "+ wfresponse.path("error"));
 
         if (wfresponse == null || wfresponse.has("error")) {
             if (wfresponse == null) flash("error", "Create workflow error.");
@@ -327,6 +333,64 @@ public class WorkflowController extends Controller {
             res.add(wf);
         }
         return ok(forum.render(res, session("username"), Long.parseLong(session("id"))));
+    }
+
+    public static Result addSuggestion(Long wid) {
+        Form<Workflow> form = f_wf.bindFromRequest();
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode jnode = mapper.createObjectNode();
+
+        try {
+            jnode.put("wfID", wid.toString());
+            jnode.put("userID", session("id"));
+            jnode.put("sContent", form.field("sContent").value());
+        }catch(Exception e) {
+            flash("error", "Form value invalid");
+        }
+        JsonNode addSgstResponse = Suggestion.createSuggestion(jnode);
+
+        if (addSgstResponse == null || addSgstResponse.has("error")) {
+            if (addSgstResponse == null) flash("error", "Create suggestion error.");
+            else flash("error", addSgstResponse.get("error").textValue());
+            return redirect(routes.WorkflowController.main());
+        }
+        flash("success", "Add Suggestion successfully.");
+        return redirect(routes.WorkflowController.main());
+    }
+
+    public static Result addSuggestionTag(Long suggestionID) {
+        Form<Workflow> form = f_wf.bindFromRequest();
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode jnode = mapper.createObjectNode();
+
+        try {
+            jnode.put("sID", suggestionID.toString());
+            jnode.put("sTag", form.field("sTag").value());
+        }catch(Exception e) {
+            flash("error", "Form value invalid");
+        }
+        JsonNode addTagtResponse = Suggestion.addTagToSuggestion(jnode);
+
+        if (addTagtResponse == null || addTagtResponse.has("error")) {
+            if (addTagtResponse == null) flash("error", "Add tag to suggestion error.");
+            else flash("error", addTagtResponse.get("error").textValue());
+            return redirect(routes.WorkflowController.main());
+        }
+        flash("success", "Add tag successfully.");
+        return redirect(routes.WorkflowController.main());
+    }
+
+    public static Result voteToSuggestion(Long suggestionID) {
+        System.out.println("suggestionsid is " + suggestionID);
+        JsonNode voteNode = APICall.callAPI(Constants.NEW_BACKEND + "suggestion/voteToSuggestion/" + suggestionID.toString());
+        System.out.println("voteNode is " + voteNode);
+        if (voteNode == null || voteNode.has("error")) {
+            if (voteNode == null) flash("error", "Add tag to suggestion error.");
+            else flash("error", voteNode.get("error").textValue());
+            return redirect(routes.WorkflowController.main());
+        }
+        flash("success", "Add tag successfully.");
+        return redirect(routes.WorkflowController.main());
     }
 
 
