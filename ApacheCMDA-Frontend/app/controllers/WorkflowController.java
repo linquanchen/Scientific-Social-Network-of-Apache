@@ -8,6 +8,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.impl.conn.SystemDefaultDnsResolver;
+import org.jsoup.Jsoup;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -454,6 +455,8 @@ public class WorkflowController extends Controller {
             con.disconnect();
         } catch (Exception e) {
             e.printStackTrace();
+            flash("error", "Workflow not found.");
+            return redirect(routes.WorkflowController.main());
         }
         imgPath = imgPath.replaceFirst("public", "assets");
         try {
@@ -461,7 +464,7 @@ public class WorkflowController extends Controller {
             jnode.put("wfTitle", wfTitle);
             jnode.put("wfCategory", "MyExperiment");
             jnode.put("wfCode", code);
-            jnode.put("wfDesc", desc);
+            jnode.put("wfDesc", Jsoup.parse(desc).text());
             jnode.put("wfGroupId", 0);
             jnode.put("wfImg", imgPath);
             jnode.put("wfInput", "");
