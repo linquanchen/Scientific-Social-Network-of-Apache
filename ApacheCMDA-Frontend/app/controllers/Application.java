@@ -48,7 +48,7 @@ public class Application extends Controller {
     public static Result index() {
         if (notpass()) return redirect(routes.Application.login());
         List<Workflow> top3Wf = getTop3Workflow();
-        return ok(home.render(session("username"), session("id"), top3Wf));
+        return ok(home.render(session("username"), session("id")));
     }
 
     public static class Login {
@@ -75,9 +75,10 @@ public class Application extends Controller {
     }
 
     public static Result home() {
-        if (notpass()) return redirect(routes.Application.login());
-        List<Workflow> top3Wf = getTop3Workflow();
-        return ok(home.render(session("username"), session("id"), top3Wf));
+        if (notpass()){
+            return ok(home.render("undefined", "-1"));
+        }
+        return ok(home.render(session("username"), session("id")));
     }
 
     public static List<Workflow> getTop3Workflow() {
@@ -114,9 +115,7 @@ public class Application extends Controller {
             session("id", response.get("id").toString());
             session("username", response.get("userName").textValue());
             session("email", loginForm.data().get("email"));
-            return redirect(
-                    routes.Application.index()
-            );
+            return redirect("/timeline/0");
         }
     }
 
