@@ -7,6 +7,7 @@ import models.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.http.impl.conn.SystemDefaultDnsResolver;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Http;
@@ -380,8 +381,9 @@ public class WorkflowController extends Controller {
     }
 
     public static Result voteToSuggestion(Long suggestionID) {
+        System.out.println("suggestionsid is " + suggestionID);
         JsonNode voteNode = APICall.callAPI(Constants.NEW_BACKEND + "suggestion/voteToSuggestion/" + suggestionID.toString());
-
+        System.out.println("voteNode is " + voteNode);
         if (voteNode == null || voteNode.has("error")) {
             if (voteNode == null) flash("error", "Add tag to suggestion error.");
             else flash("error", voteNode.get("error").textValue());

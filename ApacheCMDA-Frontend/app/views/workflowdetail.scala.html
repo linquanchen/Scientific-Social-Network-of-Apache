@@ -41,28 +41,27 @@
                 <ul class="list-group list-view">
                 @for( i <- 0 until suggestions.size) {
                     <li class="list-group-item list-view outer-list">
-                        <h4><span class="red">&#35; @(i + 1)
-                            <p>@suggestions(i).getsContent()</p>
-                            <div class="ninja hide-hood">
-                                <button class="btn-xs btn-primary mt-btn" type="submit" action="@routes.WorkflowController.voteToSuggestion(suggestions(i).getId)">Vote</button>
-                                <p>@suggestions(i).getsVote</p>
-                            </div>
+                        <h4><span class="red">&#35; @(i + 1)</span></h4>
+                        <p>@suggestions(i).getsContent()</p>
+                        <div>
+                            <button class="btn-xs btn-primary mt-btn" type="submit" action="@routes.WorkflowController.voteToSuggestion(suggestions(i).getId)">Vote</button>
+                            <a>@suggestions(i).getsVote</a>
+                        </div>
 
-                            <ul class="list-group list-view">
-                            @for( j <- 0 until suggestions(i).getsTag.size) {
-                                <li class="list-group-item list-view">
-                                    <form class="form" action="@routes.WorkflowController.addSuggestionTag(suggestions(i).getId)" enctype="multipart/form-data" method="POST">
-                                        <div class="ninja hide-hood">
-                                            <input class="form-control input-sm" type="text" name="sTag">
-                                            <button class="btn-xs btn-primary mt-btn" type="submit">addTag</button>
-                                        </div>
-                                    </form>
-                                    @for(tag <- suggestions(i).getsTag()) {
-                                        <td>tag</td>
-                                    }
-                                </li>
+                        <form class="form" action="@routes.WorkflowController.addSuggestionTag(suggestions(i).getId)" enctype="multipart/form-data" method="POST">
+                            <a href="javascript:void(0)" class="toggle">addTag</a>
+                            <div class="ninja hide-hood">
+                                <input class="form-control input-sm" type="text" name="sTag">
+                                <button class="btn-xs btn-primary mt-btn" type="submit">submit</button>
+                            </div>
+                        </form>
+                        <ul class="list-group list-view">
+                            <li class="list-group-item list-view">
+                            @for(tag <- suggestions(i).getsTag()) {
+                                <td>@tag</td>
                             }
-                            </ul>
+                            </li>
+                        </ul>
                     </li>
                 }
                 </ul>
