@@ -1,4 +1,4 @@
-@(username: String, userId: Long)
+@(username: String, userId: Long, sessionUser: Long)
 
 <script src='@routes.Assets.at("js/bootstrap.min.js")'></script>
 <script src='@routes.Assets.at("js/header.js")'></script>
@@ -37,7 +37,7 @@
                 <li class="dropdown">
                     <a href="#" id="currentuser" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">@username <span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                        <li><a href="/profile/@userId">Profile</a></li>
+                        <li><a href="/profile/@sessionUser">Profile</a></li>
                         <li><a href="/logout">Logout</a></li>
                     </ul>
                 </li>

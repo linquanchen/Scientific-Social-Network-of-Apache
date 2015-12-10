@@ -33,14 +33,34 @@
     margin-bottom:0px;
 }
 .card p.card-content {
-    text-indent:22px;
+    margin-top:5px;
+    text-align: center;
 }
 
-.well {padding:8px}
+.well {padding:8px; position: relative}
 
 .card h4 {margin-top:0px;margin-left:11px}
 
 .card.well .well {
     background-color: #ffffff;
     margin-left: 10px;
+}
+
+.timeline-profile {
+    height:110px;
+    width: 110px;
+    border-radius:55px;
+    display: block;
+    margin: 0 auto;
+}
+
+.right-top{
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    color: #555555;
+    background: #F5DFB4;
+    padding: 1px 6px;
+    box-shadow: 1px 1px 1px;
+    border: 1px solid #999999;
 }

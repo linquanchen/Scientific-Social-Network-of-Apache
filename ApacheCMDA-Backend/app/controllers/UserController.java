@@ -507,7 +507,10 @@ public class UserController extends Controller {
 			userRepository.save(receiver);
 			userRepository.save(sender);
 
-			return ok("Friend request is accepted!");
+			JsonObject jsonObject = new JsonObject();
+			jsonObject.addProperty("success", "Success");
+
+			return ok(new Gson().toJson(jsonObject));
 		} catch (Exception e){
 			e.printStackTrace();
 			return badResponse("Cannot create friendship");

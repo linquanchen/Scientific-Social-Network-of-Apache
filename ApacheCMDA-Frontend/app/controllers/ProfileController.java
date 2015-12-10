@@ -119,7 +119,7 @@ public class ProfileController extends Controller {
 
         List<Workflow> wf = getMyWorkflows(id);
 
-        return ok(profile.render(user, followers, followees, myfriends, session("username"), isFollower, isFollowee, isFriend));
+        return ok(profile.render(user, followers, followees, myfriends, session("username"), session("id"), isFollower, isFollowee, isFriend));
     }
 
     public static List<Workflow> getMyWorkflows(Long id)

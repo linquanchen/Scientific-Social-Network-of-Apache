@@ -1,35 +1,40 @@
 @(workflows: List[Workflow], userName: String, userId: Long)
 
-<link href='@routes.Assets.at("css/bootstrap.min.css")'
-rel="stylesheet"/>
-<link href='@routes.Assets.at("css/header.css")'
-rel="stylesheet"/>
-<script src='@routes.Assets.at("js/jquery-1.1.js")'></script>
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Document</title>
+        <link href='@routes.Assets.at("css/bootstrap.min.css")'
+        rel="stylesheet"/>
+        <link href='@routes.Assets.at("css/header.css")'
+        rel="stylesheet"/>
+        <script src='@routes.Assets.at("js/jquery-1.1.js")'></script>
 
-<style>
-.forum.table > tbody > tr > td {
-vertical-align: middle ;
-}
+        <style>
+        .forum.table > tbody > tr > td {
+        vertical-align: middle ;
+        }
 
-.forum.fa {
-width: 1em ;
-text-align: center ;
-}
+        .forum.fa {
+        width: 1em ;
+        text-align: center ;
+        }
 
-.forum.table th.cell-stat {
-width: 6em ;
-}
+        .forum.table th.cell-stat {
+        width: 6em ;
+        }
 
-.forum.table th.cell-stat-2x {
-width: 14em ;
-}
-</style>
+        .forum.table th.cell-stat-2x {
+        width: 14em ;
+        }
+        </style>
+    </head>
+    <body>
+        <div id="header">
+        @fixed.header(userName, userId, userId)
+        </div>
 
-<div id="header">
-@fixed.header(userName, userId)
-</div>
-
-    @main("Forum") {
         <div class="container">
 
             <h1>Forums</h1>
@@ -57,4 +62,9 @@ width: 14em ;
                 </tbody>
             </table>
         </div>
-    }
+    </body>
+</html>
+
+
+
+
