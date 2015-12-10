@@ -1,4 +1,4 @@
-@(username: String, userId: String, top3Wf: List[Workflow])
+@(username: String, userId: String)
 <!doctype html>
 <html lang="en">
     <head>
@@ -6,25 +6,27 @@
         <title>Document</title>
         <link href='@routes.Assets.at("css/bootstrap.min.css")' rel="stylesheet"/>
         <link href='@routes.Assets.at("css/header.css")' rel="stylesheet"/>
+        <link href='@routes.Assets.at("css/home.css")' rel="stylesheet"/>
         <script src='@routes.Assets.at("js/jquery-1.1.js")'></script>
+        <script src='@routes.Assets.at("js/home.js")'></script>
     </head>
     <body>
-
         <div id="header">@fixed.header(username, Long.parseLong(userId), Long.parseLong(userId))</div>
-        <div class="container">
-            <h1>Welcome @username!</h1>
-            <p><table>
-            <tr><th>Workflow Title</th><th>Workflow View</th><th>Workflow Detail</th></tr>
-            @for( i <- top3Wf.indices) {
-                <tr>
-                    <td>@top3Wf(i).getWfTitle</td>
-                    <td>@top3Wf(i).getWfViewCount</td>
-                    <td><a href="/workflow/get/@top3Wf(i).getId">Detail</a></td>
-                </tr>
-            }
-        </table>
-            <hr>
-            <a href="/logout">Logout</a>
-        </div>
+        <section class="sec-2">
+            <div class="banner">
+                <div class="hello">
+                    <p>Workflow</p>
+                    <p>Centric Scientific Social Network</p>
+                </div>
+                <div class="entry">
+                    @if(userId != "-1"){
+                        <a href="/timeline/0">Explore Workflows ></a>
+                    }else{
+                        <a href="/login">Explore Workflows ></a>
+                    }
+
+                </div>
+            </div>
+        </section>
     </body>
 </html>
