@@ -257,6 +257,8 @@ public class WorkflowController extends Controller {
             jnode.put("wfCategory", form.field("wfCategory").value());
             jnode.put("wfCode", form.field("wfCode").value());
             jnode.put("wfDesc", form.field("wfDesc").value());
+            //jnode.put("wfInput", form.field("wfInput").value());
+            //jnode.put("wfOutput", form.field("wfOutput").value());
         }catch(Exception e) {
             flash("error", "Form value invalid");
         }
