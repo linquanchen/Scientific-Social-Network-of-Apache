@@ -52,11 +52,12 @@ public class SignupController  extends Controller {
             try {
                 byte[] bytes = IOUtils.toByteArray(new FileInputStream(file));
                 FileUtils.writeByteArrayToFile(new File(imgPathToSave), bytes);
+                imgPathToSave = "/" + imgPathToSave;
             } catch (IOException e) {
-                imgPathToSave = "public/images/service.jpeg";
+                imgPathToSave = "/public/images/service.jpeg";
             }
         } else {
-            imgPathToSave = "public/images/service.jpeg";
+            imgPathToSave = "/public/images/service.jpeg";
         }
         imgPathToSave = imgPathToSave.replaceFirst("public", "assets");
 
