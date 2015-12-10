@@ -35,6 +35,7 @@ public class Workflow {
     private List<String> tags = new ArrayList<String>();
     private String wfDate = "NaN";
     private String wfStatus = "norm";
+    private String avatar;
 
     public List<String> getTags() {
         return tags;
@@ -78,6 +79,7 @@ public class Workflow {
         if (node.get("edit")!=null) wfEdit = node.get("edit").asBoolean();
         if (node.get("wfDate")!=null) wfDate = node.get("wfDate").asText();
         if (node.get("status")!=null) wfStatus = node.get("status").asText();
+        if (node.get("user")!=null && node.get("user").get("avatar")!=null) avatar = node.get("user").get("avatar").asText();
 
         if (node.get("wfInput") != null) {
             String inputs[] = node.get("wfInput").asText().split("\\|");
@@ -250,5 +252,13 @@ public class Workflow {
     }
 
     public void setWfStatus(String wfStatus) {this.wfStatus = wfStatus;}
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
 
 }
