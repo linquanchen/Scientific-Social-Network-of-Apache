@@ -41,9 +41,8 @@
 
 .card h4 {margin-top:0px;margin-left:11px}
 
-.card.well .well {
-    background-color: #ffffff;
-    margin-left: 10px;
+.right-border{
+    border-right: 1px solid #C7C7C7;
 }
 
 .timeline-profile {
