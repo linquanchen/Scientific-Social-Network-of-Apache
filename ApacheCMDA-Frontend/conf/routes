@@ -75,6 +75,7 @@ GET         /workflow/delete/:wid                               controllers.Work
 
 GET         /workflow/tags/add/wf/:wid/tag/:tg                  controllers.WorkflowController.addTag(wid: Long, tg: String)
 GET         /workflow/tags/delete/wf/:wid/tag/:tg               controllers.WorkflowController.deleteTag(wid: Long, tg: String)
+GET         /workflow/import                                    controllers.WorkflowController.parseXML(wid: Long)
 
 
 # group

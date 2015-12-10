@@ -8,6 +8,10 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.impl.conn.SystemDefaultDnsResolver;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Http;
@@ -19,13 +23,17 @@ import views.html.workflow;
 import views.html.workflow_edit;
 import views.html.workflowdetail;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
+import java.util.*;
 
 public class WorkflowController extends Controller {
     final static Form<Workflow> f_wf = Form.form(Workflow.class);
@@ -135,7 +143,6 @@ public class WorkflowController extends Controller {
     }
 
     public static Result workflowDetail(Long wid) {
-
         JsonNode wfres = APICall.callAPI(Constants.NEW_BACKEND + "workflow/get/workflowID/"
                 + wid.toString() + "/userID/" + session("id") + "/json");
 
@@ -264,6 +271,13 @@ public class WorkflowController extends Controller {
         return redirect(routes.WorkflowController.main());
     }
 
+    private static String concatWithCommas(Collection<String> words) {
+        StringBuilder wordList = new StringBuilder();
+        for (String word : words) {
+            wordList.append(word + ",");
+        }
+        return new String(wordList.deleteCharAt(wordList.length() - 1));
+    }
 
     public static Result createFlow() {
         Form<Workflow> form = f_wf.bindFromRequest();
@@ -393,7 +407,83 @@ public class WorkflowController extends Controller {
         return redirect(routes.WorkflowController.main());
     }
 
+    public static Result parseXML(Long id){
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode jnode = mapper.createObjectNode();
+        String wfTitle = "";
+        String desc= "";
+        String tagstr = "";
+        String code = "";
+        String imgPath = "public/images/service.jpeg";
+        try {
+            URL url = new URL("http://www.myexperiment.org/workflow.xml?id=" + id.toString());
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            con.setRequestMethod("GET");
+            con.connect();
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder= dbFactory.newDocumentBuilder();
+            Document doc = dBuilder.parse(con.getInputStream());
+            doc.getDocumentElement().normalize();
 
-    // TODO: need a timeline page displaying the posts of followees.
-    // TODO: POST and DISPLAY comment on workflow. user can reply to comments.
+            //get each article label information
+            NodeList artList = doc.getDocumentElement().getChildNodes();
+            for (int i=0; i<artList.getLength(); i++)
+            {
+                Node oneArticle = artList.item(i);
+                if(oneArticle instanceof Element){
+                    switch(oneArticle.getNodeName()){
+                        case "title": wfTitle = (oneArticle.getTextContent()); break;
+                        case "description":desc = (oneArticle.getTextContent()); break;
+                        case "content-uri": code = (oneArticle.getTextContent()); break;
+                        case "previeweeeeee":
+                            URL website = new URL(oneArticle.getTextContent());
+                            ReadableByteChannel rbc = Channels.newChannel(website.openStream());
+                            String ext = FilenameUtils.getExtension(oneArticle.getTextContent());
+                            imgPath = "public/images/" + "image_" + UUID.randomUUID() + "." + ext;
+                            FileOutputStream fos = new FileOutputStream(imgPath);
+                            fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+                        case "tags":
+                            ArrayList<String> tags = new ArrayList<>();
+                            NodeList childArt = oneArticle.getChildNodes();
+                            for(int j=0;j<childArt.getLength();j++){
+                                Node attr = childArt.item(j);
+                                if(attr instanceof Element){
+                                    tags.add(attr.getLastChild().getTextContent().trim());
+                                }
+                            }
+                            tagstr = concatWithCommas(tags);
+                    }
+                }
+            }
+            con.disconnect();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        imgPath = imgPath.replaceFirst("public", "assets");
+        try {
+            jnode.put("userID", session("id"));
+            jnode.put("wfTitle", wfTitle);
+            jnode.put("wfCategory", "MyExperiment");
+            jnode.put("wfCode", code);
+            jnode.put("wfDesc", desc);
+            jnode.put("wfGroupId", 0);
+            jnode.put("wfImg", imgPath);
+            jnode.put("wfInput", "");
+            jnode.put("wfUrl", "");
+            jnode.put("wfOutput", "");
+            jnode.put("wfTags", tagstr);
+        }catch(Exception e) {
+            flash("error", "Form value invalid");
+        }
+
+        JsonNode wfresponse = Workflow.create(jnode);
+        if (wfresponse == null || wfresponse.has("error")) {
+            //Logger.debug("Create Failed!");
+            if (wfresponse == null) flash("error", "Create workflow error.");
+            else flash("error", wfresponse.get("error").textValue());
+            return redirect(routes.WorkflowController.main());
+        }
+        flash("success", "Create workflow successfully.");
+        return redirect(routes.WorkflowController.main());
+    }
 }
