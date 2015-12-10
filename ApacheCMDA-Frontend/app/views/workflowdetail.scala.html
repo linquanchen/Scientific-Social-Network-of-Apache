@@ -37,6 +37,13 @@
                                 <a class="btn-sm btn-danger" href="/workflow/delete/@wf.getId">Delete</a>
                             </li>
                         }
+                        <li class="list-group-item"><span class="badge">Tags</span>
+                        <ul class="tags">
+                        @for( tag <- wf.getTags) {
+                            <li class="detail_tag">@tag</li>
+                        }
+                        </ul>
+                        </li>
                     </ul>
                 </div>
             </div>
