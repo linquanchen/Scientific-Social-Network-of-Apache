@@ -44,7 +44,7 @@ public class SearchController extends Controller{
                     User obj = new User();
                     obj.setUserName(n.get("userName").textValue());
                     try {
-                        obj.setEmail(n.get("email").toString());
+                        obj.setEmail(n.get("email").textValue());
                     } catch (Exception e){
                         obj.setEmail("");
                     }

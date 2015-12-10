@@ -44,7 +44,7 @@ public class ProfileController extends Controller {
             JsonNode user = entity.get("User");
             u.setId(Long.parseLong(user.get("id").textValue()));
             u.setUserName(user.get("userName").textValue());
-            u.setEmail(user.get("email").toString());
+            u.setEmail(user.get("email").textValue());
             u.setAvatar(user.get("avatar").textValue());
             result.add(u);
         }
@@ -82,7 +82,7 @@ public class ProfileController extends Controller {
         String res_email = "";
         Long res_id = response.get("id").asLong();
         try {
-            res_email = response.get("email").toString();
+            res_email = response.get("email").textValue();
         } catch (Exception e) {
             res_email = "";
         }

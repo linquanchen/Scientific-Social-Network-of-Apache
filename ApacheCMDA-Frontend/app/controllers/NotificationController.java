@@ -79,7 +79,7 @@ public class NotificationController extends Controller {
             JsonNode n = ni.get("User");
             obj.setUserName(n.get("userName").textValue());
             try {
-                obj.setEmail(n.get("email").toString());
+                obj.setEmail(n.get("email").textValue());
             } catch (Exception e){
                 obj.setEmail("");
             }
