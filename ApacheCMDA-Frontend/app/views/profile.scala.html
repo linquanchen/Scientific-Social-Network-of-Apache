@@ -1,4 +1,4 @@
-@(user: User, follows: List[User], followees: List[User], myFriends: List[User], self_name: String, isFollower: Boolean, isFollowee: Boolean, isFriend: Boolean)
+@(user: User, follows: List[User], followees: List[User], myFriends: List[User], self_name: String, self_id: String, isFollower: Boolean, isFollowee: Boolean, isFriend: Boolean)
 
 <html>
     <head>
@@ -10,7 +10,7 @@
     </head>
     <body>
         <div id="header">
-        @fixed.header(self_name, user.getId())
+        @fixed.header(self_name, user.getId, Long.parseLong(self_id))
         </div>
 
         <div class="container">

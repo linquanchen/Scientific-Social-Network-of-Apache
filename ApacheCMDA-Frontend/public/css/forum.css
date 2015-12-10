@@ -21,11 +21,10 @@
 .ninja {display:none}
 
 .mt-btn{margin-top:5px}
-.toggle{margin-bottom: 5px;display:block;}
+.toggle{margin-bottom: -10px;display:block;}
 .list-group-item p {padding:10px;border:1px silver solid;background-color: #EFEEEE;}
 .shy {color:#cccccc;}
 .shy:hover {color:#333333;}
-
 .detail_tag {
     padding: 2px 15px 2px 5px;
     border-radius: 0px 35px 35px 0px;

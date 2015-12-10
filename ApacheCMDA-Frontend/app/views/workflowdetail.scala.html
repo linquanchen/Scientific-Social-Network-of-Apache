@@ -3,15 +3,16 @@
     <head>
         <link href='@routes.Assets.at("css/bootstrap.min.css")' rel="stylesheet"/>
         <link href='@routes.Assets.at("css/header.css")' rel="stylesheet"/>
-        <link rel="stylesheet" href='@routes.Assets.at("css/forum.css")' rel="stylesheet">
+        <link rel="stylesheet" href='@routes.Assets.at("css/forum.css")'>
         <link rel="stylesheet" href='@routes.Assets.at("css/prism.css")'>
+        <link rel="stylesheet" href='@routes.Assets.at("css/detail.css")'>
         <script src='@routes.Assets.at("js/jquery-1.1.js")'></script>
         <script src='@routes.Assets.at("js/forum.js")'></script>
         <script src='@routes.Assets.at("js/prism.js")'></script>
     </head>
     <body>
         <div id="header">
-        @fixed.header(userName, userId)
+        @fixed.header(userName, userId, userId)
         </div>
         <div class="container">
             <h1>@wf.getWfTitle</h1>
@@ -53,24 +54,25 @@
                 <ul class="list-group list-view">
                 @for( i <- 0 until suggestions.size) {
                     <li class="list-group-item list-view outer-list">
-                        <h4><span class="red">&#35; @(i + 1)</span></h4>
-                        <p>@suggestions(i).getsContent()</p>
-                        <div>
-                            <button class="btn-xs btn-primary mt-btn" type="submit" action="@routes.WorkflowController.voteToSuggestion(suggestions(i).getId)">Vote</button>
-                            <a>@suggestions(i).getsVote</a>
+                        <div class="row">
+                            <div class="col-md-11">
+                                <p>@suggestions(i).getsContent()</p>
+                            </div>
+                            <div class="col-md-1">
+                                <p class="suggestion-like"><a href="javascript:void(0)" data-sugId="@suggestions(i).getId" class="like"></a><span>@suggestions(i).getsVote</span></p>
+                            </div>
                         </div>
-
                         <form class="form" action="@routes.WorkflowController.addSuggestionTag(suggestions(i).getId)" enctype="multipart/form-data" method="POST">
                             <a href="javascript:void(0)" class="toggle">addTag</a>
                             <div class="ninja hide-hood">
                                 <input class="form-control input-sm" type="text" name="sTag">
-                                <button class="btn-xs btn-primary mt-btn" type="submit">submit</button>
+                                <button class="btn-xs btn-primary mt-btn" type="submit">Submit</button>
                             </div>
                         </form>
                         <ul class="list-group list-view">
                             <li class="list-group-item list-view">
                             @for(tag <- suggestions(i).getsTag()) {
-                                <td>@tag</td>
+                                #@tag
                             }
                             </li>
                         </ul>
@@ -94,14 +96,24 @@
                 @for( i <- 0 until comments.size) {
                     <li class="list-group-item list-view outer-list">
                         <h4><span class="red">&#35; @(i + 1)</span> &#64; @(comments(i).getUserName) <small class="right">@(new Date(comments(i).getTimestamp).toString)</small></h4>
-                        <p>@comments(i).getContent</p>
+                        <div class="row">
+                            <div class="col-md-10">
+                                <p>@comments(i).getContent</p>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="comment-vote">
+                                    <a href="javascript:void(0)" data-act="voteup" data-commentId="@comments(i).getId" data-wfid="@wf.getId" class="vote-thumb vote-up"></a>
+                                    <p class="vote-num">@comments(i).getThumb</p>
+                                    <a href="javascript:void(0)" data-act="votedown" data-commentId="@comments(i).getId" data-wfid="@wf.getId" class="vote-thumb vote-down"></a>
+                                </div>
+                            </div>
+                        </div>
                         <form class="form" action="@routes.WorkflowController.addReply(comments(i).getUser, comments(i).getId, wf.getId)" enctype="multipart/form-data" method="POST">
                             <a href="javascript:void(0)" class="toggle">Reply</a>
                             <div class="ninja hide-hood">
                                 <input class="form-control input-sm" type="text" name="content">
                                 <button class="btn-xs btn-primary mt-btn" type="submit">Submit</button>
                             </div>
-
                         </form>
                         <ul class="list-group list-view">
                         @for( j <- 0 until replyRes.get(i).size) {

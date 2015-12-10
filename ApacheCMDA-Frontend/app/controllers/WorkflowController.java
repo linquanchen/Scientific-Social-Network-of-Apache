@@ -113,7 +113,7 @@ public class WorkflowController extends Controller {
         if (res == null || res.has("error")) {
             flash("error", res.get("error").textValue());
         }
-        return redirect(routes.WorkflowController.workflowDetail(wid));
+        return ok("{\"success\":\"success\"}");
     }
 
     public static Result thumbDown(Long commentId, Long wid) {
@@ -122,7 +122,7 @@ public class WorkflowController extends Controller {
         if (res == null || res.has("error")) {
             flash("error", res.get("error").textValue());
         }
-        return redirect(routes.WorkflowController.workflowDetail(wid));
+        return ok("{\"success\":\"success\"}");
     }
 
     public static Result deleteWorkflow(Long wid) {
@@ -369,7 +369,7 @@ public class WorkflowController extends Controller {
             return redirect(routes.WorkflowController.main());
         }
         flash("success", "Add Suggestion successfully.");
-        return redirect(routes.WorkflowController.main());
+        return redirect(routes.WorkflowController.workflowDetail(wid));
     }
 
     public static Result addSuggestionTag(Long suggestionID) {
@@ -404,7 +404,7 @@ public class WorkflowController extends Controller {
             return redirect(routes.WorkflowController.main());
         }
         flash("success", "Add tag successfully.");
-        return redirect(routes.WorkflowController.main());
+        return ok("{\"success\":\"success\"}");
     }
 
     public static Result parseXML(Long id){
