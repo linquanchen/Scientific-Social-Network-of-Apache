@@ -19,6 +19,7 @@ package controllers;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import models.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -33,6 +34,7 @@ import javax.inject.Singleton;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.lang.reflect.Modifier;
 import java.util.*;
 
 @Named
@@ -130,7 +132,7 @@ public class SuggestionsController extends Controller {
         }
 
         List<Suggestions> suggestionsList = suggestionsRepository.findByWorkflowId(workflowId);
-        return created(new Gson().toJson(suggestionsList));
+        return created(new GsonBuilder().excludeFieldsWithModifiers(Modifier.PROTECTED).create().toJson(suggestionsList));
     }
 
 }
