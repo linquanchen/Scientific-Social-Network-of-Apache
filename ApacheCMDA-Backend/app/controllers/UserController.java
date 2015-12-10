@@ -16,28 +16,24 @@
  */
 package controllers;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.*;
-
+import com.fasterxml.jackson.databind.JsonNode;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import models.User;
 import models.UserRepository;
-import play.mvc.*;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import play.mvc.Controller;
+import play.mvc.Result;
+import util.Common;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.persistence.PersistenceException;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-
-import util.Common;
+import java.lang.reflect.Modifier;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.*;
 
 /**
  * The main set of web services.
@@ -66,6 +62,7 @@ public class UserController extends Controller {
 		String name = json.path("username").asText();
 		String email = json.path("email").asText();
 		String password = json.path("password").asText();
+		String avatar = json.path("avatar").asText();
 
 		try {
 			if (userRepository.findByEmail(email) != null) {
@@ -73,6 +70,7 @@ public class UserController extends Controller {
 				return Common.badRequestWrapper("Email has been used");
 			}
 			User user = new User(name, email, MD5Hashing(password));
+			user.setAvatar(avatar);
 			userRepository.save(user);
 			System.out.println("User saved: " + user.getId());
 			return created(new Gson().toJson(user.getId()));
@@ -182,6 +180,7 @@ public class UserController extends Controller {
 			jsonObject.addProperty("id", user.getId());
 			jsonObject.addProperty("userName", user.getUserName());
 			jsonObject.addProperty("email", user.getEmail());
+			jsonObject.addProperty("avatar", user.getAvatar());
 			result = new Gson().toJson(jsonObject);
 		}
 
@@ -196,7 +195,7 @@ public class UserController extends Controller {
 		}
 		String result = new String();
 		if (format.equals("json")) {
-			result = new Gson().toJson(userList);
+			result = new GsonBuilder().excludeFieldsWithModifiers(Modifier.PROTECTED).create().toJson(userList);
 		}
 		return ok(result);
 	}
@@ -248,7 +247,7 @@ public class UserController extends Controller {
 		}
 		String result = new String();
 		if (format.equals("json")) {
-			result = new Gson().toJson(users);
+			result = new GsonBuilder().excludeFieldsWithModifiers(Modifier.PROTECTED).create().toJson(users);
 		}
 
 		return ok(result);

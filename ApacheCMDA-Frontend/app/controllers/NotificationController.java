@@ -83,6 +83,7 @@ public class NotificationController extends Controller {
             } catch (Exception e){
                 obj.setEmail("");
             }
+            obj.setAvatar(n.get("avatar").textValue());
             obj.setId(Long.parseLong(n.get("id").textValue()));
             requests.add(obj);
         }

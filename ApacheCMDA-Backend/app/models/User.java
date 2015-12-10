@@ -17,9 +17,6 @@
 package models;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -33,24 +30,25 @@ public class User {
 	private String password;
 	private String email;
 	private String phoneNumber;
+	private String avatar;
 
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(	name = "Followers",
 				joinColumns = { @JoinColumn(name ="userId", referencedColumnName = "id")},
 				inverseJoinColumns = { @JoinColumn(name = "followerId", referencedColumnName = "id") })
-	private Set<User> followers;
+	protected Set<User> followers;
 
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(	name = "friendRequests",
 			joinColumns = { @JoinColumn(name ="userId", referencedColumnName = "id")},
 			inverseJoinColumns = { @JoinColumn(name = "senderId", referencedColumnName = "id") })
-	private Set<User> friendRequestSender;
+	protected Set<User> friendRequestSender;
 
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(	name = "friendship",
 			joinColumns = { @JoinColumn(name ="userAId", referencedColumnName = "id")},
 			inverseJoinColumns = { @JoinColumn(name = "userBId", referencedColumnName = "id") })
-	private Set<User> friends;
+	protected Set<User> friends;
 
 //	private String middleInitial;
 //	private String affiliation;
@@ -142,11 +140,20 @@ public class User {
 
 	public String toJson() {
 		return "{\"User\":{\"id\":\"" + id + "\", \"userName\":\"" + userName
-				+ "\", \"password\":\"" + password + "\", \"email\":\"" + email
+				+ "\", \"password\":\"" + password + "\", \"email\":\"" + email + "\", \"avatar\":\"" + avatar
+
 				+ "\", \"phoneNumber\":\"" + phoneNumber + "\"}}";
 	}
 	
 	public void setStatus(boolean status){ this.status = status; }
+
+	public String getAvatar() {
+		return avatar;
+	}
+
+	public void setAvatar(String avatar) {
+		this.avatar = avatar;
+	}
 
 /*	public String getMiddleInitial() {
 		return middleInitial;

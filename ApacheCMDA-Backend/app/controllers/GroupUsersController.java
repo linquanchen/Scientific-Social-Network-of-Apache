@@ -19,22 +19,24 @@ package controllers;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import models.GroupUsers;
 import models.GroupUsersRepository;
 import models.User;
 import models.UserRepository;
 import play.mvc.Controller;
 import play.mvc.Result;
+import util.Common;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import util.Common;
 
 @Named
 @Singleton
@@ -122,7 +124,7 @@ public class GroupUsersController extends Controller {
         }
         String result = new String();
         if (format.equals("json")) {
-            result = new Gson().toJson(groups);
+            result = new GsonBuilder().excludeFieldsWithModifiers(Modifier.PROTECTED).create().toJson(groups);
         }
 
         return ok(result);
@@ -143,7 +145,7 @@ public class GroupUsersController extends Controller {
 
         String result = new String();
         if (format.equals("json")) {
-            result = new Gson().toJson(groupMembers);
+            result = new GsonBuilder().excludeFieldsWithModifiers(Modifier.PROTECTED).create().toJson(groupMembers);
         }
 
         return ok(result);

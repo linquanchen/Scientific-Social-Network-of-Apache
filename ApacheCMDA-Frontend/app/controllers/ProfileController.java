@@ -45,6 +45,7 @@ public class ProfileController extends Controller {
             u.setId(Long.parseLong(user.get("id").textValue()));
             u.setUserName(user.get("userName").textValue());
             u.setEmail(user.get("email").toString());
+            u.setAvatar(user.get("avatar").textValue());
             result.add(u);
         }
         return result;
@@ -64,6 +65,7 @@ public class ProfileController extends Controller {
             User u = new User();
             u.setId(Long.parseLong(entity.get("id").textValue()));
             u.setUserName(entity.get("userName").textValue());
+            u.setAvatar(entity.get("avatar").textValue());
             result.add(u);
         }
         return result;
@@ -89,6 +91,7 @@ public class ProfileController extends Controller {
         user.setUserName(res_user);
         user.setEmail(res_email);
         user.setId(res_id);
+        user.setAvatar(response.get("avatar").textValue());
 
         List<User> followers = ProfileController.getFollow(id, FollowType.FOLLOWER);
         List<User> followees = ProfileController.getFollow(id, FollowType.FOLLOWEE);

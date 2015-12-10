@@ -4,43 +4,45 @@
 <script src='@routes.Assets.at("js/header.js")'></script>
 
 <nav class="navbar navbar-default header">
-  <div class="container-fluid">
-    <!-- Brand and toggle get grouped for better mobile display -->
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <a class="navbar-brand" href="/">ApacheWorkflow</a>
-    </div>
-    <!-- Collect the nav links, forms, and other content for toggling -->
-    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-      <ul class="nav navbar-nav">
-    @if(username != "undefined") {
-        <li class="title_lable"><a href="/">Home <span class="sr-only">(current)</span></a></li>
-        <li class="title_lable"><a href="/search">Search</a></li>
-        <li class="title_lable"><a href="/workflow">Workflow</a></li>
-        <li class="title_lable"><a href="/timeline/0">Timeline</a></li>
-        <li class="title_lable">
-            <a href="/notifications">Notification</a>
-            <div class="reddot hide"></div>
-        </li>
-        <li><a href="/workflow/getPublicWorkflow">Forum</a></li>
-    }
-      </ul>
-      <ul class="nav navbar-nav navbar-right">
-    @if(username != "undefined") {
-        <li class="dropdown">
-          <a href="#" id="currentuser" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">@username<span class="caret"></span></a>
-          <ul class="dropdown-menu">
-            <li><a href="/profile/@userId">Profile</a></li>
-            <li><a href="/logout">Logout</a></li>
-          </ul>
-        </li>  
-    }
-      </ul>
-    </div><!-- /.navbar-collapse -->
-  </div><!-- /.container-fluid -->
+    <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse"
+            data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span> <span
+            class="icon-bar"></span> <span class="icon-bar"></span> <span
+            class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" style="padding-bottom: 0 ;" href="/climate"><img src='@routes.Assets.at("images/NASA_JPL_logo.png")' style="height: 40px ; width: 220px ;"></a>
+        </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+
+            @if(username != "undefined") {
+                <li class="hide" id="userFlag">This is hidden</li>
+                <li class="title_lable"><a href="/">Home <span class="sr-only">(current)</span></a></li>
+                <li class="title_lable"><a href="/search">Search</a></li>
+                <li class="title_lable"><a href="/workflow">Workflow</a></li>
+                <li class="title_lable"><a href="/timeline/0">Timeline</a></li>
+                <li class="title_lable">
+                    <a href="/notifications">Notification</a>
+                    <div class="reddot hide"></div>
+                </li>
+                <li><a href="/workflow/getPublicWorkflow">Forum</a></li>
+            }
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+            @if(username != "undefined") {
+                <li class="dropdown">
+                    <a href="#" id="currentuser" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">@username <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/profile/@userId">Profile</a></li>
+                        <li><a href="/logout">Logout</a></li>
+                    </ul>
+                </li>
+            }
+            </ul>
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
 </nav>
