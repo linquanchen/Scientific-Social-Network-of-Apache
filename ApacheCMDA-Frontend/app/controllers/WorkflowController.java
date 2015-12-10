@@ -257,8 +257,10 @@ public class WorkflowController extends Controller {
             jnode.put("wfCategory", form.field("wfCategory").value());
             jnode.put("wfCode", form.field("wfCode").value());
             jnode.put("wfDesc", form.field("wfDesc").value());
-            //jnode.put("wfInput", form.field("wfInput").value());
-            //jnode.put("wfOutput", form.field("wfOutput").value());
+            jnode.put("wfInput", form.field("wfInput").value());
+            jnode.put("wfOutput", form.field("wfOutput").value());
+            jnode.put("wfTags", form.field("wfTag").valueOr(""));
+
         }catch(Exception e) {
             flash("error", "Form value invalid");
         }
@@ -469,9 +471,9 @@ public class WorkflowController extends Controller {
             jnode.put("wfDesc", Jsoup.parse(desc).text());
             jnode.put("wfGroupId", 0);
             jnode.put("wfImg", imgPath);
-            jnode.put("wfInput", "");
+            jnode.put("wfInput", "Please Edit This Field");
             jnode.put("wfUrl", "");
-            jnode.put("wfOutput", "");
+            jnode.put("wfOutput", "Please Edit This Field");
             jnode.put("wfTags", tagstr);
         }catch(Exception e) {
             flash("error", "Form value invalid");
