@@ -1,0 +1,27 @@
+@(wf: Workflow)
+
+<div class="card well">
+    <p class="right-top">@wf.getWfCategory</p>
+    <h4 class="title"><a href="/workflow/get/@wf.getId">@wf.getWfTitle</a></h4>
+    <div class="row">
+
+        <div class="col-md-2 right-border">
+            <img class="timeline-profile" src="@wf.getAvatar" alt="small-img">
+            <p class="card-content"><a href="/profile/@wf.getUserId">@wf.getUserName</a></p>
+        </div>
+        <div class="col-md-10">
+            <div class="description">
+                <a href="/workflow/get/@wf.getId">
+                    <img width="100" height="120" src="@wf.getWfImg" alt="small-img">
+                </a>
+                <p>@wf.getWfDesc</p>
+                <div class="clear"></div>
+            </div>
+            <ul class="tags">
+            @for( tag <- wf.getTags) {
+                <li>@tag</li>
+            }
+            </ul>
+        </div>
+    </div>
+</div>

@@ -16,6 +16,7 @@
  */
 package models;
 
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
 import javax.inject.Named;
@@ -27,4 +28,18 @@ import java.util.List;
 public interface WorkflowRepository extends CrudRepository<Workflow, Long> {
     List<Workflow> findByUserID(Long id);
     Workflow findById(Long id);
+
+    @Query(value = "select w.* from Workflow w where (w.groupId = 0)", nativeQuery = true)
+    List<Workflow> findPubicWorkflow();
+
+    @Query(value = "select * from Workflow where id in (select workflowId from WorkflowAndTags where (tagId = ?1))", nativeQuery = true)
+    List<Workflow> findByTagId(Long tag);
+    
+    @Query(value = "select * from Workflow where wfTitle like ?1", nativeQuery = true)
+    List<Workflow> findByTitle(String title);
+
+    List<Workflow> findByGroupId(Long id);
+
+    @Query(value = "select w.* from Workflow w order by w.viewCount desc LIMIT 3", nativeQuery = true)
+    List<Workflow> findTop3Workflow();
 }

@@ -1,0 +1,39 @@
+@(userName: String, userId: Long)
+
+<html>
+    <head>
+        <link href='@routes.Assets.at("css/bootstrap.min.css")'
+        rel="stylesheet"/>
+        <link href='@routes.Assets.at("css/header.css")'
+        rel="stylesheet"/>
+
+        <script src='@routes.Assets.at("js/jquery-1.1.js")'></script>
+    </head>
+    <body>
+        <div id="header">
+        @fixed.header(userName, userId, userId)
+        </div>
+        <div class="container">
+            <div class="alert-info" role="alert">
+                @if(flash.containsKey("success")) {
+                    @flash.get("success")
+                }
+                @if(flash.containsKey("failed")) {
+                    @flash.get("failed")
+                }
+            </div>
+            <div>
+                <h3>Join group</h3>
+                <form action="@routes.GroupController.joinGroup()" method="POST">
+                    <input type="hidden" name="userID" value="@userId">
+                    <input type="text" name="groupUrl" placeholder="pass code">
+                    <button type="submit">Join</button>
+                </form>
+            </div>
+        </div>
+    </body>
+</html>
+
+
+
+

@@ -1,0 +1,56 @@
+@(userName: String, userId: Long, groups: List[Group])
+
+<html>
+    <head>
+        <link href='@routes.Assets.at("css/bootstrap.min.css")'
+        rel="stylesheet"/>
+        <link href='@routes.Assets.at("css/header.css")'
+        rel="stylesheet"/>
+
+        <script src='@routes.Assets.at("js/jquery-1.1.js")'></script>
+    </head>
+    <body>
+        <div id="header">
+        @fixed.header(userName, userId, userId)
+        </div>
+        <div class="container">
+            <div class="alert-info" role="alert">
+                @if(flash.containsKey("linkstring")) {
+                    Congratulations, the pass for the group is @flash.get("linkstring") !
+                }
+                @if(flash.containsKey("failed")) {
+                    @flash.get("failed")
+                }
+            </div>
+            <div>
+                <h3>Create new group</h3>
+                <form action="@routes.GroupController.createGroup()" method="POST">
+                    <input type="hidden" name="userID" value="@userId">
+                    <input type="text" name="groupName" placeholder="groupName">
+                    <input type="text" name="groupDescription" placeholder="groupDescription">
+                    <button type="submit">Create</button>
+                </form>
+            </div>
+
+            <h1>Your Groups</h1>
+            @if(groups != null) {
+                <table>
+                    <tr><th>Group Name</th><th>Pass code</th></tr>
+                    @for( group <- groups) {
+                        <tr>
+                            <td>@group.getGroupName</td>
+                            <td>@group.getGroupUrl</td>
+                        </tr>
+                    }
+                </table>
+            } else {
+                <p>You are not the admin of any group!</p>
+            }
+        </div>
+    </body>
+</html>
+
+
+
+
+

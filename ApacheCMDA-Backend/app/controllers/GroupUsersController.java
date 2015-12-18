@@ -19,18 +19,24 @@ package controllers;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import models.GroupUsers;
 import models.GroupUsersRepository;
 import models.User;
 import models.UserRepository;
 import play.mvc.Controller;
 import play.mvc.Result;
+import util.Common;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
 
 @Named
 @Singleton
@@ -52,24 +58,23 @@ public class GroupUsersController extends Controller {
         JsonNode json = request().body().asJson();
         if (json == null) {
             System.out.println("group not created, expecting Json data");
-            return badRequest("group not created, expecting Json data");
+            return Common.badRequestWrapper("group not created, expecting Json data");
         }
 
         long userID = json.path("userID").asLong();
         String groupName = json.path("groupName").asText();
         String groupDescription = json.path("groupDescription").asText();
-        String groupStatus = json.path("groupStatus").asText();
 
         User user = userRepository.findOne(userID);
         System.out.println("user is " + user);
         List<User> groupMembers = new ArrayList<User>();
         groupMembers.add(user);
 
-        GroupUsers group = new GroupUsers(userID, groupName, groupDescription, groupStatus, groupMembers);
+        GroupUsers group = new GroupUsers(userID, groupName, groupDescription, groupMembers);
         System.out.println("group is " + group);
         groupUsersRepository.save(group);
 
-        return created(new Gson().toJson(group.getGroupName()));
+        return created(new Gson().toJson(group.getGroupUrl()));
     }
 
     //post
@@ -77,36 +82,49 @@ public class GroupUsersController extends Controller {
         JsonNode json = request().body().asJson();
         if (json == null) {
             System.out.println("group not created, expecting Json data");
-            return badRequest("group not created, expecting Json data");
+            return Common.badRequestWrapper("group not created, expecting Json data");
         }
 
-        long groupID = json.path("groupID").asLong();
+        String groupUrl = json.path("groupUrl").asText();
         long userID = json.path("userID").asLong();
 
         User user = userRepository.findOne(userID);
-        GroupUsers group = groupUsersRepository.findById(groupID);
-        group.getGroupMembers().add(user);
-        groupUsersRepository.save(group);
+        List<GroupUsers> groups = groupUsersRepository.findByGroupUrl(groupUrl);
+        if(groups.size() == 0) {
+            return Common.badRequestWrapper("Failed to add member!");
+        }
+        else {
+            GroupUsers group = groups.get(0);
+            group.getGroupMembers().add(user);
+            groupUsersRepository.save(group);
 
-        return created(new Gson().toJson("success"));
+            return created(new Gson().toJson("success"));
+        }
     }
 
     //get
     public Result getGroupList(Long userID, String format) {
         if (userID == null) {
             System.out.println("user id is null or empty!");
-            return badRequest("user id is null or empty!");
+            return Common.badRequestWrapper("user id is null or empty!");
         }
 
-        List<GroupUsers> groups = groupUsersRepository.findByCreatorUser(userID);
+        List<GroupUsers> groups = groupUsersRepository.findByUserId(userID);
         if (groups == null) {
             System.out.println("The group does not exist!");
-            return badRequest("The group does not exist!");
+            return Common.badRequestWrapper("The group does not exist!");
         }
 
+        for (GroupUsers group: groups) {
+            for (int i=0; i<group.getGroupMembers().size(); i++) {
+                Set<User> empty = new HashSet<>();
+                group.getGroupMembers().get(i).setFollowers(empty);
+                group.getGroupMembers().get(i).setFriends(empty);
+            }
+        }
         String result = new String();
         if (format.equals("json")) {
-            result = new Gson().toJson(groups);
+            result = new GsonBuilder().excludeFieldsWithModifiers(Modifier.PROTECTED).create().toJson(groups);
         }
 
         return ok(result);
@@ -116,7 +134,7 @@ public class GroupUsersController extends Controller {
     public Result getGroupMember(Long groupId, String format) {
         if(groupId == null) {
             System.out.println("Id not created, please enter valid user");
-            return badRequest("Id not created, please enter valid user");
+            return Common.badRequestWrapper("Id not created, please enter valid user");
         }
 
         GroupUsers group = groupUsersRepository.findById(groupId);
@@ -127,7 +145,7 @@ public class GroupUsersController extends Controller {
 
         String result = new String();
         if (format.equals("json")) {
-            result = new Gson().toJson(groupMembers);
+            result = new GsonBuilder().excludeFieldsWithModifiers(Modifier.PROTECTED).create().toJson(groupMembers);
         }
 
         return ok(result);

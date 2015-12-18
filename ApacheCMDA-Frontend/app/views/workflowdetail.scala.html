@@ -1,24 +1,159 @@
-@(wf: Workflow, userName: String, userId: Long)
+@(wf: Workflow, comments: List[Comment], replyRes: List[List[Reply]], suggestions: List[Suggestion], userName: String, userId: Long)
+<html>
+    <head>
+        <link href='@routes.Assets.at("css/bootstrap.min.css")' rel="stylesheet"/>
+        <link href='@routes.Assets.at("css/header.css")' rel="stylesheet"/>
+        <link rel="stylesheet" href='@routes.Assets.at("css/forum.css")'>
+        <link rel="stylesheet" href='@routes.Assets.at("css/prism.css")'>
+        <link rel="stylesheet" href='@routes.Assets.at("css/detail.css")'>
+        <script src='@routes.Assets.at("js/jquery-1.1.js")'></script>
+        <script src='@routes.Assets.at("js/forum.js")'></script>
+        <script src='@routes.Assets.at("js/prism.js")'></script>
+    </head>
+    <body>
+        <div id="header">
+        @fixed.header(userName, userId, userId)
+        </div>
+        <div class="container">
+            <h1>@wf.getWfTitle</h1>
+            <hr>
+            <div class="row">
+                <div class="col-md-6">
+                    <h3>Workflow</h3>
+                    <img src="@wf.getWfImg" class="img-thumbnail main-img">
+                </div>
+                <div class="col-md-6">
+                    <h3>Description</h3>
+                    <ul class="list-group workflow-list main-list">
+                        <li class="list-group-item"><span class="badge">Name</span> @wf.getUserName</li>
+                        <li class="list-group-item"><span class="badge">Category</span> @wf.getWfCategory</li>
+                        <li class="list-group-item"><span class="badge">Detail</span> @wf.getWfDesc</li>
+                        <li class="list-group-item"><span class="badge">Input</span> @wf.getInputString</li>
+                        <li class="list-group-item"><span class="badge">Output</span> @wf.getOutputString</li>
+                        <li class="list-group-item"><span class="badge">
+                            Code</span><br><pre><code class="language-css">@wf.getWfCode</code></pre></li>
+                        <li class="list-group-item"><span class="badge">Tags</span>
+                            <ul class="tags">
+                            @for( tag <- wf.getTags) {
+                                <li class="detail_tag">@tag</li>
+                            }
+                            </ul>
+                        </li>
+                        @if(wf.isWfEdit) {
+                            <li class="list-group-item">
+                                <span class="badge">Action</span>
+                                <a class="btn-sm btn-primary" href="/workflow/update/@wf.getId">Edit</a>
+                                <a class="btn-sm btn-danger" href="/workflow/delete/@wf.getId">Delete</a>
+                            </li>
+                        }
 
-<link href='@routes.Assets.at("css/bootstrap.min.css")'
-rel="stylesheet"/>
-<link href='@routes.Assets.at("css/header.css")'
-rel="stylesheet"/>
+                    </ul>
+                </div>
+            </div>
 
-<script src='@routes.Assets.at("js/jquery-1.1.js")'></script>
+            <div class="row">
+                <h3>Suggestions:</h3>
+                <ul class="list-group list-view">
+                @for( i <- 0 until suggestions.size) {
+                    <li class="list-group-item list-view outer-list">
+                        <div class="row">
+                            <div class="col-md-11">
+                                <p>@suggestions(i).getsContent()</p>
+                            </div>
+                            <div class="col-md-1">
+                                <p class="suggestion-like"><a href="javascript:void(0)" data-sugId="@suggestions(i).getId" class="like"></a> <span>@suggestions(i).getsVote</span></p>
+                            </div>
+                        </div>
+                        @if(suggestions(i).getsTag().length > 0){
+                            <ul class="list-group list-view">
+                                <li class="list-group-item list-view">
+                                @for( tag <- suggestions(i).getsTag()) {
+                                    #@tag
+                                }
+                                </li>
+                            </ul>
+                        }
+                        <form class="form" action="@routes.WorkflowController.addSuggestionTag(suggestions(i).getId)" enctype="multipart/form-data" method="POST">
+                            <a href="javascript:void(0)" class="toggle">addTag</a>
+                            <div class="ninja hide-hood">
+                                <input class="form-control input-sm" type="text" name="sTag">
+                                <button class="btn-xs btn-primary mt-btn" type="submit">Submit</button>
+                            </div>
+                        </form>
 
-<div id="header">
-@fixed.header(userName ,userId)
-</div>
+                    </li>
+                }
+                </ul>
+            </div>
+            <div class="row">
+                <form class="form" role="form" action="@routes.WorkflowController.addSuggestion(wf.getId)"
+                enctype="multipart/form-data" method="POST">
+                    <div class="form-group">
+                        <textarea class="form-control" rows="5" name="sContent"></textarea>
+                        <button type="submit" class="btn btn-primary mt-btn" >Suggest</button>
+                    </div>
+                </form>
+            </div>
 
-@main("Welcome") {
-    <div>
-        <h1>Workflow Details</h1>
-        Title: <p>@wf.getWfTitle</p>
-        id: <p>@wf.getId</p>
-        username: <p>@wf.getUserName</p>
-        Category: <p>@wf.getWfCategory</p>
-        wfImg: <p>@wf.getWfImg</p>
-        Desc: <p>@wf.getWfDesc</p>
-    </div>
-}
+            <div class="row">
+                <h3>Comments:</h3>
+                <ul class="list-group list-view">
+                @for( i <- 0 until comments.size) {
+                    <li class="list-group-item list-view outer-list">
+                        <h4><span class="red">&#35; @(i + 1)</span> &#64; @(comments(i).getUserName) <small class="right">@(new Date(comments(i).getTimestamp).toString)</small></h4>
+                        <div class="row">
+                            <div class="col-md-10">
+                                <p>@comments(i).getContent</p>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="comment-vote">
+                                    <a href="javascript:void(0)" data-act="voteup" data-commentId="@comments(i).getId" data-wfid="@wf.getId" class="vote-thumb vote-up"></a>
+                                    <p class="vote-num">@comments(i).getThumb</p>
+                                    <a href="javascript:void(0)" data-act="votedown" data-commentId="@comments(i).getId" data-wfid="@wf.getId" class="vote-thumb vote-down"></a>
+                                </div>
+                            </div>
+                        </div>
+                        <form class="form" action="@routes.WorkflowController.addReply(comments(i).getUser, comments(i).getId, wf.getId)" enctype="multipart/form-data" method="POST">
+                            <a href="javascript:void(0)" class="toggle">Reply</a>
+                            <div class="ninja hide-hood">
+                                <input class="form-control input-sm" type="text" name="content">
+                                <button class="btn-xs btn-primary mt-btn" type="submit">Submit</button>
+                            </div>
+                        </form>
+                        <ul class="list-group list-view">
+                        @for( j <- 0 until replyRes.get(i).size) {
+                            <li class="list-group-item list-view">
+                                <h5>@(replyRes.get(i).get(j).getFromUserName) <span class="shy"> &rarr; @(replyRes.get(i).get(j).getToUserName)</span>
+                                <small class="right">@(new Date(replyRes.get(i).get(j).getTimestamp).toString)</small>
+                                </h5>
+                                <p>@("\t" + replyRes.get(i).get(j).getContent)</p>
+
+                                <form class="form" action="@routes.WorkflowController.addReply(replyRes.get(i).get(j).getFromUserId, comments(i).getId, wf.getId)" enctype="multipart/form-data" method="POST">
+                                    <a href="javascript:void(0)" class="toggle">Reply</a>
+                                    <div class="ninja hide-hood">
+                                        <input class="form-control input-sm" type="text" name="content">
+                                        <button class="btn-xs btn-primary mt-btn" type="submit">Submit</button>
+                                    </div>
+
+                                </form>
+                            </li>
+                        }
+                        </ul>
+                    </li>
+                }
+                </ul>
+            </div>
+
+
+            <div class="row">
+                <form class="form" role="form" action="@routes.WorkflowController.addComment(wf.getId)"
+                enctype="multipart/form-data" method="POST">
+                    <div class="form-group">
+                        <textarea class="form-control" rows="5" name="content"></textarea>
+                        <button type="submit" class="btn btn-primary mt-btn" >Comment</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </body>
+</html>

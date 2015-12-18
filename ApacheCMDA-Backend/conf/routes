@@ -67,11 +67,43 @@ GET           /users/sendFriendRequest/sender/:senderId/receiver/:receiverId    
 GET           /users/getFriendRequests/userId/:userId                                                    @controllers.UserController.getFriendRequests(userId: Long)
 GET           /users/acceptFriendRequest/userId/:userId/sender/:senderId                                 @controllers.UserController.acceptFriendRequest(userId: Long, senderId: Long)
 GET           /users/rejectFriendRequest/userId/:userId/sender/:senderId                                 @controllers.UserController.rejectFriendRequest(userId: Long, senderId: Long)
+GET           /users/getFriends/userId/:userId                                                           @controllers.UserController.getFriends(userId: Long)
+GET           /users/deleteFriend/userId/:userId/friendId/:friendId                                      @controllers.UserController.deleteFriend(userId: Long, friendId: Long)
+
 
 # Workflow
-POST          /workflow/post                                                                            @controllers.WorkflowController.post
-GET           /workflow/get/workflowID/:wfID/userID/:userID/json                                        @controllers.WorkflowController.get(wfID: Long, userID: Long, format: String="json")
+POST           /workflow/post                                                                            @controllers.WorkflowController.post
+POST           /workflow/updateWorkflow                                                                  @controllers.WorkflowController.updateWorkflow
+POST           /workflow/deleteWorkflow                                                                  @controllers.WorkflowController.deleteWorkflow
+GET            /workflow/get/workflowID/:wfID/userID/:userID/json                                        @controllers.WorkflowController.get(wfID: Long, userID: Long, format: String="json")
 GET           /workflow/getTimeline/:id/offset/:offset/json                                              @controllers.WorkflowController.getTimeLine(id: Long, offset: Long, format: String="json")
+GET           /workflow/getWorkflowList/:id/json                                                         @controllers.WorkflowController.getWorkflowList(id: Long, format: String="json")
+POST           /workflow/uploadImage/:id                                                                 @controllers.WorkflowController.uploadImage(id:Long)
+GET           /workflow/getPublicWorkflow/json                                                           @controllers.WorkflowController.getPublicWorkflow(format: String="json")
+
+GET            /workflow/getTags/workflowId/:wfId                                                        @controllers.WorkflowController.getTags(wfId: Long)
+POST           /workflow/setTag                                                                          @controllers.WorkflowController.setTag
+GET            /workflow/deleteTag/workflowId/:wfId/tag/:tag                                             @controllers.WorkflowController.deleteTag(wfId: Long, tag: String)
+GET            /workflow/getByTag/tag/:tag                                                               @controllers.WorkflowController.getByTag(tag: String)
+GET            /workflow/getByTitle/title/:title                                                         @controllers.WorkflowController.getByTitle(title: String)
+GET            /workflow/getTop3WorkFlow                                                                 @controllers.WorkflowController.getTop3WorkFlow()
+
+# Mail
+POST           /mail/sendMail                                                                            @controllers.MailController.sendMail
+GET            /mail/getMailDetail/mailId/:mailId                                                        @controllers.MailController.readMail(mailId: Long)
+GET           /mail/getInbox/:id/json                                                                    @controllers.MailController.getInbox(id: Long, format: String="json")
+GET           /mail/getOutbox/:id/json                                                                   @controllers.MailController.getOutbox(id: Long, format: String="json")
+
+#Suggestion
+POST          /suggestion/publishSuggestion                                                              @controllers.SuggestionsController.publishSuggestion
+POST          /suggestion/addTag                                                                        @controllers.SuggestionsController.addTag
+GET           /suggestion/voteToSuggestion/:suggestionId                                                @controllers.SuggestionsController.voteToSuggestion(suggestionId: Long)
+GET           /suggestion/getSuggestionForWorkflow/:workflowId                                          @controllers.SuggestionsController.getSuggestionForWorkflow(workflowId: Long)
+
+# Tag
+#input:String tag
+POST           /tag/createTag                                                                            @controllers.TagController.createTag
+POST           /tag/deleteTag                                                                            @controllers.TagController.deleteTag
 
 
 #Group
@@ -84,10 +116,14 @@ GET            /group/getGroupMember/:groupId/json                              
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file                                                                             controllers.Assets.at(path="/", file)
 
+
 #Workflow
 #GET            /workflow/getTimeline/:id/offset/:offset/json                                              @controllers.UserController.userSearch(id: Long, offset: Long, format: String="json")
 POST            /workflow/addComment                                                                       @controllers.WorkflowController.addComment
-
+GET             /workflow/getComments/:workflowId                                                         @controllers.WorkflowController.getComments(workflowId: Long)
 #Comment
 POST           /Comment/addReply                                                                         @controllers.CommentController.addReply
-POST           /Comment/replyReply                                                                       @controllers.CommentController.replyReply
+GET            /Comment/getReply/:commentId                                                              @controllers.CommentController.getReply(commentId: Long)
+GET            /Comment/getReply/:commentId                                                              @controllers.CommentController.getReply(commentId: Long)
+GET            /Comment/thumbUp/:commentId                                                              @controllers.CommentController.thumbUp(commentId: Long)
+GET            /Comment/thumbDown/:commentId                                                              @controllers.CommentController.thumbDown(commentId: Long)

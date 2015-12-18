@@ -1,0 +1,86 @@
+@(req: List[User], inbox: List[PMessage], outbox: List[PMessage], username: String, userId: String)
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Document</title>
+        <link href='@routes.Assets.at("css/bootstrap.min.css")'
+        rel="stylesheet"/>
+        <link href='@routes.Assets.at("css/header.css")'
+        rel="stylesheet"/>
+        <style>
+            .dark{
+                background-color:#F3F3F3;
+            }
+        </style>
+        <script src='@routes.Assets.at("js/jquery-1.1.js")'></script>
+    </head>
+    <body>
+        <div id="header">
+        @fixed.header(username, Long.parseLong(userId), Long.parseLong(userId))
+        </div>
+
+        <div class="container">
+            @flashmsg()
+            <h1>Notification Center</h1>
+            <hr>
+            @if(req.isEmpty & inbox.isEmpty & outbox.isEmpty) {
+                <p>You don't have new messages.</p>
+            } else {
+                @if(!req.isEmpty) {
+                    <h2>Friend Requests</h2>
+                    <table class="table">
+                        <tr><th>User</th><th>Email</th><th>Action</th></tr>
+                        @for( result <- req) {
+                            <tr>
+                                <td>@result.getUserName</td>
+                                <td>@result.getEmail</td>
+                                <td><a href="/friends/accept/@result.getId">Accept</a> <a href="/friends/reject/@result.getId">Reject</a></td>
+                            </tr>
+                        }
+                    </table>
+                }
+
+                @if(!inbox.isEmpty) {
+                    <h2>Inbox</h2>
+                    <table class="table">
+                        <tr><th>From</th><th>Title</th><th>Date</th></tr>
+                        @for( result <- inbox) {
+                            @if(result.isReadstatus){
+                                <tr class="dark">
+                            }else{
+                                <tr>
+                            }
+                                <td>@result.getFromUserMail</td>
+                                <td><a href="/mail/detail/@result.getId">@result.getMailTitle</a></td>
+                                <td>@result.getMailDate</td>
+                            </tr>
+                        }
+                    </table>
+                }
+
+                @if(!outbox.isEmpty) {
+                    <h2>OutBox</h2>
+                    <table class="table">
+                        <tr><th>To</th><th>Title</th><th>Date</th><th>isRead</th></tr>
+                        @for( result <- outbox) {
+                            <tr>
+                                <td>@result.getToUserMail</td>
+                                <td>@result.getMailTitle</td>
+                                <td>@result.getMailDate</td>
+                                <td>@result.isReadstatus</td>
+                            </tr>
+                        }
+                    </table>
+                }
+            }
+        <hr>
+            <h3>Private Mail</h3>
+            @fixed.write_message("")
+        </div>
+    </body>
+</html>
+
+
+
+

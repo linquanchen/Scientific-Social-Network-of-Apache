@@ -1,0 +1,70 @@
+@(workflows: List[Workflow], userName: String, userId: Long)
+
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Document</title>
+        <link href='@routes.Assets.at("css/bootstrap.min.css")'
+        rel="stylesheet"/>
+        <link href='@routes.Assets.at("css/header.css")'
+        rel="stylesheet"/>
+        <script src='@routes.Assets.at("js/jquery-1.1.js")'></script>
+
+        <style>
+        .forum.table > tbody > tr > td {
+        vertical-align: middle ;
+        }
+
+        .forum.fa {
+        width: 1em ;
+        text-align: center ;
+        }
+
+        .forum.table th.cell-stat {
+        width: 6em ;
+        }
+
+        .forum.table th.cell-stat-2x {
+        width: 14em ;
+        }
+        </style>
+    </head>
+    <body>
+        <div id="header">
+        @fixed.header(userName, userId, userId)
+        </div>
+
+        <div class="container">
+
+            <h1>Forums</h1>
+            <hr>
+            <table class="table forum table-striped">
+                <thead>
+                    <tr>
+                        <th class="cell-stat"></th>
+                        <th>Workflows</th>
+                        <th class="cell-stat text-center hidden-xs hidden-sm">Creator</th>
+                        <th class="cell-stat text-center hidden-xs hidden-sm">Category</th>
+                        <th class="cell-stat text-center hidden-xs hidden-sm">Views</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @for( workflow <- workflows) {
+                    <tr>
+                        <td class="text-center"><i class="fa fa-question fa-2x text-primary"></i></td>
+                        <td><a href="/workflow/get/@workflow.getId">@workflow.getWfTitle</a> <br> <small>@workflow.getShortWfDesc</small></td>
+                        <td class="text-center hidden-xs hidden-sm"><a href="/profile/@workflow.getUserId">@workflow.getUserName</a></td>
+                        <td class="text-center hidden-xs hidden-sm">@workflow.getWfCategory</td>
+                        <td class="text-center hidden-xs hidden-sm">@workflow.getWfViewCount</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </body>
+</html>
+
+
+
+

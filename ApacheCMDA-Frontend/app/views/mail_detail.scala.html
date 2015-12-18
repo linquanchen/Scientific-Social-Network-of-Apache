@@ -1,0 +1,27 @@
+@(mail: PMessage, username: String, userId: String)
+
+<html>
+    <head>
+        <link href='@routes.Assets.at("css/bootstrap.min.css")' rel="stylesheet"/>
+        <link href='@routes.Assets.at("css/header.css")' rel="stylesheet"/>
+        <script src='@routes.Assets.at("js/jquery-1.1.js")'></script>
+    </head>
+    <body>
+        <div id="header">@fixed.header(username, Long.parseLong(userId), Long.parseLong(userId))</div>
+        <div class="container">
+            <h1>Mail Detail</h1>
+            <p>From: @mail.getFromUserMail</p>
+            <p>To: @mail.getToUserMail</p>
+            <p>Title: @mail.getMailTitle</p>
+            <p>Content: @mail.getMailContent</p>
+            <p>Date: @mail.getMailDate</p>
+
+            <h2>Reply</h2>
+            @fixed.write_message(mail.getFromUserMail)
+        </div>
+    </body>
+</html>
+
+
+
+

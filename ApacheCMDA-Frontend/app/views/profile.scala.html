@@ -1,43 +1,83 @@
-@(user: User, follows: List[User], followees: List[User], self_name: String, isFollower: Boolean, isFollowee: Boolean)
+@(user: User, follows: List[User], followees: List[User], myFriends: List[User], self_name: String, self_id: String, isFollower: Boolean, isFollowee: Boolean, isFriend: Boolean)
 
-<link href='@routes.Assets.at("css/bootstrap.min.css")'
-        rel="stylesheet"/>
-<link href='@routes.Assets.at("css/header.css")'
-        rel="stylesheet"/>
+<html>
+    <head>
+        <link href='@routes.Assets.at("css/bootstrap.min.css")' rel="stylesheet"/>
+        <link href='@routes.Assets.at("css/header.css")' rel="stylesheet"/>
+        <link href='@routes.Assets.at("css/profile.css")' rel="stylesheet"/>
+        <script src='@routes.Assets.at("js/jquery-1.1.js")'></script>
+        <title>Profile</title>
+    </head>
+    <body>
+        <div id="header">
+        @fixed.header(self_name, user.getId, Long.parseLong(self_id))
+        </div>
 
-<script src='@routes.Assets.at("js/jquery-1.1.js")'></script>
+        <div class="container">
+            @flashmsg()
+            <div class="row profile-header">
+                <div class="col-md-6">
+                    <img src="@user.getAvatar" class="align-right avatar">
+                </div>
+                <div class="col-md-6">
+                    <h1>@user.getUserName()</h1>
+                    <p>@user.getEmail()</p>
+                </div>
+            </div>
+            @if(self_name != user.getUserName) {
+                @if(!isFollower) {
+                    <p><a href="/follow/@user.getId">Follow</a></p>
+                }
+                @if(isFollower) {
+                    <p><a href="/unfollow/@user.getId">Unfollow</a></p>
+                }
+                @if(!isFriend) {
+                    <p><a href="/befriend/@user.getId">Send Friend Request</a></p>
+                } else {
+                    <p>We are friends.</p>
+                    <p><a href="/deletefriend/@user.getId">Delete Friend</a></p>
+                }
+                <p><a href="/">BackHome</a></p>
+            }
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="well">
+                        <h3>Followers</h3>
+                        <table class="table">
+                        @for( follower <- follows) {
+                            <tr><td><a href="/profile/@follower.getId">@follower.getUserName</a></td><td>@follower.getEmail</td></tr>
+                        }
+                        </table>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="well">
+                        <h3>Followees</h3>
+                        <table class="table">
+                        @for( followee <- followees) {
+                            <tr><td><a href="/profile/@followee.getId">@followee.getUserName</a></td><td>@followee.getEmail</td></tr>
+                        }
+                        </table>
+                    </div>
+                </div>
+                @if(self_name == user.getUserName) {
+                    <div class="col-md-4">
+                        <div class="well">
+                            <h3>Friends</h3>
+                            <table class="table">
+                            @for( friend <- myFriends) {
+                                <tr><td><a href="/profile/@friend.getId">@friend.getUserName</a></td> <td>@friend.getEmail</td></tr>
+                            }
+                            </table>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </body>
+</html>
 
-<div id="header">
-  @fixed.header(self_name ,user.getId())
-</div>
 
-@main("Welcome") {
-  <div>
-    <h1>@user.getUserName()</h1>
-    <p>@user.getEmail()</p>
-    @if(self_name!=user.getUserName) {
-      @if(!isFollower) {
-        <p><a href="/follow/@user.getId">Follow</a></p>
-        <p><a href="/">BackHome</a></p>
-      }
-      @if(isFollower) {
-        <p><a href="/unfollow/@user.getId">Unfollow</a></p>
-        <p><a href="/">BackHome</a></p>
-      }
-    }
-    <h3>Followers</h3>
-    <table>
-      <tr><th>Follower</th><th>Email</th></tr>
-      @for(follower <- follows){
-        <tr><td>@follower.getUserName</td><td>@follower.getEmail</td></tr>
-      }
-    </table>
-    <h3>Followees</h3>
-    <table>
-      <tr><th>Followee</th><th>Email</th></tr>
-      @for(followee <- followees){
-        <tr><td>@followee.getUserName</td><td>@followee.getEmail</td></tr>
-      }
-    </table>
-  </div>
-}
+
+
+

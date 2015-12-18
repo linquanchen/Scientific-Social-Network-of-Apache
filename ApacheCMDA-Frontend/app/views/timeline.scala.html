@@ -1,0 +1,45 @@
+@(userName: String, userId: Long, allTimeline: List[Workflow], offset: Long)
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Document</title>
+        <link href='@routes.Assets.at("css/bootstrap.min.css")' rel="stylesheet"/>
+        <link href='@routes.Assets.at("css/header.css")' rel="stylesheet"/>
+        <link rel="stylesheet" href='@routes.Assets.at("css/workflow.css")' rel="stylesheet">
+
+        <script src='@routes.Assets.at("js/jquery-1.1.js")'></script>
+    </head>
+    <body>
+        <div id="header">
+        @fixed.header(userName, userId, userId)
+        </div>
+        <div class="container">
+            @plus(input: Long) = @{
+                input + 1
+            }
+            @minus(input: Long) = @{
+                input - 1
+            }
+
+            @if(allTimeline != null) {
+                <h1>Workflows</h1>
+                <hr>
+                @for( result <- allTimeline) {
+                    @if(result.getWfStatus == "norm") {
+                        @fixed.workflowcard(result)
+                    }
+                }
+                <form action="/timeline/@plus(offset) ">
+                    <button name="subject" type="submit" value="Next Page">Next Page</button>
+                </form>
+            }
+
+            @if(offset > 0) {
+                <form action="/timeline/@minus(offset)">
+                    <button name="subject" type="submit" value="Back">Back</button>
+                </form>
+            }
+        </div>
+    </body>
+</html>
