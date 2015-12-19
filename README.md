@@ -13,5 +13,6 @@ There’s surely no better place for scientists to meet and mingle with other sc
 |Shi Bai|(650)575-9563|dairystone@gmail.com|
 |Weiying Wang|(669)234-9985|weiyi.wang@sv.cmu.edu |
 |Linquan Chen|(650)521-2598|lqchen613@gamil.com|
-|Juyan Li|(412)378-7613 |michelle.lee19920914@gmail.com |
+|Junya Li|(412)378-7613 |michelle.lee19920914@gmail.com |
 |Jia Guo|(650)864-2010|annguojia@gmail.com|
+|Zuowei Xie|(201)208-9107|zuowei.xie@sv.cmu.edu|
